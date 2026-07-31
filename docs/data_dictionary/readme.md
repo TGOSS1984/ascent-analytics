@@ -92,6 +92,58 @@ Thirty routes are seeded across the six regions, using real UK mountain routes a
 | status | string (`pending`/`paid`/`refund_pending`/`refunded`/`failed`) | [Core] `payments.Payment.status` | Derived from the linked booking's status |
 | paid_at / refunded_at | datetime, nullable | [Core] `payments.Payment` | Populated only when status is `paid` / `refunded` respectively |
 
+## Review [Ext]
+
+| Field | Type | Notes / cleaning rule |
+|---|---|---|
+| booking_id | int | FK → Booking. Only ~45% of confirmed/amended bookings have a review — this is the response rate, not every completed trip is reviewed |
+| overall_rating / guide_rating / route_rating / safety_rating / value_rating | int (1–5) | Overall skews slightly lower for winter tours; the other four ratings are generated correlated to overall rather than independently, since real reviewers rarely give wildly inconsistent sub-scores. ~2–3% missing per field |
+| comment_length | int | Word count proxy; longer for 1–2★ and 5★ reviews (people write more when they feel strongly), shorter for 3★ |
+| would_recommend | boolean | Correlated with overall_rating (≥4★ → yes, with ~8% noise) |
+
+## Weather [Ext]
+
+| Field | Type | Notes / cleaning rule |
+|---|---|---|
+| date, region | date, FK → Region | Daily grain, every region, full 2019–2025 window |
+| temperature_c | decimal | Seasonal curve per region's climate profile, with daily noise |
+| rain_mm | decimal | Gamma-distributed, heavier in winter months |
+| wind_speed_kmh | decimal | Higher in winter and in stormier regions (Scottish Highlands, Cairngorms) |
+| visibility_km | decimal | Inversely related to rainfall |
+| snow_depth_cm | decimal | Only non-zero in winter months when temperature drops below ~3°C |
+| storm_warning | boolean | Probability scaled by region storm-proneness and season |
+
+**Known modelling choice:** weather is generated independently of the ScheduledTour cancellation flag rather than causally driving it — the "weather-related cancellation %" KPI is computed by *joining* cancelled tours to same-date/region storm-warning or high-rain days at the SQL/DAX layer. This mirrors how the business would actually attribute cancellations after the fact, and is documented here so the methodology is transparent rather than implied as a hard-coded causal simulation.
+
+## Marketing [Ext] + Booking Attribution [Ext]
+
+| Field | Type | Notes / cleaning rule |
+|---|---|---|
+| booking_id → channel | FK, string | A separate small table (not a column on Booking) so the Core Booking table stays untouched. Channel mix shifts gradually over the years (paid_social share grows, organic share shrinks slightly) |
+| campaign, channel, year_month | string | Campaign/channel/month grain |
+| spend | decimal | Zero for organic/direct/referral (word-of-mouth/SEO/repeat traffic — no media cost); driven by conversions × channel CPA for paid channels |
+| clicks, impressions | int | Derived from conversions using channel-specific conversion rate and CTR assumptions |
+| conversions | int | **Reconciles exactly** with the booking attribution table — every attributed booking is counted in exactly one channel/month row, so ROAS/CAC tie back to real booking counts rather than being independently randomised |
+| revenue | decimal | Sum of `total_price` for bookings attributed to that channel/month |
+
+## WebsiteAnalytics [Ext]
+
+| Field | Type | Notes / cleaning rule |
+|---|---|---|
+| week_starting, traffic_source, device | date, string, string | Weekly grain (daily would over-model a small operator's traffic); traffic sources mirror the Marketing channel list for consistency |
+| sessions, users | int | Seasonal (summer/December uplift), source- and device-weighted |
+| bounce_rate, conversion_rate | decimal (0–1) | Mobile bounce rate modelled higher than desktop; conversion rate centred on each channel's assumed rate |
+| browser | string | Weighted categorical (Chrome/Safari/Edge/Firefox/Other) |
+| country | string | ~84% United Kingdom; remainder a small set of countries, with the same country-name inconsistency helper used elsewhere (`UK` / `U.K.` / `United Kingdom` variants) |
+
+## EquipmentHire [Ext]
+
+| Field | Type | Notes / cleaning rule |
+|---|---|---|
+| booking_id | int | FK → Booking. Only generated for confirmed/amended bookings (~40% hire rate among those) |
+| boots / waterproofs / poles / helmet / ice_axe / crampons | boolean | Ice axe and crampon hire probability roughly 2.5× higher for winter + hard/advanced-difficulty bookings, reflecting real equipment needs |
+| hire_revenue | decimal | Sum of item price × quantity hired (quantity capped at the booking's party size) |
+
 ---
 
-_To be extended next: Review, Weather, Marketing, WebsiteAnalytics, EquipmentHire (all synthetic Extensions)._
+All extension-layer generation is complete. Data cleaning is next.

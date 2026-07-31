@@ -149,3 +149,75 @@ SEASON_MONTH_WEIGHTS = {
 }
 
 START_TIMES = ["07:00", "07:30", "08:00", "08:30", "09:00", "09:30"]
+
+# ---------------------------------------------------------------------------
+# Extension layer — Review [Ext]
+# ---------------------------------------------------------------------------
+REVIEW_RESPONSE_RATE = 0.45
+
+# ---------------------------------------------------------------------------
+# Extension layer — Weather [Ext]
+# ---------------------------------------------------------------------------
+# Rough climate profile per region: (summer_avg_c, winter_avg_c, storm_multiplier)
+# Higher/more northerly regions are colder and stormier — Scottish
+# Highlands and Cairngorms in particular.
+REGION_CLIMATE = {
+    "Snowdonia": (15.0, 4.0, 1.1),
+    "Lake District": (15.5, 4.5, 1.0),
+    "Scottish Highlands": (13.0, 1.0, 1.6),
+    "Peak District": (16.0, 4.0, 0.8),
+    "Brecon Beacons": (16.0, 4.5, 0.9),
+    "Cairngorms": (12.0, -0.5, 1.7),
+}
+
+# ---------------------------------------------------------------------------
+# Extension layer — Marketing / booking attribution [Ext]
+# ---------------------------------------------------------------------------
+# channel: (base_weight, cost_per_acquisition_gbp, conversion_rate, ctr)
+# Organic/direct/referral are treated as ~zero-spend channels (typical for
+# a small operator relying on SEO, word of mouth, and repeat visits) —
+# ROAS is only meaningful for the paid channels.
+MARKETING_CHANNELS = {
+    "organic": (0.28, 0.0, 0.035, 0.0),
+    "direct": (0.20, 0.0, 0.05, 0.0),
+    "referral": (0.12, 0.0, 0.04, 0.0),
+    "paid_search": (0.20, 24.0, 0.03, 0.045),
+    "paid_social": (0.14, 17.0, 0.018, 0.012),
+    "email": (0.06, 3.5, 0.08, 0.15),
+}
+
+CAMPAIGN_NAME_POOL = {
+    "organic": ["SEO - Route Guides", "SEO - Blog Content"],
+    "direct": ["Returning Customer Direct"],
+    "referral": ["Partner Referral Programme", "Outdoor Forum Referrals"],
+    "paid_search": ["Search - Snowdon Keywords", "Search - Munro Bagging", "Search - Brand"],
+    "paid_social": ["Instagram - Winter Push", "Facebook - Summer Push", "Instagram - Retargeting"],
+    "email": ["Monthly Newsletter", "Abandoned Booking Reminder"],
+}
+
+# ---------------------------------------------------------------------------
+# Extension layer — WebsiteAnalytics [Ext]
+# ---------------------------------------------------------------------------
+DEVICES = {"mobile": 0.55, "desktop": 0.38, "tablet": 0.07}
+BROWSERS = {"Chrome": 0.55, "Safari": 0.28, "Edge": 0.08, "Firefox": 0.06, "Other": 0.03}
+VISITOR_COUNTRIES = {
+    "United Kingdom": 0.84,
+    "Ireland": 0.05,
+    "Germany": 0.04,
+    "United States": 0.04,
+    "France": 0.03,
+}
+
+# ---------------------------------------------------------------------------
+# Extension layer — EquipmentHire [Ext]
+# ---------------------------------------------------------------------------
+EQUIPMENT_HIRE_RATE = 0.40  # share of confirmed/amended bookings hiring anything
+# item: (base_probability, price_gbp)
+EQUIPMENT_ITEMS = {
+    "boots": (0.45, 12.0),
+    "waterproofs": (0.40, 15.0),
+    "poles": (0.35, 8.0),
+    "helmet": (0.20, 6.0),
+    "ice_axe": (0.15, 10.0),
+    "crampons": (0.15, 12.0),
+}
