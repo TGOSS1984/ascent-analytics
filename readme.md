@@ -144,7 +144,28 @@ Every rule fires into a `QualityLog`, written to [`docs/data_quality/core_pipeli
 
 ## 🗃️ SQL Warehouse
 
-_To be documented as the star schema is built._
+A Kimball-style star schema, built in SQLite (with Postgres-portable DDL — see the notes at the bottom of `sql/schema/01_dimensions.sql`). Full design rationale, the schema diagram, and the deliberate modelling decisions (denormalised `region_id`, derived `DimCustomer`, no `DimTour`) are documented in [`docs/architecture/README.md`](docs/architecture/README.md).
+
+Build it (after both cleaning pipeline stages):
+
+```bash
+python -m src.warehouse.build_warehouse
+```
+
+This creates `data/warehouse/ascent_analytics.db` from scratch: runs the DDL in `sql/schema/` (`01_dimensions.sql` → `02_facts.sql` → `03_indexes.sql`), then loads it from `data/cleaned/`. 6 dimension tables, 7 fact tables.
+
+**DimCustomer is derived, not sourced** — the real UK Summit Guides schema has no `Customer` entity, so the warehouse builds one by grouping `Booking` rows on `contact_email`. This is a genuinely common real-world warehouse situation (the source system wasn't designed with analytics in mind) and is called out explicitly rather than presented as if a customer table existed all along.
+
+Example query, once built:
+
+```sql
+SELECT r.name AS region, ROUND(SUM(fb.total_price), 2) AS revenue, COUNT(*) AS bookings
+FROM FactBookings fb
+JOIN DimRegion r ON fb.region_id = r.region_id
+WHERE fb.status = 'confirmed'
+GROUP BY r.name
+ORDER BY revenue DESC;
+```
 
 ## 📊 KPIs & Dashboards
 
@@ -194,6 +215,8 @@ python -m src.generation.generate_extensions
   - [x] Extension entities: Review, Weather, Marketing, WebsiteAnalytics, EquipmentHire
 - [ ] Dimensional model design (star schema)
 - [ ] SQL warehouse build (schema, views, procedures, indexes)
+  - [x] Star schema DDL + indexes + warehouse load (`src/warehouse/build_warehouse.py`)
+  - [ ] Views, stored procedures, and an analytical query library (CTEs, window functions)
 - [ ] Power BI semantic model & DAX measures
 - [ ] Dashboards: Executive, Sales, Customer, Guide, Route, Marketing, Operations, Finance, Data Quality
 - [ ] Written insight report & recommendations
