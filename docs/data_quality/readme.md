@@ -1,6 +1,6 @@
 # Data Quality Log
 
-`core_pipeline_log.csv` in this folder is the output of `src/cleaning/run_pipeline.py`'s `QualityLog` — a real, generated record of what the cleaning pipeline actually did on its most recent run, not a static claim. It's regenerated every time the pipeline runs, so it always reflects the current dataset.
+`core_pipeline_log.csv` (from `src/cleaning/run_pipeline.py`) and `extension_pipeline_log.csv` (from `src/cleaning/run_pipeline_extensions.py`) in this folder are the outputs of the cleaning pipeline's `QualityLog` — a real, generated record of what the cleaning pipeline actually did on its most recent run, not a static claim. Both are regenerated every time their respective pipeline stage runs, so they always reflect the current dataset.
 
 ## Format
 
@@ -26,5 +26,10 @@ As of the core-entities cleaning stage, a typical run shows:
 - ~7,000 payment records with lowercase `gbp` currency casing standardised to `GBP`
 - 1 route's missing elevation gain imputed from the median for its difficulty tier
 - 1 guide's missing qualifications left as a genuine gap (flagged, not guessed)
+
+The extension-entities stage adds:
+- Zero validation failures across all six extension tables
+- ~2,000 website analytics rows with a country-name variant standardised (`UK` → `United Kingdom`, etc.)
+- A few hundred review sub-ratings per column left null rather than imputed, since guessing a satisfaction score would be worse than admitting it's missing
 
 Exact figures vary run-to-run only if the generation scripts are re-run with different parameters — the generation itself is seeded, so a clean re-run of the whole pipeline should reproduce the same numbers.

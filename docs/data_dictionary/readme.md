@@ -97,9 +97,9 @@ Thirty routes are seeded across the six regions, using real UK mountain routes a
 | Field | Type | Notes / cleaning rule |
 |---|---|---|
 | booking_id | int | FK → Booking. Only ~45% of confirmed/amended bookings have a review — this is the response rate, not every completed trip is reviewed |
-| overall_rating / guide_rating / route_rating / safety_rating / value_rating | int (1–5) | Overall skews slightly lower for winter tours; the other four ratings are generated correlated to overall rather than independently, since real reviewers rarely give wildly inconsistent sub-scores. ~2–3% missing per field |
+| overall_rating / guide_rating / route_rating / safety_rating / value_rating | int (1–5) | Overall skews slightly lower for winter tours; the other four ratings are generated correlated to overall rather than independently, since real reviewers rarely give wildly inconsistent sub-scores. ~2–3% missing per field, and cleaning **leaves these null rather than imputing** — guessing a satisfaction score is worse than admitting it's unknown |
 | comment_length | int | Word count proxy; longer for 1–2★ and 5★ reviews (people write more when they feel strongly), shorter for 3★ |
-| would_recommend | boolean | Correlated with overall_rating (≥4★ → yes, with ~8% noise) |
+| would_recommend | boolean | Correlated with overall_rating (≥4★ → yes, with ~8% noise); cleaning parses the raw yes/no text (in mixed casing) to a real boolean |
 
 ## Weather [Ext]
 
@@ -134,7 +134,7 @@ Thirty routes are seeded across the six regions, using real UK mountain routes a
 | sessions, users | int | Seasonal (summer/December uplift), source- and device-weighted |
 | bounce_rate, conversion_rate | decimal (0–1) | Mobile bounce rate modelled higher than desktop; conversion rate centred on each channel's assumed rate |
 | browser | string | Weighted categorical (Chrome/Safari/Edge/Firefox/Other) |
-| country | string | ~84% United Kingdom; remainder a small set of countries, with the same country-name inconsistency helper used elsewhere (`UK` / `U.K.` / `United Kingdom` variants) |
+| country | string | ~84% United Kingdom; remainder a small set of countries, with the same country-name inconsistency helper used elsewhere (`UK` / `U.K.` / `United Kingdom` variants). Cleaning maps all recognised variants to one canonical form via `canonicalise_country()`, and the quality log records only the genuine corrections (not rows that were already canonical) |
 
 ## EquipmentHire [Ext]
 
@@ -146,4 +146,4 @@ Thirty routes are seeded across the six regions, using real UK mountain routes a
 
 ---
 
-All extension-layer generation is complete. Data cleaning is next.
+All extension-layer generation and cleaning are complete. Dimensional model design (star schema) is next.
