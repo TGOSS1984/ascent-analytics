@@ -1,0 +1,22 @@
+# Data generation & cleaning
+pandas==2.2.2
+numpy==1.26.4
+Faker==25.2.0
+python-dateutil==2.9.0
+
+# Warehouse
+SQLAlchemy==2.0.30
+
+# Data quality / validation
+pandera==0.19.3
+
+# Notebooks
+jupyter==1.0.0
+matplotlib==3.9.0
+
+# Testing
+pytest==8.2.1
+
+# Utilities
+python-dotenv==1.0.1
+tqdm==4.66.4
