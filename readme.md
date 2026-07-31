@@ -13,6 +13,7 @@
 ## 📚 Table of Contents
 
 - [📖 Overview](#-overview)
+- [🎯 Business Problem & KPIs](docs/business_problem.md)
 - [🔗 Relationship to UK Summit Guides](#-relationship-to-uk-summit-guides)
 - [🧱 Data Model](#-data-model)
 - [🏗️ Architecture](#️-architecture)
@@ -146,7 +147,7 @@ pip install -r requirements.txt
 ## 🗺️ Roadmap
 
 - [x] Project skeleton & tooling
-- [ ] Business problem & KPI definition
+- [x] Business problem & KPI definition
 - [ ] Synthetic data generation (~7 years, ~30k bookings)
 - [ ] Data cleaning & validation pipeline (Python)
 - [ ] Dimensional model design (star schema)
