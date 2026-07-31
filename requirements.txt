@@ -1,22 +1,30 @@
+# Version floors, not exact pins — this avoids pip trying to build a
+# package from source on a Python version newer than the pin supports
+# (e.g. pandas==2.2.2 has no prebuilt wheel for Python 3.13, which forces
+# a from-source build requiring a full C/C++ toolchain). Letting pip pick
+# the latest compatible release solves this on any recent Python version.
+#
+# This file is the CORE pipeline only (data generation + cleaning +
+# warehouse + tests). Jupyter/matplotlib live in requirements-notebook.txt
+# since they pull in a very large, deeply-nested dependency tree
+# (jupyterlab's bundled JS assets) that can hit Windows' path-length limit
+# — install them separately, later, once you actually need notebooks.
+
 # Data generation & cleaning
-pandas==2.2.2
-numpy==1.26.4
-Faker==25.2.0
-python-dateutil==2.9.0
+pandas>=2.2.3
+numpy>=1.26.4
+Faker>=25.2.0
+python-dateutil>=2.9.0
 
 # Warehouse
-SQLAlchemy==2.0.30
+SQLAlchemy>=2.0.30
 
 # Data quality / validation
-pandera==0.19.3
-
-# Notebooks
-jupyter==1.0.0
-matplotlib==3.9.0
+pandera>=0.19.3
 
 # Testing
-pytest==8.2.1
+pytest>=8.2.1
 
 # Utilities
-python-dotenv==1.0.1
-tqdm==4.66.4
+python-dotenv>=1.0.1
+tqdm>=4.66.4

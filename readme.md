@@ -140,8 +140,25 @@ _To be documented alongside the data quality dashboard._
 git clone <repo-url>
 cd ascent-analytics
 python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+source .venv/bin/activate   # Windows: .venv\Scripts\Activate.ps1
+pip install --upgrade pip
 pip install -r requirements.txt
+```
+
+Notebooks (`notebooks/`) need an extra, optional install — kept separate because `jupyter` pulls in `jupyterlab`'s large, deeply-nested asset tree, which can hit Windows' path-length limit (especially inside a OneDrive-synced folder):
+
+```bash
+pip install -r requirements-notebook.txt
+```
+
+If that fails on Windows with an `OSError` about a missing nested file path, see the comment at the top of `requirements-notebook.txt` for how to enable Windows Long Path support, or just work from a shorter path (e.g. `C:\dev\ascent-analytics`) outside OneDrive.
+
+Then generate the data, in order:
+
+```bash
+python -m src.generation.generate_reference_data
+python -m src.generation.generate_transactions
+python -m src.generation.generate_extensions
 ```
 
 ## 🗺️ Roadmap

@@ -1,0 +1,15 @@
+# Optional — only needed for exploratory analysis in notebooks/.
+# Install separately: pip install -r requirements-notebook.txt
+#
+# If this fails on Windows with an OSError about a missing nested file
+# path, enable Long Path support (Windows 10 1607+):
+#   1. Run gpedit.msc -> Computer Configuration -> Administrative Templates
+#      -> System -> Filesystem -> "Enable Win32 long paths" -> Enabled
+#      (or, as Administrator in PowerShell:
+#       New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+#         -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force)
+#   2. Restart your terminal (a full reboot is sometimes needed)
+# Working from a shorter path outside OneDrive (e.g. C:\dev\ascent-analytics)
+# also avoids the issue without touching Windows settings at all.
+jupyter>=1.0.0
+matplotlib>=3.9.0
