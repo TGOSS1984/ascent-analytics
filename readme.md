@@ -167,6 +167,18 @@ GROUP BY r.name
 ORDER BY revenue DESC;
 ```
 
+### Views, procedures, and the query library
+
+```bash
+python -m src.warehouse.apply_views
+```
+
+This creates 7 reporting views (`sql/views/01_reporting_views.sql`) — `vw_bookings_enriched` (the wide, denormalised base most other views and ad hoc queries build on), plus `vw_monthly_revenue`, `vw_route_performance`, `vw_guide_performance`, `vw_customer_summary`, `vw_weather_flagged_cancellations`, and `vw_marketing_performance`.
+
+**Stored procedures — an honest limitation.** SQLite doesn't support `CREATE PROCEDURE`. Rather than pretend otherwise, `sql/procedures/README.md` explains the gap, `sql/procedures/postgres_examples.sql` shows what the same logic looks like as real PL/pgSQL procedures (for the Postgres/SQL Server tech stack this project also targets), and `src/warehouse/procedures.py` provides the practical SQLite-compatible equivalent: parameterised Python functions (`guide_performance_report()`, `route_performance_report()`, `refresh_customer_ltv_snapshot()`) that wrap the same SQL and return a DataFrame.
+
+The **analytical query library** (`sql/queries/`, 8 files) answers the core business questions from `docs/business_problem.md` directly in runnable SQL, demonstrating `INNER`/`LEFT`/`RIGHT JOIN`, `GROUP BY`/`HAVING`, `CASE`, and window functions (`RANK`, `ROW_NUMBER`, `LAG`, `LEAD`) across CTEs — see [`sql/queries/README.md`](sql/queries/README.md) for the full index of which file answers which question with which technique.
+
 ## 📊 KPIs & Dashboards
 
 _To be documented as dashboards are built._
@@ -214,9 +226,7 @@ python -m src.generation.generate_extensions
   - [x] Core entities: Region, Guide, Route, ScheduledTour, Booking, Payment
   - [x] Extension entities: Review, Weather, Marketing, WebsiteAnalytics, EquipmentHire
 - [ ] Dimensional model design (star schema)
-- [ ] SQL warehouse build (schema, views, procedures, indexes)
-  - [x] Star schema DDL + indexes + warehouse load (`src/warehouse/build_warehouse.py`)
-  - [ ] Views, stored procedures, and an analytical query library (CTEs, window functions)
+- [x] SQL warehouse build (schema, views, procedures, indexes)
 - [ ] Power BI semantic model & DAX measures
 - [ ] Dashboards: Executive, Sales, Customer, Guide, Route, Marketing, Operations, Finance, Data Quality
 - [ ] Written insight report & recommendations
