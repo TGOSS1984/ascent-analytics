@@ -181,7 +181,17 @@ The **analytical query library** (`sql/queries/`, 8 files) answers the core busi
 
 ## 📊 KPIs & Dashboards
 
-_To be documented as dashboards are built._
+The Power BI semantic model is built from the exported star schema — see [`powerbi/README.md`](powerbi/README.md) for the full setup guide (import, relationships, role-playing dates, hierarchies) and [`powerbi/dax_measures.md`](powerbi/dax_measures.md) for the complete DAX measure library, organised by dashboard and cross-referenced to the KPI catalogue.
+
+```bash
+python -m src.warehouse.export_for_powerbi
+```
+
+exports the star schema plus three pre-aggregated summary tables to `powerbi/data_export/`, ready for Power BI Desktop's Text/CSV import.
+
+**Why CSV export rather than a live SQLite connection?** Power BI Desktop has no built-in SQLite connector — the alternative is installing and configuring a third-party ODBC driver for a single-user, file-based database, which is unnecessary friction. This is explained in full in `powerbi/README.md`, including the ODBC option for anyone who wants it anyway.
+
+Dashboard build-out itself (the actual `.pbix` file, screenshots, and visuals) is tracked separately on the roadmap below.
 
 ## 🔍 Data Quality
 
@@ -228,6 +238,8 @@ python -m src.generation.generate_extensions
 - [ ] Dimensional model design (star schema)
 - [x] SQL warehouse build (schema, views, procedures, indexes)
 - [ ] Power BI semantic model & DAX measures
+  - [x] Star schema export + setup guide + full DAX measure library (`powerbi/`)
+  - [ ] Built and verified inside Power BI Desktop (.pbix file)
 - [ ] Dashboards: Executive, Sales, Customer, Guide, Route, Marketing, Operations, Finance, Data Quality
 - [ ] Written insight report & recommendations
 - [ ] Full documentation pass (architecture, data dictionary, KPI catalogue)

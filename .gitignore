@@ -19,6 +19,8 @@ data/warehouse/*.sqlite
 # Power BI
 powerbi/*.pbix.bak
 *.pbix.tmp
+powerbi/data_export/*.csv
+!powerbi/data_export/.gitkeep
 
 # OS / editor
 .DS_Store
