@@ -120,7 +120,28 @@ ascent-analytics/
 
 ## 🧹 Data Cleaning
 
-_To be documented as the cleaning pipeline is built._
+The Python cleaning pipeline (`src/cleaning/`) turns the deliberately messy raw CSVs into validated, warehouse-ready tables. It's split into two stages tracked separately on the roadmap:
+
+- **Core entities** (this stage — `run_pipeline.py`): Region, Guide, Route, ScheduledTour, Booking, Payment
+- **Extension entities** (next stage): Review, Weather, Marketing, WebsiteAnalytics, EquipmentHire
+
+Run it (after all three generation scripts):
+
+```bash
+python -m src.cleaning.run_pipeline
+```
+
+What it does, per table:
+
+- **Deduplication** — exact-duplicate rows (simulating double form submissions) are dropped and counted
+- **Text normalisation** — inconsistent casing/whitespace in names, regions, and route names standardised to title case; closed-enum fields (status, difficulty, season, currency) standardised to lowercase/uppercase as appropriate
+- **Currency parsing** — values stored as `"£99.95"`, `"GBP 99.95"`, or `"£1,133.78"` all parse to a clean float
+- **Email repair** — the one known corruption pattern (`@` replaced with `" at "`) is repaired automatically; anything else that still doesn't look like a valid email is flagged via `contact_email_invalid` rather than guessed at
+- **Missing-value handling** — some gaps are left as genuine gaps (e.g. a guide's missing qualifications, since inventing a qualification would be worse than admitting it's unknown); others are imputed with a documented, auditable rule (e.g. missing route elevation filled with the median for that difficulty tier) — see `docs/data_dictionary/README.md` for which rule applies to which field
+- **Referential integrity checks** — every foreign key is checked against its parent table, with any orphans logged rather than silently dropped
+- **Schema validation** — every cleaned table is validated against a [pandera](https://pandera.readthedocs.io/) schema (`src/cleaning/schemas.py`) enforcing types, ranges, and closed-enum values before it's written out
+
+Every rule fires into a `QualityLog`, written to [`docs/data_quality/core_pipeline_log.csv`](docs/data_quality/core_pipeline_log.csv) — row counts by stage, duplicates removed, values imputed/repaired, and validation failure counts. This is the same log data the Data Quality Dashboard will visualise.
 
 ## 🗃️ SQL Warehouse
 
@@ -170,6 +191,8 @@ python -m src.generation.generate_extensions
   - [x] Transactional data: ScheduledTour, Booking, Payment
   - [x] Extension data: Review, Weather, Marketing, WebsiteAnalytics, EquipmentHire
 - [ ] Data cleaning & validation pipeline (Python)
+  - [x] Core entities: Region, Guide, Route, ScheduledTour, Booking, Payment
+  - [ ] Extension entities: Review, Weather, Marketing, WebsiteAnalytics, EquipmentHire
 - [ ] Dimensional model design (star schema)
 - [ ] SQL warehouse build (schema, views, procedures, indexes)
 - [ ] Power BI semantic model & DAX measures
