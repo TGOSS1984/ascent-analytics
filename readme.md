@@ -150,7 +150,7 @@ pip install -r requirements.txt
 - [x] Business problem & KPI definition
 - [ ] Synthetic data generation (~7 years, ~30k bookings)
   - [x] Reference data: Region, Guide, Route
-  - [ ] Transactional data: ScheduledTour, Booking, Payment
+  - [x] Transactional data: ScheduledTour, Booking, Payment
   - [ ] Extension data: Review, Weather, Marketing, WebsiteAnalytics, EquipmentHire
 - [ ] Data cleaning & validation pipeline (Python)
 - [ ] Dimensional model design (star schema)

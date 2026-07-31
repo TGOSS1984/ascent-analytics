@@ -123,3 +123,29 @@ EMPLOYMENT_TYPES = ["employed", "freelance"]
 # Seasons [Core] — closed enum in the real app
 # ---------------------------------------------------------------------------
 SEASONS = ["winter", "summer"]
+
+# ---------------------------------------------------------------------------
+# ScheduledTour volume by year [Core-driven synthetic volume]
+# ---------------------------------------------------------------------------
+# A realistic growth curve for a small operator, including a COVID-19 dip
+# in 2020 and a gradual recovery — this kind of real-world shock is exactly
+# the sort of thing a stakeholder would expect an analyst to explain in the
+# insight report, not smooth away.
+ANNUAL_TOUR_COUNTS = {
+    2019: 2400,
+    2020: 1300,  # pandemic disruption
+    2021: 2000,  # partial recovery
+    2022: 3100,
+    2023: 3700,
+    2024: 4200,
+    2025: 4600,
+}
+
+# Winter months cluster Nov-Mar, summer months cluster Apr-Oct, with core
+# months weighted higher than shoulder months within each season.
+SEASON_MONTH_WEIGHTS = {
+    "winter": {11: 0.15, 12: 0.25, 1: 0.25, 2: 0.20, 3: 0.15},
+    "summer": {4: 0.08, 5: 0.12, 6: 0.18, 7: 0.22, 8: 0.20, 9: 0.13, 10: 0.07},
+}
+
+START_TIMES = ["07:00", "07:30", "08:00", "08:30", "09:00", "09:30"]
