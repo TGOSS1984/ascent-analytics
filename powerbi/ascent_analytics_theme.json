@@ -24,8 +24,8 @@
   "null": "#5B6E77",
   "textClasses": {
     "callout": { "fontFace": "Inter", "color": "#EEF3F6", "fontSize": 32 },
-    "title": { "fontFace": "Inter", "color": "#EEF3F6", "fontSize": 14, "bold": true },
-    "header": { "fontFace": "Inter", "color": "#C8D6DC", "fontSize": 12, "bold": true },
+    "title": { "fontFace": "Inter", "color": "#EEF3F6", "fontSize": 14 },
+    "header": { "fontFace": "Inter", "color": "#C8D6DC", "fontSize": 12 },
     "label": { "fontFace": "Inter", "color": "#C8D6DC", "fontSize": 10 }
   },
   "visualStyles": {
@@ -44,8 +44,8 @@
     },
     "card": {
       "*": {
-        "labels": [{ "color": "#EEF3F6", "fontSize": 28, "fontFamily": "Inter" }],
-        "categoryLabels": [{ "color": "#91A8B2", "fontSize": 11, "fontFamily": "Inter" }]
+        "labels": [{ "color": { "solid": { "color": "#EEF3F6" } }, "fontSize": 28, "fontFamily": "Inter" }],
+        "categoryLabels": [{ "color": { "solid": { "color": "#91A8B2" } }, "fontSize": 11, "fontFamily": "Inter" }]
       }
     },
     "multiRowCard": {
@@ -55,17 +55,28 @@
     },
     "slicer": {
       "*": {
-        "background": [{ "color": { "solid": { "color": "#12243199" } } }],
-        "items": [{ "fontColor": "#EEF3F6", "activeFontColor": "#8FE3FF" }]
+        "background": [{ "color": { "solid": { "color": "#122431" } }, "transparency": 40 }],
+        "items": [{ "fontColor": { "solid": { "color": "#EEF3F6" } }, "activeFontColor": { "solid": { "color": "#8FE3FF" } } }]
       }
     },
     "tableEx": {
       "*": {
         "grid": [{ "gridVertical": false, "rowPadding": 6 }],
         "columnHeaders": [
-          { "fontColor": "#0C1B24", "backColor": "#B0CFD0", "fontFamily": "Inter", "bold": true }
+          {
+            "fontColor": { "solid": { "color": "#0C1B24" } },
+            "backColor": { "solid": { "color": "#B0CFD0" } },
+            "fontFamily": "Inter",
+            "bold": true
+          }
         ],
-        "values": [{ "fontColor": "#EEF3F6", "backColor": "#0D1C27", "fontFamily": "Inter" }]
+        "values": [
+          {
+            "fontColor": { "solid": { "color": "#EEF3F6" } },
+            "backColor": { "solid": { "color": "#0D1C27" } },
+            "fontFamily": "Inter"
+          }
+        ]
       }
     }
   }
