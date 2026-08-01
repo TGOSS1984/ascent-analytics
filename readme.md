@@ -181,7 +181,9 @@ The **analytical query library** (`sql/queries/`, 8 files) answers the core busi
 
 ## 📊 KPIs & Dashboards
 
-The Power BI semantic model is built from the exported star schema — see [`powerbi/README.md`](powerbi/README.md) for the full setup guide (import, relationships, role-playing dates, hierarchies) and [`powerbi/dax_measures.md`](powerbi/dax_measures.md) for the complete DAX measure library, organised by dashboard and cross-referenced to the KPI catalogue.
+The Power BI semantic model is built from the exported star schema — see [`powerbi/README.md`](powerbi/README.md) for the full setup guide (import, relationships, role-playing dates, hierarchies, and applying the custom report theme) and [`powerbi/dax_measures.md`](powerbi/dax_measures.md) for the complete DAX measure library, organised by dashboard and cross-referenced to the KPI catalogue.
+
+A custom report theme, [`powerbi/ascent_analytics_theme.json`](powerbi/ascent_analytics_theme.json), is derived directly from **UK Summit Guides' own design tokens** — the same dark, moody mountain palette (winter ice-blue/slate alternating with summer gold/sage) as the live booking site, so the two projects share one visual identity.
 
 ```bash
 python -m src.warehouse.export_for_powerbi

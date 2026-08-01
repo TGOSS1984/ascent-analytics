@@ -1,0 +1,72 @@
+{
+  "name": "Ascent Analytics",
+  "dataColors": [
+    "#B0CFD0",
+    "#D6C18E",
+    "#8FE3FF",
+    "#C7B06A",
+    "#7F9499",
+    "#A8B48A",
+    "#91A8B2",
+    "#BDC0AE",
+    "#405664",
+    "#6A8A72"
+  ],
+  "background": "#0C1D29",
+  "foreground": "#EEF3F6",
+  "tableAccent": "#B0CFD0",
+  "good": "#7FBF8C",
+  "neutral": "#D6C18E",
+  "bad": "#C1666B",
+  "maximum": "#8FE3FF",
+  "center": "#91A8B2",
+  "minimum": "#FFD27A",
+  "null": "#5B6E77",
+  "textClasses": {
+    "callout": { "fontFace": "Inter", "color": "#EEF3F6", "fontSize": 32 },
+    "title": { "fontFace": "Inter", "color": "#EEF3F6", "fontSize": 14, "bold": true },
+    "header": { "fontFace": "Inter", "color": "#C8D6DC", "fontSize": 12, "bold": true },
+    "label": { "fontFace": "Inter", "color": "#C8D6DC", "fontSize": 10 }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [{ "show": true, "color": { "solid": { "color": "#0D1C27" } }, "transparency": 15 }],
+        "border": [{ "show": true, "color": { "solid": { "color": "#B0CFD0" } }, "radius": 12 }],
+        "outspace": [{ "color": { "solid": { "color": "#07131C" } } }]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#07131C" } }, "transparency": 0 }],
+        "outspacePane": [{ "backgroundColor": { "solid": { "color": "#07131C" } } }]
+      }
+    },
+    "card": {
+      "*": {
+        "labels": [{ "color": "#EEF3F6", "fontSize": 28, "fontFamily": "Inter" }],
+        "categoryLabels": [{ "color": "#91A8B2", "fontSize": 11, "fontFamily": "Inter" }]
+      }
+    },
+    "multiRowCard": {
+      "*": {
+        "card": [{ "outlineColor": { "solid": { "color": "#B0CFD0" } }, "outlineWeight": 1 }]
+      }
+    },
+    "slicer": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#12243199" } } }],
+        "items": [{ "fontColor": "#EEF3F6", "activeFontColor": "#8FE3FF" }]
+      }
+    },
+    "tableEx": {
+      "*": {
+        "grid": [{ "gridVertical": false, "rowPadding": 6 }],
+        "columnHeaders": [
+          { "fontColor": "#0C1B24", "backColor": "#B0CFD0", "fontFamily": "Inter", "bold": true }
+        ],
+        "values": [{ "fontColor": "#EEF3F6", "backColor": "#0D1C27", "fontFamily": "Inter" }]
+      }
+    }
+  }
+}

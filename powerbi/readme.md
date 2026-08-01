@@ -90,4 +90,32 @@ SWITCH(
 )
 ```
 
+## 6. Apply the Ascent Analytics theme
+
+[`ascent_analytics_theme.json`](ascent_analytics_theme.json) is a custom report theme derived directly from **UK Summit Guides' own design tokens** (`frontend/src/styles/tokens.css`) — the same dark, moody mountain aesthetic as the live booking site, so a recruiter clicking between the two projects sees one consistent visual identity, not two unrelated builds.
+
+**Apply it:** View tab → Themes → Browse for themes → select `ascent_analytics_theme.json`.
+
+### Where the colours came from
+
+| Theme role | Colour | Source in `tokens.css` |
+|---|---|---|
+| Report background | `#0C1D29` | `--color-bg-alt` (winter) |
+| Page canvas | `#07131C` | `--color-bg` (winter) |
+| Foreground / text | `#EEF3F6` | `--color-text` (winter) |
+| Table accent | `#B0CFD0` | `--color-accent` (winter) |
+| "Good" (positive KPI) | `#7FBF8C` | new — a muted green consistent with the palette's desaturated tone |
+| "Neutral" | `#D6C18E` | `--color-accent` (summer) |
+| "Bad" (negative KPI) | `#C1666B` | new — a muted brick red, avoiding a jarring bright red against the dark palette |
+| Diverging max | `#8FE3FF` | `--motif-route-glow` (winter) |
+| Diverging min | `#FFD27A` | `--motif-route-glow` (summer) |
+
+The 10-colour categorical palette (used for routes, regions, channels, etc.) deliberately **alternates winter and summer tones** — the same cool/warm contrast the live site uses when a visitor toggles between its two seasonal themes:
+
+`#B0CFD0` (winter) → `#D6C18E` (summer) → `#8FE3FF` (winter) → `#C7B06A` (summer) → `#7F9499` (winter) → `#A8B48A` (summer) → `#91A8B2` (winter) → `#BDC0AE` (summer) → `#405664` (winter) → `#6A8A72` (summer)
+
+Typography is set to **Inter** throughout, matching `--font-sans` in the same tokens file. Card and table visuals pick up rounded borders and a translucent dark background echoing the site's `--radius-md` panel styling.
+
+If a chart ever needs more than 10 distinct categories, Power BI will start blending/repeating theme colours — for high-cardinality visuals (e.g. all 30 routes on one chart), consider grouping into top-N + "Other" rather than fighting the palette.
+
 Next: [`dax_measures.md`](dax_measures.md) for the full measure library.
