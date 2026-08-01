@@ -181,7 +181,7 @@ The **analytical query library** (`sql/queries/`, 8 files) answers the core busi
 
 ## 📊 KPIs & Dashboards
 
-The Power BI semantic model is built from the exported star schema — see [`powerbi/README.md`](powerbi/README.md) for the full setup guide (import, relationships, role-playing dates, hierarchies, and applying the custom report theme) and [`powerbi/dax_measures.md`](powerbi/dax_measures.md) for the complete DAX measure library, organised by dashboard and cross-referenced to the KPI catalogue.
+The Power BI semantic model is built from the exported star schema — see [`powerbi/README.md`](powerbi/README.md) for the full setup guide (import, relationships, role-playing dates, hierarchies, and applying the custom report theme) and [`powerbi/dax_measures.md`](powerbi/dax_measures.md) for the complete DAX measure library, organised by dashboard and cross-referenced to the KPI catalogue. The finished model itself lives at `powerbi/ascent_analytics.pbix` — open it directly in Power BI Desktop, or rebuild it from scratch using the guide.
 
 A custom report theme, [`powerbi/ascent_analytics_theme.json`](powerbi/ascent_analytics_theme.json), is derived directly from **UK Summit Guides' own design tokens** — the same dark, moody mountain palette (winter ice-blue/slate alternating with summer gold/sage) as the live booking site, so the two projects share one visual identity.
 
@@ -241,7 +241,7 @@ python -m src.generation.generate_extensions
 - [x] SQL warehouse build (schema, views, procedures, indexes)
 - [ ] Power BI semantic model & DAX measures
   - [x] Star schema export + setup guide + full DAX measure library (`powerbi/`)
-  - [ ] Built and verified inside Power BI Desktop (.pbix file)
+  - [x] Built and verified inside Power BI Desktop (.pbix file)
 - [ ] Dashboards: Executive, Sales, Customer, Guide, Route, Marketing, Operations, Finance, Data Quality
 - [ ] Written insight report & recommendations
 - [ ] Full documentation pass (architecture, data dictionary, KPI catalogue)

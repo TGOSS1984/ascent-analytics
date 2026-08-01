@@ -249,12 +249,21 @@ DIVIDE(
 Outstanding Balance =
 CALCULATE(SUM(FactPayments[amount]), FactPayments[status] = "pending")
 
--- Refund timing needs the *inactive* DimDate <-> refunded_date_id
--- relationship activated explicitly.
+-- Refund timing needs *both* of FactPayments' date relationships
+-- activated explicitly via USERELATIONSHIP — paid_date_id turned out to
+-- need this too, not just refunded_date_id as originally planned (see
+-- powerbi/README.md's "Role-playing dates" section for why: FactPayments
+-- is 1:1 with FactBookings, which already has an active path to DimDate,
+-- so neither payment date can be the model's default active relationship
+-- without creating an ambiguous path).
 Average Days to Refund =
 AVERAGEX(
     CALCULATETABLE(FactPayments, FactPayments[status] = "refunded"),
-    VAR PaidDate = RELATED(DimDate[full_date])  -- via the active paid_date_id relationship
+    VAR PaidDate =
+        CALCULATE(
+            MAX(DimDate[full_date]),
+            USERELATIONSHIP(FactPayments[paid_date_id], DimDate[date_id])
+        )
     VAR RefundedDate =
         CALCULATE(
             MAX(DimDate[full_date]),

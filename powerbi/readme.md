@@ -17,7 +17,11 @@ This writes 16 CSVs to `powerbi/data_export/`: the 13 star-schema dimension/fact
 
 *(If you do want a live connection — useful if you plan to refresh the warehouse and re-import without re-mapping anything — install the SQLite ODBC driver, create a User DSN pointing at `data/warehouse/ascent_analytics.db`, then in Power BI: Get Data → ODBC → select the DSN. Everything else in this guide (relationships, hierarchies, measures) is identical either way.)*
 
-In Power BI Desktop: **Get Data → Text/CSV**, import all 13 files from `powerbi/data_export/`. Power BI will infer types reasonably well from the CSVs, but check these explicitly in Power Query before loading:
+**Import each CSV individually — do not use the "Folder" connector.** In Power BI Desktop: **Get Data → Text/CSV** (not "Folder"). In the file browser, select all 16 files in `powerbi/data_export/` at once (click the first, then Ctrl+click or Shift+click the rest) and Open — Power BI Desktop loads each as its own separate table, named after the file. If your version only supports single-file selection there, just repeat **Get Data → Text/CSV** once per file instead.
+
+It's tempting to use **Get Data → Folder** and point it at `powerbi/data_export/` in one go — don't. The Folder connector is built for combining many files that all share the *same* columns (e.g. 12 identical monthly exports); it loads the whole folder as one table listing file metadata (name, path, a binary blob per file), not one table per file. Since our 16 CSVs each have completely different columns, that's the wrong shape entirely. If you've already done this, delete that query (right-click it in the Queries pane → Delete) and re-import with Text/CSV instead.
+
+Power BI will infer types reasonably well from the CSVs, but check these explicitly in Power Query before loading:
 
 - `DimDate.full_date`, `FactBookings.tour_date_id`/`created_date_id` etc. — these `*_date_id` columns are `YYYYMMDD` integers (e.g. `20240615`), not dates. Leave them as whole numbers; they're join keys, not display fields.
 - `*_id` columns generally → **Whole Number**
@@ -26,32 +30,40 @@ In Power BI Desktop: **Get Data → Text/CSV**, import all 13 files from `powerb
 
 ## 2. Relationships
 
-This is a direct translation of the foreign keys already enforced in `sql/schema/02_facts.sql` — Power BI's Model view just needs them drawn explicitly. All relationships below are **one-to-many, single direction** (dimension → fact) unless noted.
+This starts as a direct translation of the foreign keys enforced in `sql/schema/02_facts.sql`, but two of them end up different from the SQL schema once built in Power BI — both explained below the table, and both were discovered by actually building this (not guessed in advance), so don't be surprised if Autodetect or your own first pass lands somewhere slightly different too.
 
-| From (dimension) | To (fact) | Notes |
-|---|---|---|
-| DimRegion.region_id | FactBookings.region_id | |
-| DimRoute.route_id | FactBookings.route_id | |
-| DimGuide.guide_id | FactBookings.guide_id | Guide is nullable on some bookings — this is fine, Power BI handles it |
-| DimCustomer.customer_id | FactBookings.customer_id | |
-| DimMarketingChannel.channel_id | FactBookings.channel_id | Nullable |
-| **DimDate.date_id** | **FactBookings.tour_date_id** | **Active** relationship — see role-playing dates below |
-| DimDate.date_id | FactBookings.created_date_id | **Inactive** — see below |
-| FactBookings.booking_id | FactPayments.booking_id | 1:1, but model as one-to-many for consistency |
-| FactBookings.booking_id | FactReviews.booking_id | 1:1 (subset — not every booking has a review) |
-| FactBookings.booking_id | FactEquipmentHire.booking_id | 1:1 (subset) |
-| DimDate.date_id | FactPayments.paid_date_id | **Active** |
-| DimDate.date_id | FactPayments.refunded_date_id | **Inactive** |
-| DimMarketingChannel.channel_id | FactMarketing.channel_id | |
-| DimDate.date_id | FactMarketing.month_date_id | |
-| DimMarketingChannel.channel_id | FactWebsiteAnalytics.channel_id | |
-| DimDate.date_id | FactWebsiteAnalytics.week_date_id | |
-| DimRegion.region_id | FactWeather.region_id | |
-| DimDate.date_id | FactWeather.date_id | |
+All relationships are **one-to-many, single direction** (dimension → fact) unless noted.
+
+| From (dimension) | To (fact) | Status | Notes |
+|---|---|---|---|
+| DimRegion.region_id | FactBookings.region_id | **Inactive** | See "Why FactBookings→DimRegion is inactive" below |
+| DimRoute.region_id | DimRegion.region_id | **Active** | Carries region filtering for FactBookings instead — see below |
+| DimRoute.route_id | FactBookings.route_id | Active | |
+| DimGuide.guide_id | FactBookings.guide_id | Active | Guide is nullable on some bookings — this is fine, Power BI handles it |
+| DimGuide.primary_region_id | DimRegion.region_id | Active | |
+| DimCustomer.customer_id | FactBookings.customer_id | Active | |
+| DimMarketingChannel.channel_id | FactBookings.channel_id | Active | Nullable |
+| DimDate.date_id | FactBookings.tour_date_id | **Active** | See role-playing dates below |
+| DimDate.date_id | FactBookings.created_date_id | **Inactive** | |
+| FactBookings.booking_id | FactPayments.booking_id | Active | 1:1 |
+| FactBookings.booking_id | FactReviews.booking_id | Active | 1:1 (subset — not every booking has a review) |
+| FactBookings.booking_id | FactEquipmentHire.booking_id | Active | 1:1 (subset) |
+| DimDate.date_id | FactPayments.paid_date_id | **Inactive** | See role-playing dates below |
+| DimDate.date_id | FactPayments.refunded_date_id | **Inactive** | |
+| DimMarketingChannel.channel_id | FactMarketing.channel_id | Active | |
+| DimDate.date_id | FactMarketing.month_date_id | Active | |
+| DimMarketingChannel.channel_id | FactWebsiteAnalytics.channel_id | Active | |
+| DimDate.date_id | FactWebsiteAnalytics.week_date_id | Active | |
+| DimRegion.region_id | FactWeather.region_id | Active | |
+| DimDate.date_id | FactWeather.date_id | Active | |
+
+### Why FactBookings → DimRegion is inactive
+
+The SQL warehouse deliberately denormalises `region_id` directly onto `FactBookings` (see `docs/architecture/README.md`) — that's still true and still useful for hand-written SQL. But in Power BI, `DimRoute` separately needs its own path to `DimRegion` (for a `RELATED()` calculated column and the Region → Route hierarchy in step 4 below). Power BI only allows one *active* relationship between any two tables, and `FactBookings → DimRoute → DimRegion` already exists as an indirect path once `DimRoute → DimRegion` is active — so the direct `FactBookings → DimRegion` link has to stay inactive to avoid an ambiguous-path error. **This doesn't lose you anything**: filtering `FactBookings` by region still works exactly the same from a report-building perspective, Power BI just resolves it through the extra hop automatically.
 
 ### Role-playing dates
 
-`FactBookings` has two dates (when the tour happened, when the booking was made) and `FactPayments` has two (when paid, when refunded). Power BI only allows one **active** relationship between any pair of tables — set the primary business date active (tour date, paid date) and leave the secondary one inactive. Measures that need the secondary date use `USERELATIONSHIP()` explicitly — see `dax_measures.md` for the handful of measures that do this (e.g. booking lead time, refund timing).
+`FactBookings` has two dates (tour date, created date) and `FactPayments` has two (paid, refunded) — plus `FactPayments` is 1:1 with `FactBookings`, which already has an active path to `DimDate`. That means **all three** of `created_date_id`, `paid_date_id`, and `refunded_date_id` need to stay **inactive** — if any of them were active, there'd be two ways to reach `DimDate` from `FactBookings` (directly, or via that column), which Power BI won't allow. The measures that genuinely need one of these secondary dates use `USERELATIONSHIP()` to activate it temporarily just for that calculation — see `dax_measures.md`.
 
 ## 3. Mark DimDate as the date table
 
@@ -59,15 +71,21 @@ Model view → select `DimDate` → **Mark as date table** → choose `full_date
 
 ## 4. Hierarchies
 
-Build these in Model view by dragging one field onto another:
+**Dragging fields to build a hierarchy doesn't always work reliably** — if it doesn't respond for you, use right-click instead, which is more consistent: right-click the field you want to add → **Add to hierarchy** → pick the hierarchy from the submenu.
 
-- **DimDate**: `Year` → `Quarter` → `Month Name` → `Day` (a standard calendar drill-down)
-- **DimRegion → DimRoute**: `Region Name` → `Route Name` (drag `name` from DimRoute onto `DimRegion.name` after relating them via the fact table, or create a calculated hierarchy in the visual directly — routes already carry `region_id`, so this works as a two-level slicer hierarchy on most visuals)
-- **DimGuide**: no natural hierarchy (flat list), but consider grouping by `employment_type` as a secondary slicer
+- **DimDate**: right-click `Year` → Create hierarchy. Then right-click `Quarter` → Add to hierarchy → your new hierarchy; repeat for `Month Name`, then `Day`. Gives you a standard Year → Quarter → Month → Day drill-down.
+- **DimRoute → DimRegion**: hierarchies can only live inside a single table, so a "Region → Route" drill-down can't be built by connecting `DimRegion` and `DimRoute` directly — instead, add a calculated column on `DimRoute` first (see step 5), then build the hierarchy on `DimRoute` alone, using that calculated column as the parent level and the route name as the child level.
+- **DimGuide**: no natural hierarchy (flat list), but consider grouping by `employment_type` as a secondary slicer.
 
 ## 5. Calculated columns
 
 Almost everything needed already exists as a real column from the warehouse (that's the point of building the star schema properly first) — but a few are naturally calculated *in* Power BI rather than the warehouse, since they're presentation concerns:
+
+```dax
+DimRoute[Region Name] = RELATED(DimRegion[name])
+```
+
+This is what makes the Region → Route hierarchy in step 4 possible — it pulls the region name onto `DimRoute` using the `DimRoute → DimRegion` relationship from step 2, so the hierarchy can live entirely within `DimRoute`.
 
 ```dax
 FactBookings[Lead Time Bucket] =
