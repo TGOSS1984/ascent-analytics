@@ -147,6 +147,95 @@
             },
             "fontSize": 10
           }
+        ],
+        "outspacePane": [
+          {
+            "backgroundColor": {
+              "solid": {
+                "color": "#0D1C27"
+              }
+            },
+            "foregroundColor": {
+              "solid": {
+                "color": "#EEF3F6"
+              }
+            },
+            "borderColor": {
+              "solid": {
+                "color": "#22394A"
+              }
+            },
+            "transparency": 0,
+            "border": true,
+            "fontFamily": "Inter",
+            "titleSize": 12,
+            "headerSize": 10,
+            "searchTextSize": 10,
+            "inputBoxColor": {
+              "solid": {
+                "color": "#12243B"
+              }
+            },
+            "checkboxAndApplyColor": {
+              "solid": {
+                "color": "#B0CFD0"
+              }
+            }
+          }
+        ],
+        "filterCard": [
+          {
+            "$id": "Available",
+            "backgroundColor": {
+              "solid": {
+                "color": "#0D1C27"
+              }
+            },
+            "foregroundColor": {
+              "solid": {
+                "color": "#EEF3F6"
+              }
+            },
+            "borderColor": {
+              "solid": {
+                "color": "#22394A"
+              }
+            },
+            "border": true,
+            "transparency": 0,
+            "inputBoxColor": {
+              "solid": {
+                "color": "#12243B"
+              }
+            },
+            "textSize": 10
+          },
+          {
+            "$id": "Applied",
+            "backgroundColor": {
+              "solid": {
+                "color": "#0D1C27"
+              }
+            },
+            "foregroundColor": {
+              "solid": {
+                "color": "#EEF3F6"
+              }
+            },
+            "borderColor": {
+              "solid": {
+                "color": "#B0CFD0"
+              }
+            },
+            "border": true,
+            "transparency": 0,
+            "inputBoxColor": {
+              "solid": {
+                "color": "#12243B"
+              }
+            },
+            "textSize": 10
+          }
         ]
       }
     },
@@ -280,24 +369,6 @@
             "fontFamily": "Inter"
           }
         ]
-      }
-    }
-  },
-  "filterPane": {
-    "transparency": 0,
-    "background": {
-      "solid": {
-        "color": "#0D1C27"
-      }
-    },
-    "foreground": {
-      "solid": {
-        "color": "#EEF3F6"
-      }
-    },
-    "inputBoxColor": {
-      "solid": {
-        "color": "#12243B"
       }
     }
   }
