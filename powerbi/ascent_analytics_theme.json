@@ -370,6 +370,34 @@
           }
         ]
       }
+    },
+    "cardVisual": {
+      "*": {
+        "categoryLabels": [
+          {
+            "color": {
+              "solid": {
+                "color": "#B0CFD0"
+              }
+            },
+            "fontSize": 11,
+            "fontFamily": "Inter",
+            "$id": "default"
+          }
+        ],
+        "labels": [
+          {
+            "color": {
+              "solid": {
+                "color": "#EEF3F6"
+              }
+            },
+            "fontSize": 28,
+            "fontFamily": "Inter",
+            "$id": "default"
+          }
+        ]
+      }
     }
   }
 }
