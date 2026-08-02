@@ -126,8 +126,8 @@ Thirty routes are seeded across the six regions, using real UK mountain routes a
 | campaign, channel, year_month | string | Campaign/channel/month grain |
 | spend | decimal | Zero for organic/direct/referral (word-of-mouth/SEO/repeat traffic — no media cost); driven by conversions × channel CPA for paid channels |
 | clicks, impressions | int | Derived from conversions using channel-specific conversion rate and CTR assumptions |
-| conversions | int | **Reconciles exactly** with the booking attribution table — every attributed booking is counted in exactly one channel/month row, so ROAS/CAC tie back to real booking counts rather than being independently randomised |
-| revenue | decimal | Sum of `total_price` for bookings attributed to that channel/month |
+| conversions | int | **Reconciles exactly with confirmed/amended bookings**, not every attributed booking. A cancelled or still-pending booking gets attributed to a channel (for channel-mix reporting elsewhere) but never counts as a marketing conversion, since it never actually converted. *(Corrected — an earlier version counted every attributed booking regardless of status, which inflated both conversions and revenue; caught when Marketing Revenue was found to exceed total confirmed company revenue while building the Marketing dashboard.)* |
+| revenue | decimal | Sum of `total_price` for **confirmed/amended** bookings attributed to that channel/month — matches total confirmed revenue to within rounding (see note above) |
 
 ## WebsiteAnalytics [Ext]
 

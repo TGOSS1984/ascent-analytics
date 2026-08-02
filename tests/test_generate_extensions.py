@@ -71,8 +71,36 @@ def test_marketing_conversions_reconcile_with_attribution(core_raw):
     rng, np_rng = _rngs()
     attribution_df = generate_booking_attribution(bookings_df, rng, np_rng)
     marketing_df = generate_marketing(bookings_df, attribution_df, rng, np_rng)
-    # every attributed booking should be accounted for in some campaign row
-    assert marketing_df["conversions"].sum() == len(attribution_df)
+    # Conversions should reconcile with confirmed/amended bookings only —
+    # a cancelled or still-pending booking was attributed to a channel
+    # (for channel-mix reporting) but never actually converted, so it
+    # shouldn't count as a marketing conversion or contribute revenue.
+    eligible_booking_ids = set(
+        bookings_df[bookings_df["status_clean"].isin(["confirmed", "amended"])]["booking_id"]
+    )
+    assert marketing_df["conversions"].sum() == len(eligible_booking_ids)
+
+
+def test_marketing_revenue_never_exceeds_total_confirmed_revenue(core_raw):
+    _, _, bookings_df = core_raw
+    rng, np_rng = _rngs()
+    attribution_df = generate_booking_attribution(bookings_df, rng, np_rng)
+    marketing_df = generate_marketing(bookings_df, attribution_df, rng, np_rng)
+    total_confirmed_revenue = bookings_df.loc[
+        bookings_df["status_clean"].isin(["confirmed", "amended"]), "total_price_clean"
+    ].sum()
+    parsed_revenue = (
+        marketing_df["revenue_raw"].astype(str)
+        .str.replace("£", "", regex=False)
+        .str.replace("GBP", "", regex=False)
+        .str.replace(",", "", regex=False)
+        .str.strip()
+        .astype(float)
+    )
+    # allow tiny floating point slack, otherwise these must match closely —
+    # marketing revenue is a channel breakdown of real revenue, not a
+    # separate, larger number
+    assert parsed_revenue.sum() <= total_confirmed_revenue + 1.0
 
 
 def test_zero_spend_channels_have_no_cost(core_raw):

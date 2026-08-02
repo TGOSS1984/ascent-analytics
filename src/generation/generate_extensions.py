@@ -179,7 +179,12 @@ def generate_booking_attribution(bookings_df, rng, np_rng):
 
 
 def generate_marketing(bookings_df, attribution_df, rng, np_rng):
-    merged = bookings_df.merge(attribution_df, on="booking_id", how="left")
+    # Only confirmed/amended bookings represent a real conversion and real
+    # revenue — a cancelled or still-pending booking never actually
+    # converted, and counting its total_price as marketing revenue would
+    # overstate both revenue and ROAS.
+    eligible_bookings = bookings_df[bookings_df["status_clean"].isin(["confirmed", "amended"])]
+    merged = eligible_bookings.merge(attribution_df, on="booking_id", how="left")
     merged["channel_clean"] = merged["channel_raw"].str.strip().str.lower()
     merged["year_month"] = merged["created_at"].dt.to_period("M")
 
