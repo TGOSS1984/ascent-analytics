@@ -83,7 +83,8 @@ def build_dim_route(routes_clean: pd.DataFrame, dim_region: pd.DataFrame) -> pd.
     )
     return df[
         ["route_id", "name", "region_id", "difficulty", "distance_km", "duration_hours",
-         "mountain_height_m", "elevation_gain_m", "is_featured", "active"]
+         "mountain_height_m", "elevation_gain_m", "is_featured", "active",
+         "trailhead_lat", "trailhead_lon"]
     ]
 
 

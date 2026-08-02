@@ -117,10 +117,17 @@ def clean_routes(raw_df, log: QualityLog):
     df["is_featured"] = df["is_featured"].astype(bool)
     df["active"] = df["active"].astype(bool)
 
+    df["trailhead_lat"] = df["trailhead_lat"].astype(float)
+    df["trailhead_lon"] = df["trailhead_lon"].astype(float)
+    out_of_uk_bounds = ~df["trailhead_lat"].between(49.5, 61.0) | ~df["trailhead_lon"].between(-8.5, 2.0)
+    if out_of_uk_bounds.any():
+        log.log_metric("Route", "coordinates_outside_uk_bounds", int(out_of_uk_bounds.sum()))
+
     df = df[
         [
             "route_id", "name", "region", "difficulty", "distance_km", "duration_hours",
             "mountain_height_m", "elevation_gain_m", "is_featured", "active",
+            "trailhead_lat", "trailhead_lon",
         ]
     ]
 

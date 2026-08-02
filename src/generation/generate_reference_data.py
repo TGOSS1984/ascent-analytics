@@ -92,7 +92,7 @@ def generate_routes(rng: random.Random, np_rng: np.random.Generator) -> pd.DataF
     rows = []
     route_id = 1
     for region, routes in config.ROUTE_SEED_DATA.items():
-        for name, difficulty, distance_km, duration_hours, height_m, elevation_m in routes:
+        for name, difficulty, distance_km, duration_hours, height_m, elevation_m, lat, lon in routes:
             is_featured = rng.random() < 0.2
             active = rng.random() > 0.05  # a handful of retired routes
 
@@ -115,6 +115,8 @@ def generate_routes(rng: random.Random, np_rng: np.random.Generator) -> pd.DataF
                     "elevation_gain_m_raw": elevation_val,
                     "is_featured": is_featured,
                     "active": active,
+                    "trailhead_lat": lat,
+                    "trailhead_lon": lon,
                 }
             )
             route_id += 1

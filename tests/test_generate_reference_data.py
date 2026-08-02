@@ -47,6 +47,13 @@ def test_routes_cover_every_seeded_region():
     assert seeded_regions.issubset(generated_regions)
 
 
+def test_route_coordinates_within_uk_bounds():
+    rng, np_rng = _rngs()
+    df = generate_routes(rng, np_rng)
+    assert df["trailhead_lat"].between(49.5, 61.0).all()
+    assert df["trailhead_lon"].between(-8.5, 2.0).all()
+
+
 def test_generation_is_deterministic():
     rng1, np_rng1 = _rngs()
     rng2, np_rng2 = _rngs()

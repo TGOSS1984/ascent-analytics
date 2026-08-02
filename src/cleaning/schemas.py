@@ -44,6 +44,8 @@ RouteSchema = DataFrameSchema(
         "elevation_gain_m": Column(int, Check.ge(0)),
         "is_featured": Column(bool),
         "active": Column(bool),
+        "trailhead_lat": Column(float, Check.in_range(49.5, 61.0)),  # UK mainland + islands bounding box
+        "trailhead_lon": Column(float, Check.in_range(-8.5, 2.0)),
     }
 )
 

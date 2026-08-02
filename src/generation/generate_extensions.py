@@ -72,8 +72,11 @@ def generate_reviews(bookings_df, rng, np_rng):
 
     rows = []
     for booking in reviewed.itertuples(index=False):
-        # winter tours skew slightly lower due to weather-related friction
+        # winter tours skew slightly lower due to weather-related friction;
+        # harder routes skew lower still, reflecting more demanding
+        # conditions — see config.DIFFICULTY_RATING_ADJUSTMENT
         base_mean = 4.3 if booking.season == "summer" else 4.05
+        base_mean += config.DIFFICULTY_RATING_ADJUSTMENT.get(booking.difficulty_clean, 0.0)
         overall = int(np.clip(round(np_rng.normal(base_mean, 0.85)), 1, 5))
 
         def _correlated(center, spread=0.9):

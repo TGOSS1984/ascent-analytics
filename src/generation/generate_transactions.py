@@ -143,10 +143,13 @@ def generate_scheduled_tours(guides_df, routes_df, rng, np_rng):
             if difficulty == "advanced" and rng.random() < 0.4:
                 max_group_size = 2
 
-            # ~6% of tours fall through for reasons outside the operator's
-            # control (guide illness, severe weather, access closures) —
-            # finalised in the post-processing pass below.
-            weather_or_ops_cancelled = rng.random() < 0.06
+            # ~4-10% of tours fall through for reasons outside the
+            # operator's control (guide illness, severe weather, access
+            # closures) — rate scales with difficulty since harder routes
+            # run in more exposed, weather-sensitive terrain. Finalised in
+            # the post-processing pass below.
+            ops_cancel_rate = config.DIFFICULTY_OPS_CANCEL_RATE.get(difficulty, 0.06)
+            weather_or_ops_cancelled = rng.random() < ops_cancel_rate
 
             rows.append(
                 {

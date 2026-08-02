@@ -43,8 +43,11 @@ Six regions are modelled: Snowdonia, Lake District, Scottish Highlands, Peak Dis
 | elevation_gain_m | int | [Core] `routes_app.Route.elevation_gain_m` | ~2% missing in raw — imputed in cleaning using the median for routes of the same difficulty tier, with the imputation logged |
 | is_featured | boolean | [Core] `routes_app.Route.is_featured` | |
 | active | boolean | [Core] `routes_app.Route.active` | ~5% of routes marked inactive, simulating retired routes over the 7-year window |
+| trailhead_lat / trailhead_lon | decimal | [Ext] | Approximate real-world trailhead coordinates for the named route (e.g. Llanberis for Snowdon via Llanberis Path), added for map visuals — not survey-grade precision, but genuinely placed at the right mountain/valley, not randomly generated. Validated against a UK bounding box (lat 49.5-61.0, lon -8.5-2.0) during cleaning |
 
 Thirty routes are seeded across the six regions, using real UK mountain routes as the naming basis (e.g. Snowdon via Llanberis Path, Ben Nevis via CMD Arete, Helvellyn via Striding Edge) so route-level analysis reads as credible rather than placeholder data.
+
+**Difficulty affects more than pricing.** Route difficulty also influences two other generated fields, on purpose: review ratings run measurably lower for harder routes (`config.DIFFICULTY_RATING_ADJUSTMENT` — moderate +0.20, hard +0, advanced -0.35, layered on top of the existing season effect), and ops/weather cancellation rate scales from 4% (moderate) to 10% (advanced) rather than being flat across all difficulty tiers (`config.DIFFICULTY_OPS_CANCEL_RATE`). Earlier versions of this dataset had difficulty affect price but nothing else, which produced a flat, uninteresting relationship between difficulty and satisfaction/cancellations on the Route dashboard — this was corrected once that flatness showed up as a real finding while building the dashboard, not designed in from the start.
 
 ## ScheduledTour
 
@@ -58,7 +61,7 @@ Thirty routes are seeded across the six regions, using real UK mountain routes a
 | start_time | time | [Core] `bookings.ScheduledTour.start_time` | |
 | price_pp | decimal | [Core] `bookings.ScheduledTour.price_pp` | Modelled from difficulty, duration, and year-on-year inflation; ~2% stored as messy currency strings in raw |
 | max_group_size | int | [Core] `bookings.ScheduledTour.max_group_size` | 3 by default; some advanced routes capped at 2 for safety |
-| status | string (`draft`/`open`/`full`/`cancelled`) | [Core] `bookings.ScheduledTour.status` | Derived *after* bookings are generated: `full` if booked spaces reach capacity, `cancelled` if flagged for ops/weather reasons (~6% of tours) or if a published tour attracted zero bookings (70% of those are treated as cancelled, matching how a small operator would pull an empty tour), otherwise `open` |
+| status | string (`draft`/`open`/`full`/`cancelled`) | [Core] `bookings.ScheduledTour.status` | Derived *after* bookings are generated: `full` if booked spaces reach capacity, `cancelled` if flagged for ops/weather reasons (4-10% of tours, scaling with difficulty — advanced routes run in more exposed terrain and are cancelled more often) or if a published tour attracted zero bookings (70% of those are treated as cancelled, matching how a small operator would pull an empty tour), otherwise `open` |
 
 **Known simplification:** guide availability is modelled via company join/leave dates so a guide never appears on a tour before joining or after leaving — but route retirement (`Route.active`) is not similarly date-gated, since the real schema doesn't timestamp when a route was retired.
 

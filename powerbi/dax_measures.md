@@ -167,6 +167,8 @@ RETURN
 
 For route-level bookings, revenue, and average rating, use **`Summary_RoutePerformance`** (from `vw_route_performance`) directly.
 
+**Map visual:** `DimRoute` carries `trailhead_lat`/`trailhead_lon` — real approximate trailhead coordinates for each route, added specifically to support a map visual here. Use the **Map** or **ArcGIS Map** visual: Latitude → `trailhead_lat`, Longitude → `trailhead_lon`, Legend or Tooltips → `DimRoute[name]`, bubble size → `[Revenue]` (or `[Confirmed Bookings]`). This gives a genuinely useful "where's the money coming from geographically" view rather than just the region-level bar chart. Note difficulty also now measurably affects rating and cancellation rate (see `docs/data_dictionary/README.md`) — earlier versions of the dataset had these flat across difficulty tiers, which is worth knowing if you're comparing against an older screenshot or export.
+
 ```dax
 Occupancy % =
 -- Booked party size vs the route's typical max group size, averaged

@@ -53,7 +53,9 @@ CREATE TABLE DimRoute (
     mountain_height_m INTEGER NOT NULL,
     elevation_gain_m  INTEGER NOT NULL,
     is_featured       BOOLEAN NOT NULL,
-    active            BOOLEAN NOT NULL
+    active            BOOLEAN NOT NULL,
+    trailhead_lat     REAL NOT NULL,      -- approximate real-world trailhead location, for map visuals
+    trailhead_lon     REAL NOT NULL
 );
 
 -- Derived dimension — see docs/architecture/README.md for why this is

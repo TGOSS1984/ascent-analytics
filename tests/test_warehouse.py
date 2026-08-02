@@ -90,3 +90,30 @@ def test_revenue_by_region_is_positive_and_populated(warehouse_conn):
     ).fetchall()
     assert len(rows) == 6  # all six regions represented
     assert all(revenue > 0 for _, revenue in rows)
+
+
+def test_dimroute_has_valid_uk_coordinates(warehouse_conn):
+    cur = warehouse_conn.cursor()
+    rows = cur.execute("SELECT trailhead_lat, trailhead_lon FROM DimRoute").fetchall()
+    assert len(rows) == 30
+    for lat, lon in rows:
+        assert 49.5 <= lat <= 61.0
+        assert -8.5 <= lon <= 2.0
+
+
+def test_rating_decreases_with_difficulty(warehouse_conn):
+    """Confirms the difficulty-weighted review adjustment actually shows up
+    in the warehouse — moderate should rate meaningfully higher than
+    advanced, not be statistically flat as it was before this was added."""
+    cur = warehouse_conn.cursor()
+    rows = dict(
+        cur.execute(
+            """
+            SELECT rt.difficulty, AVG(fr.overall_rating)
+            FROM FactReviews fr JOIN DimRoute rt ON fr.route_id = rt.route_id
+            GROUP BY rt.difficulty
+            """
+        ).fetchall()
+    )
+    assert rows["moderate"] > rows["hard"] > rows["advanced"]
+    assert rows["moderate"] - rows["advanced"] > 0.3  # meaningfully different, not noise
