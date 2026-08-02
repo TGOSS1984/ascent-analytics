@@ -42,6 +42,7 @@ VIEWS_TO_EXPORT = {
     "vw_customer_summary": "Summary_CustomerLTV.csv",
     "vw_guide_performance": "Summary_GuidePerformance.csv",
     "vw_route_performance": "Summary_RoutePerformance.csv",
+    "vw_weather_flagged_cancellations": "Summary_WeatherFlaggedCancellations.csv",
 }
 
 
