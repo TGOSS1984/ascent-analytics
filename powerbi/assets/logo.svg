@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 96" width="480" height="96">
+  <!-- Geometric mountain mark, replicated exactly from
+       frontend/src/styles/layout.css .brand-logo__mark rules:
+       two overlapping triangles (clip-path: polygon(50% 0%, 100% 100%, 0% 100%))
+       plus a skewed "crevasse" cut between them. -->
+  <g transform="translate(0,12.8)">
+    <polygon points="32,6.4 64,70.4 0,70.4" fill="#EEF3F6" opacity="0.96"/>
+    <polygon points="67.2,11.2 96,70.4 38.4,70.4" fill="#EEF3F6" opacity="1"/>
+    <polygon points="41.02,17.6 51.90,17.6 38.98,49.6 28.10,49.6" fill="#07131C" opacity="0.95"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="124" y="46" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="800"
+        letter-spacing="1" fill="#EEF3F6">ASCENT ANALYTICS</text>
+  <text x="124" y="68" font-family="Inter, Segoe UI, sans-serif" font-size="13" font-weight="500"
+        letter-spacing="2.4" fill="#91A8B2">DATA &amp; BI PLATFORM</text>
+</svg>

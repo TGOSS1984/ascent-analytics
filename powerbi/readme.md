@@ -136,4 +136,8 @@ Typography is set to **Inter** throughout, matching `--font-sans` in the same to
 
 If a chart ever needs more than 10 distinct categories, Power BI will start blending/repeating theme colours — for high-cardinality visuals (e.g. all 30 routes on one chart), consider grouping into top-N + "Other" rather than fighting the palette.
 
+## 7. Logo, cover image, and other branding assets
+
+The colour theme covers the palette and typography, but there's more UK Summit Guides branding worth carrying across — the actual mountain logo mark, a cover-page hero photo, and an optional background texture. See [`assets/README.md`](assets/README.md) for what each file is, where it came from (two are pulled straight from the live site's own image folder, one is newly built since it didn't exist as a file), and exactly how to place each one in Power BI Desktop.
+
 Next: [`dax_measures.md`](dax_measures.md) for the full measure library.
