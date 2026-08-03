@@ -59,11 +59,13 @@ def clean_guides(raw_df, log: QualityLog):
 
     df["primary_region"] = df["primary_region_raw"].apply(normalize_text)
     df["active"] = df["active"].astype(bool)
+    df["discount_tendency_pct"] = df["discount_tendency_pct"].astype(float)
 
     df = df[
         [
             "guide_id", "first_name", "last_name", "qualifications", "years_experience",
             "languages", "employment_type", "day_rate_gbp", "primary_region", "active",
+            "discount_tendency_pct",
         ]
     ]
 

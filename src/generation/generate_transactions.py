@@ -29,7 +29,7 @@ from src.generation.generate_reference_data import (
     generate_regions,
     generate_routes,
 )
-from src.utils import messiness
+from src.utils import messiness, uk_calendar
 
 
 # ---------------------------------------------------------------------------
@@ -87,25 +87,36 @@ def _pick_month(season: str, rng: random.Random) -> int:
     return rng.choices(list(weights.keys()), weights=list(weights.values()))[0]
 
 
-def _pick_day(year: int, month: int, rng: random.Random) -> int:
+def _day_weight(ts: pd.Timestamp, bank_holidays: set) -> float:
+    """Relative likelihood of a tour landing on this date. Multiplicative
+    factors compound naturally — a bank holiday that falls on a weekend
+    (or the Friday/Monday of a long weekend) gets both boosts, producing
+    exactly the kind of spike a real leisure guiding business would see."""
+    weight = 1.0
+    if ts.dayofweek in (4, 5, 6):  # Fri, Sat, Sun
+        weight *= 2.2
+    if ts.date() in bank_holidays:
+        weight *= 3.0
+    if uk_calendar.is_summer_holiday(ts.date()):
+        weight *= 1.6
+    return weight
+
+
+def _pick_day(year: int, month: int, rng: random.Random, bank_holidays: set) -> int:
     days_in_month = calendar.monthrange(year, month)[1]
-    day = rng.randint(1, days_in_month)
-    date = pd.Timestamp(year=year, month=month, day=day)
-    # weekends are meaningfully more likely for a leisure guiding business
-    if date.dayofweek in (4, 5, 6) or rng.random() < 0.55:
-        return day
-    # ~45% chance to re-roll once toward a weekend for weekday draws
-    for _ in range(2):
-        candidate = rng.randint(1, days_in_month)
-        if pd.Timestamp(year=year, month=month, day=candidate).dayofweek in (4, 5, 6):
-            return candidate
-    return day
+    candidates = [pd.Timestamp(year=year, month=month, day=d) for d in range(1, days_in_month + 1)]
+    weights = [_day_weight(ts, bank_holidays) for ts in candidates]
+    chosen = rng.choices(candidates, weights=weights)[0]
+    return chosen.day
 
 
 def generate_scheduled_tours(guides_df, routes_df, rng, np_rng):
     rows = []
     tour_id = 1
     route_weights = np.where(routes_df["is_featured"], 2.0, 1.0)
+    bank_holidays = uk_calendar.get_uk_bank_holidays_range(
+        pd.Timestamp(config.START_DATE).year, pd.Timestamp(config.END_DATE).year + 1
+    )
 
     for year, n_tours in config.ANNUAL_TOUR_COUNTS.items():
         for _ in range(n_tours):
@@ -113,7 +124,7 @@ def generate_scheduled_tours(guides_df, routes_df, rng, np_rng):
 
             season = rng.choices(config.SEASONS, weights=[0.45, 0.55])[0]
             month = _pick_month(season, rng)
-            day = _pick_day(year, month, rng)
+            day = _pick_day(year, month, rng, bank_holidays)
             date = pd.Timestamp(year=year, month=month, day=day)
 
             candidates = guides_df[
@@ -200,11 +211,13 @@ def _payment_status(rng: random.Random, booking_status: str) -> str:
     )[0]
 
 
-def generate_bookings_and_payments(tours_df, rng, np_rng, faker: Faker):
+def generate_bookings_and_payments(tours_df, guides_df, rng, np_rng, faker: Faker):
     booking_rows = []
     payment_rows = []
     tour_booked_spaces = {}
     tour_had_any_booking = set()
+
+    discount_tendency_by_guide = dict(zip(guides_df["guide_id"], guides_df["discount_tendency_pct"]))
 
     booking_id = 1
     payment_id = 1
@@ -238,7 +251,21 @@ def generate_bookings_and_payments(tours_df, rng, np_rng, faker: Faker):
             else:
                 status = _booking_status(rng, created_at, dataset_end)
 
-            total_price = round(float(str(tour.price_pp_raw).replace("£", "").replace("GBP", "").strip() if isinstance(tour.price_pp_raw, str) else tour.price_pp_raw) * party_size, 2)
+            list_price = round(float(str(tour.price_pp_raw).replace("£", "").replace("GBP", "").strip() if isinstance(tour.price_pp_raw, str) else tour.price_pp_raw) * party_size, 2)
+
+            # Discount, correlated with the assigned guide's individual
+            # tendency — a guide with a higher tendency both discounts a
+            # larger share of their bookings AND discounts more deeply
+            # when they do. Unguided tours never get a discount (nobody
+            # to apply one).
+            guide_tendency = discount_tendency_by_guide.get(tour.guide_id, 0.0) if pd.notna(tour.guide_id) else 0.0
+            discount_probability = min(guide_tendency * 3.0, 0.6)
+            discount_applied = guide_tendency > 0 and rng.random() < discount_probability
+            if discount_applied:
+                discount_pct = round(float(np.clip(np_rng.normal(guide_tendency, guide_tendency * 0.3), 0.01, 0.30)), 4)
+            else:
+                discount_pct = 0.0
+            total_price = round(list_price * (1 - discount_pct), 2)
 
             name = faker.name()
             email = faker.email()
@@ -262,6 +289,9 @@ def generate_bookings_and_payments(tours_df, rng, np_rng, faker: Faker):
                     "emergency_contact_raw": faker.name() if rng.random() < 0.7 else None,
                     "notes_raw": faker.sentence() if rng.random() < 0.1 else None,
                     "status_raw": messiness.mangle_casing(status, rng),
+                    "list_price_raw": messiness.scramble_currency(list_price, rng),
+                    "discount_pct": discount_pct,
+                    "discount_applied": discount_applied,
                     "total_price_raw": messiness.scramble_currency(total_price, rng),
                     "created_at": created_at,
                     "archived_at": archived_at,
@@ -335,7 +365,7 @@ def main():
 
     tours_df = generate_scheduled_tours(guides_df, routes_df, rng, np_rng)
     bookings_df, payments_df, tour_booked_spaces, tour_had_any_booking = generate_bookings_and_payments(
-        tours_df, rng, np_rng, faker
+        tours_df, guides_df, rng, np_rng, faker
     )
     tours_df = finalise_tour_status(tours_df, tour_booked_spaces, tour_had_any_booking, rng)
     tours_df = tours_df.drop(columns=["ops_cancelled"])

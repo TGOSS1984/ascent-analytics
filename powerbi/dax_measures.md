@@ -35,9 +35,16 @@ DIVIDE([Revenue], [Confirmed Bookings])
 -- not ScheduledTour, so a tour with zero bookings ever made is invisible
 -- to this measure. In practice very few such tours exist (the generator
 -- cancels most empty-published tours outright — see docs/data_dictionary).
+-- CORRECTED — originally used FactBookings[tour_id], which overcounts
+-- whenever a guide leads two different tours on the same calendar date
+-- (two tour_ids, one real day). Counting tour_date_id instead correctly
+-- caps a "guide-day" at one per actual calendar day. This was caught
+-- live when Guide Utilisation % came back above 100% for a guide with a
+-- lot of same-day double-bookings — a logical impossibility that
+-- surfaced the bug immediately once cross-checked.
 Guide-Days Worked =
 CALCULATE(
-    DISTINCTCOUNT(FactBookings[tour_id]),
+    DISTINCTCOUNT(FactBookings[tour_date_id]),
     FactBookings[status] <> "cancelled"
 )
 
@@ -46,7 +53,7 @@ SUMX(
     SUMMARIZE(
         FILTER(FactBookings, FactBookings[status] <> "cancelled"),
         FactBookings[guide_id],
-        FactBookings[tour_id]
+        FactBookings[tour_date_id]
     ),
     LOOKUPVALUE(DimGuide[day_rate_gbp], DimGuide[guide_id], FactBookings[guide_id])
 )
@@ -110,9 +117,30 @@ TOTALYTD([Revenue], DimDate[full_date])
 
 Revenue/bookings by region, route, or season don't need their own measures — drop `[Revenue]` or `[Confirmed Bookings]` into a matrix visual with `DimRegion[name]`, `DimRoute[name]`, or `FactBookings[season]` on rows; the relationships do the filtering.
 
+### Week and day analysis (bank holidays, weekends, popular days)
+
+`DimDate` carries a retail week (Sunday → Saturday) and bank holiday/summer holiday flags — see `docs/data_dictionary/README.md` for the full field list. No new measures needed, just new ways to slice `[Revenue]`/`[Confirmed Bookings]`:
+
+- **Popular weeks (bank holiday weekends, etc.):** matrix or line chart with `DimDate[week_start_date]` (or `DimDate[week_number]` + `DimDate[retail_year]`) on rows/axis, `[Revenue]` on values. Bank holiday weeks should visibly spike.
+- **Weekday vs weekend pattern:** column chart, axis `DimDate[day_name]` (remember to set its Sort by Column to `day_of_week` first, or it'll sort alphabetically — see the polish-stage note in `README.md`), values `[Revenue]`.
+- **Is this a bank holiday or summer holiday?** Slicer or filter on `DimDate[is_bank_holiday]` / `DimDate[is_summer_holiday]` — useful for isolating "what does a normal week look like" from the spikes when eyeballing trends.
+
+If you want an explicit "% uplift on bank holidays" figure rather than just an eyeballed chart:
+
+```dax
+Revenue on Bank Holidays vs Regular Days =
+VAR BankHolidayRevenue = CALCULATE([Revenue], DimDate[is_bank_holiday] = TRUE())
+VAR RegularDayRevenue = CALCULATE([Revenue], DimDate[is_bank_holiday] = FALSE())
+VAR BankHolidayDays = CALCULATE(DISTINCTCOUNT(DimDate[date_id]), DimDate[is_bank_holiday] = TRUE())
+VAR RegularDays = CALCULATE(DISTINCTCOUNT(DimDate[date_id]), DimDate[is_bank_holiday] = FALSE())
+RETURN DIVIDE(DIVIDE(BankHolidayRevenue, BankHolidayDays), DIVIDE(RegularDayRevenue, RegularDays)) - 1
+```
+
 ## 3. Customer Dashboard
 
 For customer lifetime value, first/last booking date, and the repeat-customer flag at the individual-customer grain, use **`Summary_CustomerLTV`** (imported from `vw_customer_summary`) directly in a table visual rather than recomputing in DAX — it's already correct and tested (see `tests/test_views_and_procedures.py`).
+
+**Heads up: this DAX `Repeat Customer Rate` and `Summary_CustomerLTV[is_repeat_customer]` measure different things, on purpose — they will not agree, and that's not a bug.** The DAX version only counts a customer as "repeat" if they have 2+ **confirmed or amended** bookings (they actually completed more than one trip). The SQL view counts 2+ bookings of **any status**, including ones later cancelled (they *attempted* to book more than once). Found by cross-checking both on the same dashboard — they came back as 3.9% vs 5.09% on one test run, which is the expected gap, not an error. If displaying both, label them distinctly (e.g. rename the SQL-based chart's legend to "Made 2+ Booking Attempts") so it doesn't read as a bug to whoever's looking at the dashboard.
 
 ```dax
 New Customers =
@@ -136,21 +164,18 @@ DIVIDE(COUNTROWS(FactReviews), [Confirmed Bookings])
 For guide-level bookings, revenue, average rating, and cancellation rate, use **`Summary_GuidePerformance`** (from `vw_guide_performance`) directly — same reasoning as the customer summary above.
 
 ```dax
+-- CORRECTED — the original version of this measure used DATEDIFF()
+-- directly on tour_date_id, which is an integer (20240615), not a real
+-- date, and variable names FirstDate/LastDate, which collide with DAX's
+-- own FIRSTDATE()/LASTDATE() functions and produce confusing cascading
+-- syntax errors. Both were caught live while building this dashboard —
+-- fixed here so the docs match what's actually verified working.
 Guide Utilisation % =
--- Numerator: guide-days actually worked (see base measures)
--- Denominator: guide-days theoretically available, approximated as days
--- between the guide's earliest and latest tour in the filtered period.
--- A precise "days available" figure would need explicit guide roster/
--- leave data, which isn't part of the current schema — documented here
--- rather than silently assumed.
-DIVIDE(
-    [Guide-Days Worked],
-    DATEDIFF(
-        CALCULATE(MIN(FactBookings[tour_date_id]), ALLSELECTED(FactBookings)),
-        CALCULATE(MAX(FactBookings[tour_date_id]), ALLSELECTED(FactBookings)),
-        DAY
-    )
-)
+VAR ActiveDates = CALCULATETABLE(VALUES(DimDate[full_date]), FactBookings)
+VAR EarliestActiveDate = MINX(ActiveDates, DimDate[full_date])
+VAR LatestActiveDate = MAXX(ActiveDates, DimDate[full_date])
+VAR AvailableDays = DATEDIFF(EarliestActiveDate, LatestActiveDate, DAY) + 1
+RETURN DIVIDE([Guide-Days Worked], AvailableDays)
 
 Guide Performance Index =
 -- Composite: 40% normalised revenue, 40% average rating (out of 5, scaled
@@ -161,7 +186,27 @@ VAR RatingNorm = DIVIDE(AVERAGE(FactReviews[guide_rating]), 5)
 VAR CancellationScore = 1 - [Cancellation Rate]
 RETURN
     0.4 * RevenueNorm + 0.4 * RatingNorm + 0.2 * CancellationScore
+
+-- Discount analysis — "which guides discount more, therefore have lower
+-- margins?" DimGuide[discount_tendency_pct] is the guide's baseline
+-- tendency; these two measures show what actually happened in bookings.
+Bookings with Discount % =
+DIVIDE(
+    CALCULATE(COUNTROWS(FactBookings), FactBookings[discount_applied] = TRUE()),
+    [Total Bookings]
+)
+
+Average Discount % (Discounted Bookings) =
+CALCULATE(
+    AVERAGE(FactBookings[discount_pct]),
+    FactBookings[discount_applied] = TRUE()
+)
+
+Total Discount Given =
+SUMX(FactBookings, FactBookings[list_price] - FactBookings[total_price])
 ```
+
+Each of these three new measures should be dropped into a table alongside `DimGuide[full_name]` and `DimGuide[discount_tendency_pct]` to see the correlation directly — a guide with a higher tendency should show a visibly higher `Bookings with Discount %`.
 
 ## 5. Route / Tour Performance Dashboard
 
@@ -250,6 +295,17 @@ DIVIDE(
 
 Outstanding Balance =
 CALCULATE(SUM(FactPayments[amount]), FactPayments[status] = "pending")
+
+Average Price per Tour =
+DIVIDE(SUM(FactBookings[total_price]), [Confirmed Bookings])
+
+-- Company-wide discount impact — how much margin is actually being given
+-- away, not just how often it happens (that's the Guide dashboard's job).
+-- [Total Discount Given] is already defined on the Guide dashboard above —
+-- measures are shared across the whole model once created, so don't
+-- recreate it here, just reuse it.
+Discount % of Revenue =
+DIVIDE([Total Discount Given], SUM(FactBookings[list_price]))
 
 -- Refund timing needs *both* of FactPayments' date relationships
 -- activated explicitly via USERELATIONSHIP — paid_date_id turned out to

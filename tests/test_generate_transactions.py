@@ -35,7 +35,7 @@ def _build_small_dataset(n_years=1):
         config.ANNUAL_TOUR_COUNTS[2023] = 200
         tours_df = generate_scheduled_tours(guides_df, routes_df, rng, np_rng)
         bookings_df, payments_df, booked_spaces, had_booking = generate_bookings_and_payments(
-            tours_df, rng, np_rng, faker
+            tours_df, guides_df, rng, np_rng, faker
         )
         tours_df = finalise_tour_status(tours_df, booked_spaces, had_booking, rng)
     finally:

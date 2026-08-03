@@ -28,6 +28,7 @@ Six regions are modelled: Snowdonia, Lake District, Scottish Highlands, Peak Dis
 | employment_type | string (`employed`/`freelance`) | [Ext] | Drives guide cost modelling |
 | day_rate_gbp | decimal | [Ext] | Raw column has ~2% of values stored as formatted currency strings (e.g. `"£180.00"`, `"GBP 180.00"`) — cleaning parses these back to numeric |
 | primary_region | string | [Ext] | FK resolved to Region in cleaning; raw column has casing inconsistencies like the Region table itself |
+| discount_tendency_pct | decimal (0-0.25) | [Ext] | A guide's baseline discount-offering tendency — a business question ("which guides offer bigger discounts, therefore lower margins?"), not a real app field. Right-skewed (Beta(1.5, 8) scaled to 0-25%): most guides discount rarely or never, a handful noticeably more. Drives per-booking `discount_pct`/`discount_applied` on Booking — see below |
 
 ## Route
 
@@ -45,7 +46,7 @@ Six regions are modelled: Snowdonia, Lake District, Scottish Highlands, Peak Dis
 | active | boolean | [Core] `routes_app.Route.active` | ~5% of routes marked inactive, simulating retired routes over the 7-year window |
 | trailhead_lat / trailhead_lon | decimal | [Ext] | Approximate real-world trailhead coordinates for the named route (e.g. Llanberis for Snowdon via Llanberis Path), added for map visuals — not survey-grade precision, but genuinely placed at the right mountain/valley, not randomly generated. Validated against a UK bounding box (lat 49.5-61.0, lon -8.5-2.0) during cleaning |
 
-Thirty routes are seeded across the six regions, using real UK mountain routes as the naming basis (e.g. Snowdon via Llanberis Path, Ben Nevis via CMD Arete, Helvellyn via Striding Edge) so route-level analysis reads as credible rather than placeholder data.
+Fifty-three routes are seeded across seven regions. Thirty are originally synthetic (seeded before real fixture data was available); the remaining 27 are pulled directly from `backend/fixtures/routes.json` in the live UK Summit Guides repo — real route names, difficulty, distance, elevation, and exact trailhead coordinates (`map_center_lat`/`map_center_lng` in the fixture), not approximated. The live app groups these into 5 regions (Scotland, Lake District, Wales, Peak District, Yorkshire Dales); rather than restructure the existing 6 synthetic regions to match, each real route was mapped to whichever of the 6 it's actually located in (e.g. a "Wales"-region route near Snowdon maps to "Snowdonia" here), and **Yorkshire Dales was added as a 7th region** specifically because one real route (Ingleborough) didn't fit any of the original 6 — a genuine addition, not a restructure. Four routes that existed in both the synthetic seed and the real fixture under slightly different names (e.g. "Ben Nevis via CMD Arete" vs. the real "Ben Nevis via CMD Arête") were upgraded to the real data in place rather than kept as near-duplicate entries.
 
 **Difficulty affects more than pricing.** Route difficulty also influences two other generated fields, on purpose: review ratings run measurably lower for harder routes (`config.DIFFICULTY_RATING_ADJUSTMENT` — moderate +0.20, hard +0, advanced -0.35, layered on top of the existing season effect), and ops/weather cancellation rate scales from 4% (moderate) to 10% (advanced) rather than being flat across all difficulty tiers (`config.DIFFICULTY_OPS_CANCEL_RATE`). Earlier versions of this dataset had difficulty affect price but nothing else, which produced a flat, uninteresting relationship between difficulty and satisfaction/cancellations on the Route dashboard — this was corrected once that flatness showed up as a real finding while building the dashboard, not designed in from the start.
 
@@ -79,7 +80,10 @@ Thirty routes are seeded across the six regions, using real UK mountain routes a
 | emergency_contact | string, nullable | [Core] `bookings.Booking.emergency_contact` | `blank=True` in the real model — ~30% null here to match |
 | notes | string, nullable | [Core] `bookings.Booking.notes` | `blank=True` — ~90% null |
 | status | string (`pending`/`confirmed`/`cancelled`/`amended`) | [Core] `bookings.Booking.status` | `pending` only appears for bookings created in the final two weeks of the dataset window, matching how a real "as of" extract would look |
-| total_price | decimal | [Core] `bookings.Booking.total_price` | `price_pp × party_size`; ~2% stored as messy currency strings |
+| list_price | decimal | [Ext] | Undiscounted price: `price_pp × party_size`. Doesn't exist as a separate field in the real app (which only stores the final `total_price`) — added specifically to support discount analysis, since you can't measure a discount without knowing what the price would have been without it |
+| discount_pct | decimal (0-0.30) | [Ext] | 0 for the ~87% of bookings with no discount. When a discount applies, correlated with the assigned guide's `discount_tendency_pct` (see Guide) — not applied at all for unguided tours |
+| discount_applied | boolean | [Ext] | Whether any discount was applied to this booking |
+| total_price | decimal | [Core] `bookings.Booking.total_price` | The actual price paid: `list_price × (1 − discount_pct)`. ~2% of `list_price`/`total_price` stored as messy currency strings independently — occasionally this causes a small (~£1) inconsistency between the stored `total_price` and `list_price × (1 − discount_pct)` when one of the two got whole-pound-rounded in raw data and the other didn't. This is intentional messiness, not a generation bug — the cleaning pipeline flags it via the `total_price_discount_mismatch` metric rather than silently correcting it |
 | archived_at | datetime, nullable | [Core] `bookings.Booking.archived_at` | Set for ~50% of cancelled bookings older than 12 months, simulating periodic archiving |
 | created_at | datetime | [Core] `bookings.Booking.created_at` | Booking lead time is log-normally distributed (median ~25 days ahead, long tail out to 400 days) |
 
@@ -146,6 +150,20 @@ Thirty routes are seeded across the six regions, using real UK mountain routes a
 | booking_id | int | FK → Booking. Only generated for confirmed/amended bookings (~40% hire rate among those) |
 | boots / waterproofs / poles / helmet / ice_axe / crampons | boolean | Ice axe and crampon hire probability roughly 2.5× higher for winter + hard/advanced-difficulty bookings, reflecting real equipment needs |
 | hire_revenue | decimal | Sum of item price × quantity hired (quantity capped at the booking's party size) |
+
+## DimDate [derived, warehouse-only]
+
+Unlike every other table above, `DimDate` isn't built from a raw/cleaned CSV — it's generated directly in `src/warehouse/build_warehouse.py`, one row per calendar day across the dataset's full date range. A few fields are worth documenting since they encode real business logic, not just calendar arithmetic:
+
+| Field | Type | Notes |
+|---|---|---|
+| week_start_date / week_end_date | date | **Retail week**: Sunday → Saturday, not the ISO standard (Monday → Sunday). Computed as the most recent Sunday on/before each date |
+| week_number | int (1-53) | Resets each `retail_year`. Simplification: a week "belongs" to the calendar year of its Sunday (`week_start_date`), not a majority-of-days rule some retail calendars use — documented here rather than silently assumed |
+| retail_year | int | The year `week_number` resets against — see above |
+| is_bank_holiday | boolean | England & Wales bank holidays, computed by `src/utils/uk_calendar.py` (Good Friday/Easter Monday via `dateutil.easter`, fixed-date holidays with real UK weekend-substitution rules, e.g. Christmas Day on a Saturday moves to the following Monday). Scotland's holidays differ slightly (e.g. St Andrew's Day) — using the E&W calendar UK-wide is a documented simplification, not an oversight |
+| is_summer_holiday | boolean | Approximates the English school summer holiday window (20 July – 31 August, every year). Real dates vary by 1-2 weeks by region/year — a fixed window was judged not worth the added complexity here |
+
+**These flags actively shape the data, not just describe it.** `src/generation/generate_transactions.py` weights which dates get scheduled tours using exactly this logic (weekend × bank holiday × summer holiday multipliers, compounding) — bank holidays run at roughly **2.9× regular weekday revenue**, weekends at **2.2×**. The flags on `DimDate` let that pattern actually be *seen* in Power BI, not just exist invisibly in the generation code.
 
 ---
 

@@ -29,6 +29,7 @@ GuideSchema = DataFrameSchema(
         "day_rate_gbp": Column(float, Check.gt(0)),
         "primary_region": Column(str, nullable=False),
         "active": Column(bool),
+        "discount_tendency_pct": Column(float, Check.in_range(0, 0.25)),
     }
 )
 
@@ -76,6 +77,9 @@ BookingSchema = DataFrameSchema(
         "emergency_contact": Column(str, nullable=True),
         "notes": Column(str, nullable=True),
         "status": Column(str, Check.isin(["pending", "confirmed", "cancelled", "amended"])),
+        "list_price": Column(float, Check.gt(0)),
+        "discount_pct": Column(float, Check.in_range(0, 0.30)),
+        "discount_applied": Column(bool),
         "total_price": Column(float, Check.gt(0)),
         "created_at": Column(pa.DateTime),
         "archived_at": Column(pa.DateTime, nullable=True),

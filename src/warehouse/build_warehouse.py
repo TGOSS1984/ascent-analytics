@@ -12,6 +12,7 @@ import sqlite3
 import pandas as pd
 
 from src.generation import config
+from src.utils import uk_calendar
 
 SCHEMA_DIR = config.PROJECT_ROOT / "sql" / "schema"
 DB_PATH = config.WAREHOUSE_DIR / "ascent_analytics.db"
@@ -53,9 +54,27 @@ def build_dim_date(min_date, max_date) -> pd.DataFrame:
     df["day_name"] = df["full_date"].dt.strftime("%A")
     df["is_weekend"] = df["day_of_week"].isin([5, 6])
     df["calendar_season"] = df["month"].map(CALENDAR_SEASON_BY_MONTH)
+
+    # Retail week: Sunday -> Saturday, week_number resets each retail year.
+    # Simplification: a week "belongs" to the calendar year of its Sunday
+    # (week_start), not a majority-of-days rule like some retail calendars
+    # use — documented here rather than silently assumed.
+    df["week_start_date"] = df["full_date"] - pd.to_timedelta((df["day_of_week"] + 1) % 7, unit="D")
+    df["week_end_date"] = df["week_start_date"] + pd.Timedelta(days=6)
+    df["retail_year"] = df["week_start_date"].dt.year
+    df["week_number"] = (
+        df.groupby("retail_year")["week_start_date"].rank(method="dense").astype(int)
+    )
+
+    bank_holidays = uk_calendar.get_uk_bank_holidays_range(dates.min().year, dates.max().year)
+    df["is_bank_holiday"] = df["full_date"].dt.date.isin(bank_holidays)
+    df["is_summer_holiday"] = df["full_date"].dt.date.apply(uk_calendar.is_summer_holiday)
+
     return df[
         ["date_id", "full_date", "day", "month", "month_name", "quarter", "year",
-         "day_of_week", "day_name", "is_weekend", "calendar_season"]
+         "day_of_week", "day_name", "is_weekend", "calendar_season",
+         "week_start_date", "week_end_date", "week_number", "retail_year",
+         "is_bank_holiday", "is_summer_holiday"]
     ]
 
 
@@ -72,7 +91,7 @@ def build_dim_guide(guides_clean: pd.DataFrame, dim_region: pd.DataFrame) -> pd.
     df = df.rename(columns={"region_id": "primary_region_id"})
     return df[
         ["guide_id", "first_name", "last_name", "full_name", "qualifications", "years_experience",
-         "languages", "employment_type", "day_rate_gbp", "primary_region_id", "active"]
+         "languages", "employment_type", "day_rate_gbp", "primary_region_id", "active", "discount_tendency_pct"]
     ]
 
 
@@ -143,7 +162,8 @@ def build_fact_bookings(bookings_clean, tours_clean, routes_clean, dim_region, d
         [
             "booking_id", "booking_reference", "tour_id", "customer_id", "route_id", "guide_id",
             "region_id", "channel_id", "tour_date_id", "created_date_id", "season", "status",
-            "party_size", "total_price", "lead_time_days", "contact_email_invalid",
+            "party_size", "list_price", "discount_pct", "discount_applied", "total_price",
+            "lead_time_days", "contact_email_invalid",
         ]
     ].copy()
     out["guide_id"] = out["guide_id"].astype("Int64")

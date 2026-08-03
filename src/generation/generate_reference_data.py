@@ -59,6 +59,12 @@ def generate_guides(rng: random.Random, np_rng: np.random.Generator) -> pd.DataF
         day_rate = max(day_rate, 90.0)
         primary_region = rng.choice(config.REGIONS)
 
+        discount_tendency_pct = round(
+            float(np_rng.beta(config.GUIDE_DISCOUNT_TENDENCY_ALPHA, config.GUIDE_DISCOUNT_TENDENCY_BETA))
+            * config.GUIDE_DISCOUNT_TENDENCY_MAX,
+            4,
+        )
+
         # active = False for guides who have left partway through the
         # 7-year window, to give the cleaning/warehouse layer something
         # real to reason about (guide utilisation shouldn't count them
@@ -79,6 +85,7 @@ def generate_guides(rng: random.Random, np_rng: np.random.Generator) -> pd.DataF
                 "day_rate_gbp_raw": messiness.scramble_currency(day_rate, rng),
                 "primary_region_raw": messiness.mangle_casing(primary_region, rng),
                 "active": active,
+                "discount_tendency_pct": discount_tendency_pct,
             }
         )
 

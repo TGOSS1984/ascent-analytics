@@ -19,7 +19,10 @@ CREATE TABLE FactBookings (
     season                TEXT NOT NULL CHECK (season IN ('winter', 'summer')),  -- degenerate dimension
     status                TEXT NOT NULL CHECK (status IN ('pending', 'confirmed', 'cancelled', 'amended')),
     party_size            INTEGER NOT NULL CHECK (party_size BETWEEN 1 AND 3),
-    total_price           REAL NOT NULL,
+    list_price             REAL NOT NULL,        -- undiscounted price (price_pp x party_size)
+    discount_pct            REAL NOT NULL,        -- 0 if no discount applied
+    discount_applied         BOOLEAN NOT NULL,
+    total_price           REAL NOT NULL,        -- actual price paid (list_price x (1 - discount_pct))
     lead_time_days        INTEGER NOT NULL,
     contact_email_invalid BOOLEAN NOT NULL
 );

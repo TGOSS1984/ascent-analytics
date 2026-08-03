@@ -7,17 +7,23 @@ PRAGMA foreign_keys = ON;
 
 DROP TABLE IF EXISTS DimDate;
 CREATE TABLE DimDate (
-    date_id         INTEGER PRIMARY KEY,   -- YYYYMMDD
-    full_date       DATE NOT NULL UNIQUE,
-    day             INTEGER NOT NULL,
-    month           INTEGER NOT NULL,
-    month_name      TEXT NOT NULL,
-    quarter         INTEGER NOT NULL,
-    year            INTEGER NOT NULL,
-    day_of_week     INTEGER NOT NULL,      -- 0 = Monday
-    day_name        TEXT NOT NULL,
-    is_weekend      BOOLEAN NOT NULL,
-    calendar_season TEXT NOT NULL          -- Winter/Spring/Summer/Autumn (meteorological)
+    date_id           INTEGER PRIMARY KEY,   -- YYYYMMDD
+    full_date         DATE NOT NULL UNIQUE,
+    day               INTEGER NOT NULL,
+    month             INTEGER NOT NULL,
+    month_name        TEXT NOT NULL,
+    quarter           INTEGER NOT NULL,
+    year              INTEGER NOT NULL,
+    day_of_week       INTEGER NOT NULL,      -- 0 = Monday
+    day_name          TEXT NOT NULL,
+    is_weekend        BOOLEAN NOT NULL,
+    calendar_season   TEXT NOT NULL,         -- Winter/Spring/Summer/Autumn (meteorological)
+    week_start_date   DATE NOT NULL,         -- retail week: Sunday
+    week_end_date     DATE NOT NULL,         -- retail week: Saturday
+    week_number       INTEGER NOT NULL,      -- 1-53, resets each retail_year
+    retail_year       INTEGER NOT NULL,      -- year of the week's Sunday (week_start_date)
+    is_bank_holiday   BOOLEAN NOT NULL,      -- England & Wales bank holidays
+    is_summer_holiday BOOLEAN NOT NULL       -- approximate English school summer holiday window
 );
 
 DROP TABLE IF EXISTS DimRegion;
@@ -39,7 +45,8 @@ CREATE TABLE DimGuide (
     employment_type   TEXT NOT NULL CHECK (employment_type IN ('employed', 'freelance')),
     day_rate_gbp      REAL NOT NULL,
     primary_region_id INTEGER NOT NULL REFERENCES DimRegion(region_id),
-    active            BOOLEAN NOT NULL
+    active            BOOLEAN NOT NULL,
+    discount_tendency_pct REAL NOT NULL   -- this guide's baseline discount-offering tendency (0-0.25)
 );
 
 DROP TABLE IF EXISTS DimRoute;

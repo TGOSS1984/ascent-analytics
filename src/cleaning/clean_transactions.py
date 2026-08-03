@@ -65,10 +65,21 @@ def clean_bookings(raw_df, tours_clean, log: QualityLog):
     df["emergency_contact"] = df["emergency_contact_raw"].apply(normalize_text)
     df["notes"] = df["notes_raw"]
     df["status"] = df["status_raw"].str.strip().str.lower()
+    df["list_price"] = df["list_price_raw"].apply(parse_currency)
+    df["discount_pct"] = df["discount_pct"].astype(float)
+    df["discount_applied"] = df["discount_applied"].astype(bool)
     df["total_price"] = df["total_price_raw"].apply(parse_currency)
     df["created_at"] = pd.to_datetime(df["created_at"])
     df["archived_at"] = pd.to_datetime(df["archived_at"], errors="coerce")
     df["party_size"] = df["party_size"].astype(int)
+
+    inconsistent_discount = df["discount_applied"] & (df["discount_pct"] <= 0)
+    if inconsistent_discount.any():
+        log.log_metric("Booking", "inconsistent_discount_flag", int(inconsistent_discount.sum()))
+
+    price_mismatch = (df["total_price"] - df["list_price"] * (1 - df["discount_pct"])).abs() > 0.02
+    if price_mismatch.any():
+        log.log_metric("Booking", "total_price_discount_mismatch", int(price_mismatch.sum()))
 
     out_of_range_party = ~df["party_size"].between(1, 3)
     if out_of_range_party.any():
@@ -81,7 +92,8 @@ def clean_bookings(raw_df, tours_clean, log: QualityLog):
     df = df[
         [
             "booking_id", "tour_id", "booking_reference", "party_size", "contact_name", "contact_email",
-            "contact_email_invalid", "contact_phone", "emergency_contact", "notes", "status", "total_price",
+            "contact_email_invalid", "contact_phone", "emergency_contact", "notes", "status",
+            "list_price", "discount_pct", "discount_applied", "total_price",
             "created_at", "archived_at",
         ]
     ]
