@@ -2,6 +2,12 @@
 
 ## Pipeline
 
+![Ascent Analytics data architecture and tools overview](diagrams/architecture_diagram.png)
+
+*(Icons from [Lucide](https://lucide.dev), ISC license, recoloured to match the project theme — same icon set and pipeline used for the Power BI KPI card icons in `powerbi/assets/icons/`. Source SVG at `diagrams/architecture_diagram.svg` if you want to edit it directly.)*
+
+A plain-text version of the same flow, for anywhere the image doesn't render:
+
 ```
 Raw Data (CSV, synthetic + intentionally messy)
         │  src/generation/
