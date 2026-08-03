@@ -1,6 +1,6 @@
 # KPI Card Icons
 
-32 icons, one per card visual built across all 10 dashboards. Sourced from [Lucide](https://lucide.dev) (ISC license — free to use, attribution appreciated but not required) and recoloured to the theme's ice-blue accent (`#B0CFD0`) so they sit naturally on the dark card background alongside everything else in `powerbi/assets/`.
+36 icons, one per card visual built across all 10 dashboards (32 from the original build, plus 4 more added during a later pass — Bank Holiday Uplift and the 3 discount cards). Sourced from [Lucide](https://lucide.dev) (ISC license — free to use, attribution appreciated but not required) and recoloured to the theme's ice-blue accent (`#B0CFD0`) so they sit naturally on the dark card background alongside everything else in `powerbi/assets/`.
 
 Each is a 256×256 transparent PNG, ready to drop straight onto a card via **Insert → Image**.
 
@@ -48,6 +48,10 @@ There's no way to batch-apply these across many cards at once in Power BI — it
 | `average-conversion-rate.png` | Average Conversion Rate | Website Analytics |
 | `total-validation-failures.png` | Total Validation Failures | Data Quality |
 | `average-completeness.png` | Average Completeness % | Data Quality |
+| `bank-holiday-uplift.png` | Revenue on Bank Holidays vs Regular Days | Executive |
+| `average-price-per-tour.png` | Average Price per Tour | Finance |
+| `total-discount-given.png` | Total Discount Given | Finance |
+| `discount-pct-of-revenue.png` | Discount % of Revenue | Finance |
 
 ## Regenerating or adding more
 
