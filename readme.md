@@ -195,6 +195,8 @@ exports the star schema plus three pre-aggregated summary tables to `powerbi/dat
 
 Dashboard build-out itself (the actual `.pbix` file, screenshots, and visuals) is tracked separately on the roadmap below.
 
+The dashboards answer *what's happening*; [`docs/insight_report.md`](docs/insight_report.md) answers *so what* — ten findings pulled directly from the warehouse (bank holiday demand spikes, difficulty-driven cancellation risk, channel ROAS, guide discount behaviour, and more), each with a specific recommendation, not just a chart.
+
 ## 🔍 Data Quality
 
 _To be documented alongside the data quality dashboard._
@@ -237,14 +239,14 @@ python -m src.generation.generate_extensions
 - [x] Data cleaning & validation pipeline (Python)
   - [x] Core entities: Region, Guide, Route, ScheduledTour, Booking, Payment
   - [x] Extension entities: Review, Weather, Marketing, WebsiteAnalytics, EquipmentHire
-- [ ] Dimensional model design (star schema)
+- [x] Dimensional model design (star schema) — see `docs/architecture/README.md`
 - [x] SQL warehouse build (schema, views, procedures, indexes)
-- [ ] Power BI semantic model & DAX measures
+- [x] Power BI semantic model & DAX measures
   - [x] Star schema export + setup guide + full DAX measure library (`powerbi/`)
   - [x] Built and verified inside Power BI Desktop (.pbix file)
-- [ ] Dashboards: Executive, Sales, Customer, Guide, Route, Marketing, Operations, Finance, Data Quality
-- [ ] Written insight report & recommendations
-- [ ] Full documentation pass (architecture, data dictionary, KPI catalogue)
+- [x] Dashboards: Executive, Sales, Customer, Guide, Route, Marketing, Operations, Finance, Website Analytics, Data Quality — all 10 built and verified
+- [x] Written insight report & recommendations — see [`docs/insight_report.md`](docs/insight_report.md)
+- [x] Full documentation pass (architecture, data dictionary, KPI catalogue)
 
 ## 📌 Notes on Realism & Scope
 
