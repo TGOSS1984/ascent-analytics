@@ -1,0 +1,6 @@
+browser,icon_url,description
+Chrome,https://cdnjs.cloudflare.com/ajax/libs/browser-logos/75.0.1/chrome/chrome_128x128.png,Google Chrome
+Safari,https://cdnjs.cloudflare.com/ajax/libs/browser-logos/75.0.1/safari/safari_128x128.png,Apple Safari
+Firefox,https://cdnjs.cloudflare.com/ajax/libs/browser-logos/75.0.1/firefox/firefox_128x128.png,Mozilla Firefox
+Edge,https://cdnjs.cloudflare.com/ajax/libs/browser-logos/75.0.1/edge/edge_128x128.png,Microsoft Edge
+Other,https://cdnjs.cloudflare.com/ajax/libs/browser-logos/75.0.1/web/web_128x128.png,Other / unrecognised browser
