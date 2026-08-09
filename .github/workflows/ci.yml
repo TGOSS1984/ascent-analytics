@@ -1,5 +1,14 @@
 name: CI
 
+# Runs the full pipeline end to end and then the full test suite against
+# real output — not just a bare `pytest`, which mostly skips, since the
+# warehouse/export tests intentionally skip (not fail) when there's no
+# data on disk yet. See tests/test_warehouse.py's warehouse_conn fixture
+# for exactly why. (This file originally just ran `pytest tests/ -v`
+# with no pipeline step — meaning it had been silently exercising only
+# ~35 of 79 tests via skips since the very first commit, and nothing
+# ever caught it, since a skip doesn't fail a build. Fixed here.)
+
 on:
   push:
     branches: [main]
@@ -19,9 +28,29 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Run the full data pipeline
+        run: |
+          python -m src.generation.generate_reference_data
+          python -m src.generation.generate_transactions
+          python -m src.generation.generate_extensions
+          python -m src.cleaning.run_pipeline
+          python -m src.cleaning.run_pipeline_extensions
+          python -m src.warehouse.build_warehouse
+          python -m src.warehouse.apply_views
+          python -m src.warehouse.export_for_powerbi
+
       - name: Run tests
         run: pytest tests/ -v
+
+      - name: Fail if any test was unexpectedly skipped
+        run: |
+          pytest tests/ -q --no-header | tee /tmp/pytest_output.txt
+          if grep -qE "[1-9][0-9]* skipped" /tmp/pytest_output.txt; then
+            echo "::error::One or more tests skipped even after a full pipeline run. Either a pipeline step failed silently, or a fixture's skip condition needs updating — this check exists specifically because that failure mode went unnoticed for the whole project until now."
+            exit 1
+          fi
