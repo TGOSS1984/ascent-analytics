@@ -212,7 +212,20 @@ The dashboards answer *what's happening*; [`docs/insight_report.md`](docs/insigh
 
 ## 🔍 Data Quality
 
-_To be documented alongside the data quality dashboard._
+Cleaning is a separate, auditable pipeline step — every raw table is checked against a [pandera](https://pandera.readthedocs.io/) schema before and after cleaning, and every fix the cleaning step makes is logged with a row count and a plain-English reason rather than applied silently. The **Data Quality** dashboard surfaces both sides of that log directly from the warehouse:
+
+- **0 validation failures** across all 12 tables post-cleaning, and **99.8% average completeness** — the small remainder is intentional, not a gap (see below).
+- **151,477 cleaned rows** across all tables (302,954 raw+cleaned combined), spanning everything from `Booking` and `Payment` (28,919 rows each) down to reference tables like `Region` (6 rows).
+- **11,519 individual field-level fixes** logged, the largest being:
+  - `currency_casing_fixed` — 7,053 payment records with inconsistent currency-code casing normalised
+  - `country_names_standardised` — 2,019 website-analytics rows (e.g. `'UK'`/`'U.K.'` → `'United Kingdom'`)
+  - `malformed_emails_repaired` — 881 booking emails fixed against an `' at '` → `'@'` pattern
+  - review-rating nulls left as **null**, not imputed, across `missing_guide_rating` (305), `missing_value_rating` (317), `missing_route_rating` (342) and `missing_safety_rating` (350) — a 1–5 rating has no honest default, so these are surfaced as missing rather than guessed
+  - `missing_qualifications` — 1 guide record flagged rather than imputed, a real data gap worth surfacing rather than papering over
+
+That last principle — flag and leave null instead of inventing a plausible-looking value — is the throughline of the cleaning design: the dashboard's job is to make what was *actually* fixed (and what was deliberately left alone) visible, not to claim a cleaner dataset than what's really there.
+
+Full fix-by-fix detail lives in `docs/data_quality/`; the pandera schemas enforcing this at pipeline runtime are in `src/cleaning/`.
 
 ## ⚙️ Local Setup
 
