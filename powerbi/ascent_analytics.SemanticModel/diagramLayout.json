@@ -1,0 +1,282 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 928.297964,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 173.69733612228922,
+            "y": 578.63823051757811
+          },
+          "nodeIndex": "DimCustomer",
+          "nodeLineageTag": "f30b2cf5-aa2c-4fe0-8bfa-a318ac9bb9b8",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 852,
+            "y": 81
+          },
+          "nodeIndex": "DimMarketingChannel",
+          "nodeLineageTag": "c3d2c051-e22f-49f3-ba6d-cdf83e28fab8",
+          "size": {
+            "height": 145,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 1136,
+            "y": 74
+          },
+          "nodeIndex": "DimRegion",
+          "nodeLineageTag": "e321f1f2-4290-43c5-a70e-5b844a6a1a7b",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 8
+        },
+        {
+          "location": {
+            "x": 1444.639102386685,
+            "y": 324.8988940734863
+          },
+          "nodeIndex": "FactEquipmentHire",
+          "nodeLineageTag": "785a25c9-e691-4beb-be24-4c6d46811178",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 9
+        },
+        {
+          "location": {
+            "x": 1759.8155473317113,
+            "y": 872.71356953609063
+          },
+          "nodeIndex": "FactMarketing",
+          "nodeLineageTag": "40bdb0f9-0e36-44ab-9473-d98c8db07a17",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 10
+        },
+        {
+          "location": {
+            "x": 992.72397489939726,
+            "y": 974.65468189865635
+          },
+          "nodeIndex": "FactPayments",
+          "nodeLineageTag": "3768ccdd-ef1f-454e-b1ec-a7405f49544b",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 11
+        },
+        {
+          "location": {
+            "x": 1938.1099855188829,
+            "y": 383.0248950388941
+          },
+          "nodeIndex": "FactReviews",
+          "nodeLineageTag": "773d5b67-e043-49d2-bbbe-b74f37da1576",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 12
+        },
+        {
+          "location": {
+            "x": 1801.2279787610285,
+            "y": 0
+          },
+          "nodeIndex": "FactWeather",
+          "nodeLineageTag": "bc8a611a-72ea-49bf-a4ea-bad76379c4e1",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 13
+        },
+        {
+          "location": {
+            "x": 1550.7746368462924,
+            "y": 1431.8895785465634
+          },
+          "nodeIndex": "FactWebsiteAnalytics",
+          "nodeLineageTag": "46f6210e-4423-4722-be76-ba035b79cf80",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 14
+        },
+        {
+          "location": {
+            "x": 2173.2617533922917,
+            "y": 1174.2091297399061
+          },
+          "nodeIndex": "Summary_CustomerLTV",
+          "nodeLineageTag": "e4344931-5e5a-4ade-b1d0-3899f43ee6a5",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 15
+        },
+        {
+          "location": {
+            "x": 2294.6988618932264,
+            "y": 705.69690018773565
+          },
+          "nodeIndex": "Summary_GuidePerformance",
+          "nodeLineageTag": "6d2bf6b1-9044-4a03-86d7-8ce02feef82f",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 16
+        },
+        {
+          "location": {
+            "x": 1892.81703912302,
+            "y": 1274.4191313489189
+          },
+          "nodeIndex": "Summary_RoutePerformance",
+          "nodeLineageTag": "4512bb40-d0af-4937-a55f-34b6032281cb",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 17
+        },
+        {
+          "location": {
+            "x": 2958.1944396486483,
+            "y": 1411.5948472732816
+          },
+          "nodeIndex": "Summary_WeatherFlaggedCancellations",
+          "nodeLineageTag": "b8d046bb-f9d2-4ea8-9bf3-1dcc62526a8c",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 2942.7162725263597,
+            "y": 1104.7138672732817
+          },
+          "nodeIndex": "PipeLineQualityLog",
+          "nodeLineageTag": "d806f39e-d02b-4f77-b58e-a6243b5a2a5f",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 1472.7865244040704,
+            "y": 1045.4551352732815
+          },
+          "nodeIndex": "DimDate",
+          "nodeLineageTag": "c97cc6c8-2958-4606-8d4c-a8bc887db75a",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 19
+        },
+        {
+          "location": {
+            "x": 2490.128420281781,
+            "y": 219.90770927328168
+          },
+          "nodeIndex": "DimGuide",
+          "nodeLineageTag": "e6b67a6b-36a8-409d-97d9-84bda5afbd7a",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 2545.5126931594918,
+            "y": 1164.1497222732819
+          },
+          "nodeIndex": "DimRoute",
+          "nodeLineageTag": "8616b05d-4526-4fe7-aec3-903d89af766a",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 18
+        },
+        {
+          "location": {
+            "x": 3066.8175090372033,
+            "y": 715.94478927328169
+          },
+          "nodeIndex": "FactBookings",
+          "nodeLineageTag": "a1068ad6-3547-45ba-9e1a-69a7df12634d",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 3177.1201729149143,
+            "y": 801.94478927328169
+          },
+          "nodeIndex": "WaterfallSteps",
+          "nodeLineageTag": "a311a4df-fe4c-4b31-a283-736a0aecf89d",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 2123.5072597926255,
+            "y": 1564.1169462732817
+          },
+          "nodeIndex": "browser_icons",
+          "nodeLineageTag": "0396cdab-9d36-4cc6-b411-6ec187109595",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 20
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 56.447393005377741,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

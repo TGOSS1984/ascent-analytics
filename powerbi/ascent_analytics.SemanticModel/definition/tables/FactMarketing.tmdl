@@ -1,0 +1,166 @@
+table FactMarketing
+	lineageTag: 40bdb0f9-0e36-44ab-9473-d98c8db07a17
+
+	measure 'Marketing Spend' = SUM(FactMarketing[spend])
+		lineageTag: 3da2ac6b-6db5-40c3-b16b-1b58b4734154
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Marketing Revenue' = SUM(FactMarketing[revenue])
+		formatString: #,0
+		lineageTag: 7d4b78d1-b7ff-4901-a19d-733a1d5eb0cf
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Marketing Conversions' = SUM(FactMarketing[conversions])
+		formatString: #,0
+		lineageTag: 8c3aaf92-a101-45bb-b09a-edc2d386de0c
+
+	measure ROAS = DIVIDE([Marketing Revenue], [Marketing Spend])
+		lineageTag: 40d0b87a-bb01-47c2-a3dc-b4d6c4c769ad
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CAC = DIVIDE([Marketing Spend], [Marketing Conversions])
+		lineageTag: 0343f09d-8a7d-4fb5-b0aa-483c83b9f962
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Marketing Revenue PY' = CALCULATE([Marketing Revenue], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		lineageTag: 71a464f0-f710-45ab-8595-b1f09a3fdf2d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Marketing Revenue Variance £' = [Marketing Revenue] - [Marketing Revenue PY]
+		lineageTag: 8c99caf8-f32f-407b-b954-5c1434ea49e3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Marketing Revenue Growth %' = DIVIDE([Marketing Revenue] - [Marketing Revenue PY], [Marketing Revenue PY])
+		lineageTag: bf666539-640d-4f84-813c-c96b7bacc913
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Marketing Revenue Growth % Arrow' = VAR G = [Marketing Revenue Growth %] VAR A = IF(G >= 0, "▲", "▼") RETURN A & " " & FORMAT(G, "0.0%")
+		lineageTag: 78015a3d-2444-4935-8753-73aa1697d6d9
+
+	measure 'Marketing Revenue Variance £ Arrow' = VAR V = [Marketing Revenue Variance £] VAR A = IF(V >= 0, "▲", "▼") RETURN A & " £" & FORMAT(ABS(V), "#,##0")
+		lineageTag: 2fba858e-1bb6-485e-84f3-ed9d818898d9
+
+	measure 'Marketing Spend PY' = CALCULATE([Marketing Spend], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		lineageTag: d658380f-3162-441f-a5f4-7dcc5774ee2f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Marketing Spend Variance £' = [Marketing Spend] - [Marketing Spend PY]
+		lineageTag: b4ba7e91-2701-4adf-b593-651a8b81ecba
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Marketing Spend Growth %' = DIVIDE([Marketing Spend] - [Marketing Spend PY], [Marketing Spend PY])
+		lineageTag: ed494535-0e04-487c-88ed-78f09040ea1d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Marketing Spend Growth % Arrow' = VAR G = [Marketing Spend Growth %] VAR A = IF(G >= 0, "▲", "▼") RETURN A & " " & FORMAT(G, "0.0%")
+		lineageTag: 1d5b6213-788d-4498-bd6a-aff09dae2a03
+
+	measure 'Marketing Spend Variance £ Arrow' = VAR V = [Marketing Spend Variance £] VAR A = IF(V >= 0, "▲", "▼") RETURN A & " £" & FORMAT(ABS(V), "#,##0")
+		lineageTag: a15f9791-aec2-456c-8611-95394beb3559
+
+	column marketing_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 7230dbcd-86d1-4faf-9cd5-30a42e638a44
+		summarizeBy: sum
+		sourceColumn: marketing_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column campaign
+		dataType: string
+		lineageTag: 5e2e8815-7212-41f0-943f-461760204b46
+		summarizeBy: none
+		sourceColumn: campaign
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel_id
+		dataType: int64
+		formatString: 0
+		lineageTag: e8ced397-95d7-4c88-8c86-226b4bacba16
+		summarizeBy: none
+		sourceColumn: channel_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_date_id
+		dataType: int64
+		formatString: 0
+		lineageTag: eb664982-948d-42fd-87d3-7f1570056995
+		summarizeBy: none
+		sourceColumn: month_date_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column spend
+		dataType: double
+		formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+		lineageTag: 12a5e363-e684-4d2f-809f-70cc2aa46dc8
+		summarizeBy: sum
+		sourceColumn: spend
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	column clicks
+		dataType: int64
+		formatString: 0
+		lineageTag: 764851de-a612-48fc-ab43-148bb6fa80ac
+		summarizeBy: sum
+		sourceColumn: clicks
+
+		annotation SummarizationSetBy = Automatic
+
+	column impressions
+		dataType: int64
+		formatString: 0
+		lineageTag: 79b30663-a16a-44a5-b43b-483b11f22591
+		summarizeBy: sum
+		sourceColumn: impressions
+
+		annotation SummarizationSetBy = Automatic
+
+	column conversions
+		dataType: int64
+		formatString: 0
+		lineageTag: 68070266-15b5-4b80-8527-4be54d207b85
+		summarizeBy: sum
+		sourceColumn: conversions
+
+		annotation SummarizationSetBy = Automatic
+
+	column revenue
+		dataType: double
+		formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+		lineageTag: 42d17869-03a7-4968-bebf-ac0ed68e0561
+		summarizeBy: sum
+		sourceColumn: revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	partition FactMarketing = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\FactMarketing.csv"),[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"marketing_id", Int64.Type}, {"campaign", type text}, {"channel_id", Int64.Type}, {"month_date_id", Int64.Type}, {"spend", type number}, {"clicks", Int64.Type}, {"impressions", Int64.Type}, {"conversions", Int64.Type}, {"revenue", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

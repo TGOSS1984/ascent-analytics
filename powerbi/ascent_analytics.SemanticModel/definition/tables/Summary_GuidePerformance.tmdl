@@ -1,0 +1,100 @@
+table Summary_GuidePerformance
+	lineageTag: 6d2bf6b1-9044-4a03-86d7-8ce02feef82f
+
+	column guide_id
+		dataType: int64
+		formatString: 0
+		lineageTag: fff9f168-2f51-4ee0-b739-0bbf4d411b5b
+		summarizeBy: sum
+		sourceColumn: guide_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column full_name
+		dataType: string
+		lineageTag: 7f89f8dc-4d4e-4d68-bd61-a0f8eefa5963
+		summarizeBy: none
+		sourceColumn: full_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column employment_type
+		dataType: string
+		lineageTag: 173417e6-d06a-4021-b011-9604cc5fb3cb
+		summarizeBy: none
+		sourceColumn: employment_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_rate_gbp
+		dataType: double
+		lineageTag: 27cbd32c-773d-4e73-8fcd-f4d99967a234
+		summarizeBy: sum
+		sourceColumn: day_rate_gbp
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column bookings
+		dataType: int64
+		formatString: 0
+		lineageTag: ac009b02-d627-454f-9795-9bf7965cdee9
+		summarizeBy: sum
+		sourceColumn: bookings
+
+		annotation SummarizationSetBy = Automatic
+
+	column revenue
+		dataType: double
+		formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+		lineageTag: 4a98851c-302d-4d62-977d-70f360603369
+		summarizeBy: sum
+		sourceColumn: revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	column cancellation_rate
+		dataType: double
+		lineageTag: bbaa51fa-40a1-4397-a5b4-4780e2755b06
+		summarizeBy: sum
+		sourceColumn: cancellation_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_guide_rating
+		dataType: double
+		lineageTag: 95835bba-dd6c-4448-9e06-f0e2fee6f01f
+		summarizeBy: sum
+		sourceColumn: avg_guide_rating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_safety_rating
+		dataType: double
+		lineageTag: 512e33ca-759a-4f29-8234-33f162cd99bb
+		summarizeBy: sum
+		sourceColumn: avg_safety_rating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Summary_GuidePerformance = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\Summary_GuidePerformance.csv"),[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"guide_id", Int64.Type}, {"full_name", type text}, {"employment_type", type text}, {"day_rate_gbp", type number}, {"bookings", Int64.Type}, {"revenue", type number}, {"cancellation_rate", type number}, {"avg_guide_rating", type number}, {"avg_safety_rating", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

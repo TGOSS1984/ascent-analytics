@@ -1,0 +1,106 @@
+table FactPayments
+	lineageTag: 3768ccdd-ef1f-454e-b1ec-a7405f49544b
+
+	measure 'Gross Margin' = [Revenue] - [Guide Cost]
+		lineageTag: b7846d39-ee5e-4800-a7a3-fdd4d011f998
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Refund %' = DIVIDE(CALCULATE(COUNTROWS(FactPayments), FactPayments[status] = "refunded"), CALCULATE(COUNTROWS(FactPayments), FactPayments[status] = "paid"))
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 8eb7f6f9-9776-412c-a351-9eb50c8abfec
+
+	measure 'Payment Success Rate' = DIVIDE(CALCULATE(COUNTROWS(FactPayments), FactPayments[status] = "paid"), CALCULATE(COUNTROWS(FactPayments), FactPayments[status] IN {"paid", "failed"}))
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: ed26cdf0-a902-46ee-8a65-89e1fbdf5834
+
+	measure 'Outstanding Balance' = CALCULATE(SUM(FactPayments[amount]), FactPayments[status] = "pending")
+		lineageTag: 1898f2fb-fefd-42ea-b20d-11e825d0e817
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Days to Refund' = AVERAGEX(CALCULATETABLE(FactPayments, FactPayments[status] = "refunded"), VAR PaidDate = CALCULATE(MAX(DimDate[full_date]), USERELATIONSHIP(FactPayments[paid_date_id], DimDate[date_id])) VAR RefundedDate = CALCULATE(MAX(DimDate[full_date]), USERELATIONSHIP(FactPayments[refunded_date_id], DimDate[date_id])) RETURN DATEDIFF(PaidDate, RefundedDate, DAY))
+		lineageTag: 513c322d-1e24-427f-9626-309a7d9e9896
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Refunded £' = CALCULATE(SUM(FactPayments[amount]), FactPayments[status] = "refunded")
+		lineageTag: c1a9bbef-2b01-4e45-beb4-c75bd894e5f6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column payment_id
+		dataType: int64
+		formatString: 0
+		lineageTag: a6b84470-7a2a-4a4c-b175-7c366ea1d576
+		summarizeBy: sum
+		sourceColumn: payment_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column booking_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 07e467ab-027e-4949-870d-fd2c1b31ed47
+		summarizeBy: none
+		sourceColumn: booking_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column amount
+		dataType: double
+		formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+		lineageTag: 4e7e97ab-a66b-4aaa-9877-9f7652e4d50d
+		summarizeBy: sum
+		sourceColumn: amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	column currency
+		dataType: string
+		lineageTag: 69081928-c666-449d-9522-3799dca8e2cd
+		summarizeBy: none
+		sourceColumn: currency
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: 41c91bc1-9509-4315-9e57-8ede9868531c
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column paid_date_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 6c526214-9461-4ff9-ba57-8b48e4edc6af
+		summarizeBy: sum
+		sourceColumn: paid_date_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column refunded_date_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 7eb6757f-9526-44e3-9a24-8914c51aad25
+		summarizeBy: sum
+		sourceColumn: refunded_date_id
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactPayments = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\FactPayments.csv"),[Delimiter=",", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"payment_id", Int64.Type}, {"booking_id", Int64.Type}, {"amount", type number}, {"currency", type text}, {"status", type text}, {"paid_date_id", Int64.Type}, {"refunded_date_id", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

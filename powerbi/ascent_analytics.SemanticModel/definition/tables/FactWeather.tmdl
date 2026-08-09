@@ -1,0 +1,107 @@
+table FactWeather
+	lineageTag: bc8a611a-72ea-49bf-a4ea-bad76379c4e1
+
+	measure 'Storm Warning Days' = CALCULATE(COUNTROWS(FactWeather), FactWeather[storm_warning] = TRUE())
+		formatString: 0
+		lineageTag: 4261c78a-e323-4375-99dc-6e1472777949
+
+	column weather_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 7947ae6f-a86f-45f2-96f3-1d47f1cfac77
+		summarizeBy: sum
+		sourceColumn: weather_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 20861b87-52e0-4d95-8d3a-707d0399fad1
+		summarizeBy: none
+		sourceColumn: date_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column region_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 7245015d-91ad-41d5-a345-3328af1e68c3
+		summarizeBy: none
+		sourceColumn: region_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column temperature_c
+		dataType: double
+		lineageTag: c88617d1-34e1-4e04-9a74-56cf02d5dc56
+		summarizeBy: sum
+		sourceColumn: temperature_c
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column rain_mm
+		dataType: double
+		lineageTag: 36f1259d-3b7a-4a2d-b7bf-4090896f1a91
+		summarizeBy: sum
+		sourceColumn: rain_mm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column wind_speed_kmh
+		dataType: double
+		lineageTag: 8696c08e-30a3-4d6f-b5c2-61480fca301d
+		summarizeBy: sum
+		sourceColumn: wind_speed_kmh
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column visibility_km
+		dataType: double
+		lineageTag: 4baca337-29dc-42c0-9d76-4a73f6c616ee
+		summarizeBy: sum
+		sourceColumn: visibility_km
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column snow_depth_cm
+		dataType: double
+		lineageTag: 6c296452-bdc7-4013-8c19-a73b8f197224
+		summarizeBy: sum
+		sourceColumn: snow_depth_cm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column storm_warning
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 76a0799a-480c-4242-b959-517337631bd7
+		summarizeBy: none
+		sourceColumn: storm_warning
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactWeather = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\FactWeather.csv"),[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"weather_id", Int64.Type}, {"date_id", Int64.Type}, {"region_id", Int64.Type}, {"temperature_c", type number}, {"rain_mm", type number}, {"wind_speed_kmh", type number}, {"visibility_km", type number}, {"snow_depth_cm", type number}, {"storm_warning", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

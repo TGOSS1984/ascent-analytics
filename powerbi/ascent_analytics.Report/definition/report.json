@@ -1,0 +1,255 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY26SU07",
+      "reportVersionAtImport": {
+        "visual": "2.11.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "Ascent_Analytics4376163877352326.json",
+      "reportVersionAtImport": {
+        "visual": "2.11.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY26SU07",
+          "path": "BaseThemes/CY26SU07.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "Ascent_Analytics4376163877352326.json",
+          "path": "Ascent_Analytics4376163877352326.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "average-bounce-rate9159060915926627.png",
+          "path": "average-bounce-rate9159060915926627.png",
+          "type": "Image"
+        },
+        {
+          "name": "average-conversion-rate7736790313241719.png",
+          "path": "average-conversion-rate7736790313241719.png",
+          "type": "Image"
+        },
+        {
+          "name": "average-customer-satisfaction22425953234456142.png",
+          "path": "average-customer-satisfaction22425953234456142.png",
+          "type": "Image"
+        },
+        {
+          "name": "average-overall-rating7437509565406595.png",
+          "path": "average-overall-rating7437509565406595.png",
+          "type": "Image"
+        },
+        {
+          "name": "average-price-per-tour7461797798757258.png",
+          "path": "average-price-per-tour7461797798757258.png",
+          "type": "Image"
+        },
+        {
+          "name": "average-reviews-per-booking4544695925064195.png",
+          "path": "average-reviews-per-booking4544695925064195.png",
+          "type": "Image"
+        },
+        {
+          "name": "cover_hero_winter9768133163318535.jpg",
+          "path": "cover_hero_winter9768133163318535.jpg",
+          "type": "Image"
+        },
+        {
+          "name": "discount-pct-of-revenue25357514609179144.png",
+          "path": "discount-pct-of-revenue25357514609179144.png",
+          "type": "Image"
+        },
+        {
+          "name": "equipment-hire-rate7770347132402046.png",
+          "path": "equipment-hire-rate7770347132402046.png",
+          "type": "Image"
+        },
+        {
+          "name": "equipment-hire-revenue7161380320381501.png",
+          "path": "equipment-hire-revenue7161380320381501.png",
+          "type": "Image"
+        },
+        {
+          "name": "gross-margin7210399824060224.png",
+          "path": "gross-margin7210399824060224.png",
+          "type": "Image"
+        },
+        {
+          "name": "guide-utilisation10324935508248223.png",
+          "path": "guide-utilisation10324935508248223.png",
+          "type": "Image"
+        },
+        {
+          "name": "logo2909721488018113.png",
+          "path": "logo2909721488018113.png",
+          "type": "Image"
+        },
+        {
+          "name": "logo6130075535967097.png",
+          "path": "logo6130075535967097.png",
+          "type": "Image"
+        },
+        {
+          "name": "net-profit-margin34781662380072653.png",
+          "path": "net-profit-margin34781662380072653.png",
+          "type": "Image"
+        },
+        {
+          "name": "net-profit-margin8477403437516832.png",
+          "path": "net-profit-margin8477403437516832.png",
+          "type": "Image"
+        },
+        {
+          "name": "net-profit660387686267366.png",
+          "path": "net-profit660387686267366.png",
+          "type": "Image"
+        },
+        {
+          "name": "occupancy48710223670111163.png",
+          "path": "occupancy48710223670111163.png",
+          "type": "Image"
+        },
+        {
+          "name": "outstanding-balance3862193372543281.png",
+          "path": "outstanding-balance3862193372543281.png",
+          "type": "Image"
+        },
+        {
+          "name": "payment-success-rate6543835318350325.png",
+          "path": "payment-success-rate6543835318350325.png",
+          "type": "Image"
+        },
+        {
+          "name": "refund-rate8803474536635071.png",
+          "path": "refund-rate8803474536635071.png",
+          "type": "Image"
+        },
+        {
+          "name": "repeat-customer-rate36039705430328295.png",
+          "path": "repeat-customer-rate36039705430328295.png",
+          "type": "Image"
+        },
+        {
+          "name": "revenue35457061246038335.png",
+          "path": "revenue35457061246038335.png",
+          "type": "Image"
+        },
+        {
+          "name": "storm-warning-days2102870707798239.png",
+          "path": "storm-warning-days2102870707798239.png",
+          "type": "Image"
+        },
+        {
+          "name": "topography_texture5953463715821576.jpg",
+          "path": "topography_texture5953463715821576.jpg",
+          "type": "Image"
+        },
+        {
+          "name": "topography_texture6477044029772336.jpg",
+          "path": "topography_texture6477044029772336.jpg",
+          "type": "Image"
+        },
+        {
+          "name": "topography_texture7915285780890879.jpg",
+          "path": "topography_texture7915285780890879.jpg",
+          "type": "Image"
+        },
+        {
+          "name": "topography_texture8557008358605128.jpg",
+          "path": "topography_texture8557008358605128.jpg",
+          "type": "Image"
+        },
+        {
+          "name": "total-bookings671082608435694.png",
+          "path": "total-bookings671082608435694.png",
+          "type": "Image"
+        },
+        {
+          "name": "total-customers9862433963762086.png",
+          "path": "total-customers9862433963762086.png",
+          "type": "Image"
+        },
+        {
+          "name": "total-discount-given5323295321277478.png",
+          "path": "total-discount-given5323295321277478.png",
+          "type": "Image"
+        },
+        {
+          "name": "total-sessions29027524068712496.png",
+          "path": "total-sessions29027524068712496.png",
+          "type": "Image"
+        },
+        {
+          "name": "total-users5981281588061981.png",
+          "path": "total-users5981281588061981.png",
+          "type": "Image"
+        },
+        {
+          "name": "weather-flagged-cancellation-r27630083524409177.png",
+          "path": "weather-flagged-cancellation-r27630083524409177.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true,
+    "customMemoryLimit": "1048576",
+    "customTimeoutLimit": "225"
+  }
+}

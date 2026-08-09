@@ -1,0 +1,95 @@
+relationship 6dcf21a5-e5c8-a7e6-3352-6d696fedb280
+	fromColumn: FactMarketing.channel_id
+	toColumn: DimMarketingChannel.channel_id
+
+relationship 7e56ee33-370d-f95b-ecca-7a207f3a54b6
+	fromColumn: FactWebsiteAnalytics.channel_id
+	toColumn: DimMarketingChannel.channel_id
+
+relationship 3cf2de44-18ff-e7aa-12f2-48f8563a93b6
+	fromColumn: FactWeather.region_id
+	toColumn: DimRegion.region_id
+
+relationship AutoDetected_de68cedc-365d-4d15-aa33-de0a653ab651
+	fromColumn: FactWeather.date_id
+	toColumn: DimDate.date_id
+
+relationship AutoDetected_a2a35255-53b0-4ac8-a7f2-444f48f1d078
+	fromColumn: DimRoute.region_id
+	toColumn: DimRegion.region_id
+
+relationship AutoDetected_186cc08e-058a-479a-946d-59fd3145d6dc
+	fromColumn: FactBookings.customer_id
+	toColumn: DimCustomer.customer_id
+
+relationship AutoDetected_08ad8a22-ce31-4bda-a5e7-935e420a2e8a
+	fromColumn: FactBookings.channel_id
+	toColumn: DimMarketingChannel.channel_id
+
+relationship AutoDetected_ba260858-ca46-4f04-a5f1-81a3e0ee91b8
+	isActive: false
+	fromColumn: FactBookings.region_id
+	toColumn: DimRegion.region_id
+
+relationship AutoDetected_5f50c320-36fc-47e4-b2bf-907770a7c162
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: FactEquipmentHire.booking_id
+	toColumn: FactBookings.booking_id
+
+relationship AutoDetected_b90ef9fa-8bd1-4c88-a972-e69db68fc954
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: FactPayments.booking_id
+	toColumn: FactBookings.booking_id
+
+relationship AutoDetected_ed5d9a18-fb5b-4b02-a955-b464245ca23a
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: FactReviews.booking_id
+	toColumn: FactBookings.booking_id
+
+relationship AutoDetected_f1b02f78-3a3a-4664-b1cc-a347e89e8eb9
+	fromColumn: FactBookings.route_id
+	toColumn: DimRoute.route_id
+
+relationship 9cbf8066-57e2-2826-cdae-a3cdc878c57b
+	fromColumn: FactBookings.guide_id
+	toColumn: DimGuide.guide_id
+
+relationship a82fd0b9-28f8-6789-aeb7-68a9fa417ea4
+	fromColumn: FactBookings.tour_date_id
+	toColumn: DimDate.date_id
+
+relationship 864a47f8-b427-cbd2-557c-2a66cf3a667b
+	fromColumn: FactMarketing.month_date_id
+	toColumn: DimDate.date_id
+
+relationship be3247b4-8245-449a-314e-e579732b80c2
+	fromColumn: FactWebsiteAnalytics.week_date_id
+	toColumn: DimDate.date_id
+
+relationship 17baec34-4eb9-250c-dcdc-ad5c19cd5979
+	isActive: false
+	fromColumn: FactBookings.created_date_id
+	toColumn: DimDate.date_id
+
+relationship f9251051-37b8-fa3d-3196-dc9cfa5c3e65
+	isActive: false
+	fromColumn: FactPayments.paid_date_id
+	toColumn: DimDate.date_id
+
+relationship 033c35da-c1bb-e6aa-c6a3-61756ddf08f1
+	isActive: false
+	fromColumn: FactPayments.refunded_date_id
+	toColumn: DimDate.date_id
+
+relationship 74ebbea7-ce13-9d77-ea76-d56b7a59a6dd
+	isActive: false
+	fromColumn: DimGuide.primary_region_id
+	toColumn: DimRegion.region_id
+
+relationship e012a6e8-b9cb-fd3d-1b8f-c8f9a517ebcb
+	fromColumn: FactWebsiteAnalytics.browser
+	toColumn: browser_icons.browser
+

@@ -1,0 +1,291 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "9285c0f8e90a2eea588e",
+  "position": {
+    "x": 253.79310344827587,
+    "y": 277.24137931034483,
+    "z": 0,
+    "height": 769.65517241379314,
+    "width": 881.37931034482756,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimGuide"
+                    }
+                  },
+                  "Property": "full_name"
+                }
+              },
+              "queryRef": "DimGuide.full_name",
+              "nativeQueryRef": "full_name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimGuide"
+                    }
+                  },
+                  "Property": "Experience Band"
+                }
+              },
+              "queryRef": "DimGuide.Experience Band",
+              "nativeQueryRef": "Experience Band"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Revenue"
+                }
+              },
+              "queryRef": "FactBookings.Revenue",
+              "nativeQueryRef": "Revenue"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Guide Utilisation %"
+                }
+              },
+              "queryRef": "FactBookings.Guide Utilisation %",
+              "nativeQueryRef": "Guide Utilisation %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactReviews"
+                    }
+                  },
+                  "Property": "Average Guide Rating"
+                }
+              },
+              "queryRef": "FactReviews.Average Guide Rating",
+              "nativeQueryRef": "Average Guide Rating"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactReviews"
+                    }
+                  },
+                  "Property": "Average Safety Rating"
+                }
+              },
+              "queryRef": "FactReviews.Average Safety Rating",
+              "nativeQueryRef": "Average Safety Rating"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Cancellation Rate"
+                }
+              },
+              "queryRef": "FactBookings.Cancellation Rate",
+              "nativeQueryRef": "Cancellation Rate"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Guide Performance Index"
+                }
+              },
+              "queryRef": "FactBookings.Guide Performance Index",
+              "nativeQueryRef": "Guide Performance Index"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Revenue"
+                }
+              },
+              "queryRef": "FactBookings.Revenue",
+              "nativeQueryRef": "Revenue"
+            },
+            {
+              "field": {
+                "SparklineData": {
+                  "Measure": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "FactBookings"
+                        }
+                      },
+                      "Property": "Revenue"
+                    }
+                  },
+                  "Groupings": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "DimDate"
+                          }
+                        },
+                        "Property": "week_number"
+                      }
+                    }
+                  ],
+                  "ApplyCalculationGroupTo": "Point"
+                }
+              },
+              "queryRef": "SparklineData(FactBookings.Revenue_[DimDate.week_number])",
+              "nativeQueryRef": "Revenue by week_number"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FactBookings"
+                  }
+                },
+                "Property": "Revenue"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "83.70967741935485D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactBookings.Guide Utilisation %"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "84.09676811121822D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactReviews.Average Guide Rating"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "79.93550706669265D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactReviews.Average Safety Rating"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "60.096781567699004D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactBookings.Cancellation Rate"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "82.8709526588004D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactBookings.Guide Performance Index"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "83.75860453393655D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "SparklineData(FactBookings.Revenue_[DimDate.week_number])"
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {}
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

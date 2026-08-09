@@ -1,0 +1,39 @@
+table WaterfallSteps
+	lineageTag: a311a4df-fe4c-4b31-a283-736a0aecf89d
+
+	measure 'Waterfall Value' = SWITCH(SELECTEDVALUE(WaterfallSteps[Step]), "Revenue", [Revenue], "Equipment Hire", [Equipment Hire Revenue], "Guide Cost", -[Guide Cost], "Refunds", -[Total Refunded £], BLANK())
+		lineageTag: e6a14212-bd58-45bc-a0db-8bc4d5dd10ee
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Step
+		dataType: string
+		lineageTag: 14b9e1bf-037a-437f-bb22-f684701833ed
+		summarizeBy: none
+		sourceColumn: Step
+		sortByColumn: SortOrder
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column SortOrder
+		dataType: int64
+		formatString: 0
+		lineageTag: bfef62f0-f43f-4b76-b26c-6cc5c1a99899
+		summarizeBy: sum
+		sourceColumn: SortOrder
+
+		annotation SummarizationSetBy = Automatic
+
+	partition WaterfallSteps = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WCkotS80rTVXSUTJUitWJVnItLM0syE3NK1HwyCwCCRuBhd1LM1NSFZzzi0uAQsZgoaDUtNK8lGIg30QpNhYA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Step = _t, SortOrder = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Step", type text}, {"SortOrder", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

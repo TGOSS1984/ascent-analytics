@@ -1,0 +1,75 @@
+table PipeLineQualityLog
+	lineageTag: d806f39e-d02b-4f77-b58e-a6243b5a2a5f
+
+	measure 'Total Validation Failures' = CALCULATE(SUM(PipelineQualityLog[value]), PipelineQualityLog[metric] = "validation_failures")
+		lineageTag: 5aabd1a3-7155-4e97-a226-bdb4a71854f3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Completeness %' = CALCULATE(AVERAGE(PipelineQualityLog[value]), PipelineQualityLog[metric] = "completeness")
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 0971e832-53bd-43cc-883a-d787e81a50f8
+
+	column run_started_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: fb1c45c0-5912-4d17-b869-0cb45c9e83b7
+		summarizeBy: none
+		sourceColumn: run_started_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column table
+		dataType: string
+		lineageTag: 34ae735f-de3b-4381-9fc7-7bba41fbf956
+		summarizeBy: none
+		sourceColumn: table
+
+		annotation SummarizationSetBy = Automatic
+
+	column metric
+		dataType: string
+		lineageTag: f6a9d125-9737-42b5-adce-815dc3e372f7
+		summarizeBy: none
+		sourceColumn: metric
+
+		annotation SummarizationSetBy = Automatic
+
+	column stage
+		dataType: string
+		lineageTag: a0807f34-669f-4119-acc6-f26ad0e8da56
+		summarizeBy: none
+		sourceColumn: stage
+
+		annotation SummarizationSetBy = Automatic
+
+	column value
+		dataType: double
+		lineageTag: 769789e6-f016-425d-ad61-819297c828c0
+		summarizeBy: sum
+		sourceColumn: value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column notes
+		dataType: string
+		lineageTag: 9c341ace-252f-49cf-a967-827ead2c75c3
+		summarizeBy: none
+		sourceColumn: notes
+
+		annotation SummarizationSetBy = Automatic
+
+	partition PipeLineQualityLog = m
+		mode: import
+		source =
+				let
+				    Source = Table.Combine({core_pipeline_log, extension_pipeline_log})
+				in
+				    Source
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

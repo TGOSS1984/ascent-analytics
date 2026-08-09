@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "ascent_analytics"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "628e8721-ba6a-4b89-8a44-4e38c3b6ad94"
+  }
+}

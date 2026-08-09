@@ -1,0 +1,157 @@
+table FactWebsiteAnalytics
+	lineageTag: 46f6210e-4423-4722-be76-ba035b79cf80
+
+	measure 'Total Sessions' = SUM(FactWebsiteAnalytics[sessions])
+		formatString: #,0
+		lineageTag: 4b5d1b12-09bf-4c83-ae8d-2dc1e9cbffee
+
+	measure 'Total Users' = SUM(FactWebsiteAnalytics[users])
+		formatString: 0
+		lineageTag: 3b05e948-7c56-4c78-865a-6249b09b4ac9
+
+	measure 'Average Bounce Rate' = DIVIDE(SUMX(FactWebsiteAnalytics, FactWebsiteAnalytics[bounce_rate] * FactWebsiteAnalytics[sessions]), [Total Sessions])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: d78aaff0-1eaf-443c-9627-96a88d79c90c
+
+	measure 'Average Conversion Rate' = DIVIDE(SUMX(FactWebsiteAnalytics, FactWebsiteAnalytics[conversion_rate] * FactWebsiteAnalytics[sessions]), [Total Sessions])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 265a2c8a-0198-472e-a44a-987a84a0365f
+
+	measure 'Total Sessions PY' = CALCULATE([Total Sessions], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		formatString: #,0
+		lineageTag: 10795cf4-207f-4769-930d-a080bec9082f
+
+	measure 'Total Sessions Variance' = [Total Sessions] - [Total Sessions PY]
+		formatString: 0
+		lineageTag: 4b156a9a-e0ef-43d7-872a-71d3d247c059
+
+	measure 'Total Sessions Growth %' = DIVIDE([Total Sessions] - [Total Sessions PY], [Total Sessions PY])
+		formatString: 0%;-0%;0%
+		lineageTag: 67aecf15-4c82-4f69-bb97-209fa30f246b
+
+	measure 'Total Sessions Growth % Arrow' = VAR G = [Total Sessions Growth %] VAR A = IF(G >= 0, "▲", "▼") RETURN A & " " & FORMAT(G, "0.0%")
+		lineageTag: a3762ead-12e7-4e73-b25e-42a72e6f6467
+
+	measure 'Total Sessions Variance Arrow' = VAR V = [Total Sessions Variance] VAR A = IF(V >= 0, "▲", "▼") RETURN A & " " & FORMAT(ABS(V), "#,##0")
+		lineageTag: 876a1da9-63a3-4d5a-8792-af08652286b6
+
+	measure 'Total Users PY' = CALCULATE([Total Users], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		formatString: 0
+		lineageTag: 65104d55-0521-4e71-96ef-3bb616283d42
+
+	measure 'Total Users Variance' = [Total Users] - [Total Users PY]
+		formatString: 0
+		lineageTag: 4f6334eb-16ff-45b7-9391-904411adaf7e
+
+	measure 'Total Users Growth %' = DIVIDE([Total Users] - [Total Users PY], [Total Users PY])
+		lineageTag: 674e6f73-f3cb-4e80-ad8b-d5dbcc3b5a61
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Users Growth % Arrow' = VAR G = [Total Users Growth %] VAR A = IF(G >= 0, "▲", "▼") RETURN A & " " & FORMAT(G, "0.0%")
+		lineageTag: ff29c5ae-d755-4d53-ac2a-6a2697ab0250
+
+	measure 'Total Users Variance Arrow' = VAR V = [Total Users Variance] VAR A = IF(V >= 0, "▲", "▼") RETURN A & " " & FORMAT(ABS(V), "#,##0")
+		lineageTag: 945b51b2-00e5-431c-895f-5f283e151455
+
+	column website_analytics_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 0830cb88-d8f0-420c-8791-bba50cbd236f
+		summarizeBy: sum
+		sourceColumn: website_analytics_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column week_date_id
+		dataType: int64
+		formatString: 0
+		lineageTag: cb0d616f-2afe-4305-9c32-c99e3b13dd74
+		summarizeBy: none
+		sourceColumn: week_date_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 5b8c401d-55e5-4155-8d00-0d53a4b3e22e
+		summarizeBy: none
+		sourceColumn: channel_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column device
+		dataType: string
+		lineageTag: f834d6f7-2483-4851-8744-12cfe1e40313
+		summarizeBy: none
+		sourceColumn: device
+
+		annotation SummarizationSetBy = Automatic
+
+	column sessions
+		dataType: int64
+		formatString: 0
+		lineageTag: ea50631f-f917-4879-a7d1-28cd4d6f4190
+		summarizeBy: sum
+		sourceColumn: sessions
+
+		annotation SummarizationSetBy = Automatic
+
+	column users
+		dataType: int64
+		formatString: 0
+		lineageTag: fa537e6c-f855-4f57-b591-38054e0006be
+		summarizeBy: sum
+		sourceColumn: users
+
+		annotation SummarizationSetBy = Automatic
+
+	column bounce_rate
+		dataType: double
+		lineageTag: 2721e3b1-51fc-49c3-bf0b-8123f994b692
+		summarizeBy: sum
+		sourceColumn: bounce_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column conversion_rate
+		dataType: double
+		lineageTag: 9fd78363-c829-4052-957b-eabc6b67654d
+		summarizeBy: sum
+		sourceColumn: conversion_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column browser
+		dataType: string
+		lineageTag: 6b25c9b7-a28f-42c2-b908-df904ebd4940
+		summarizeBy: none
+		sourceColumn: browser
+
+		annotation SummarizationSetBy = Automatic
+
+	column country
+		dataType: string
+		lineageTag: ec1f7e97-924f-4f15-bb37-74055435ce12
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactWebsiteAnalytics = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\FactWebsiteAnalytics.csv"),[Delimiter=",", Columns=10, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"website_analytics_id", Int64.Type}, {"week_date_id", Int64.Type}, {"channel_id", Int64.Type}, {"device", type text}, {"sessions", Int64.Type}, {"users", Int64.Type}, {"bounce_rate", type number}, {"conversion_rate", type number}, {"browser", type text}, {"country", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

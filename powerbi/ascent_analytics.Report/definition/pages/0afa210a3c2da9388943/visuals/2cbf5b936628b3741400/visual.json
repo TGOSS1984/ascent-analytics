@@ -1,0 +1,273 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "2cbf5b936628b3741400",
+  "position": {
+    "x": 251.42857142857144,
+    "y": 220,
+    "z": 4000,
+    "height": 838.57142857142867,
+    "width": 840,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Summary_RoutePerformance"
+                    }
+                  },
+                  "Property": "route_name"
+                }
+              },
+              "queryRef": "Summary_RoutePerformance.route_name",
+              "nativeQueryRef": "route_name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Summary_RoutePerformance"
+                    }
+                  },
+                  "Property": "region_name"
+                }
+              },
+              "queryRef": "Summary_RoutePerformance.region_name",
+              "nativeQueryRef": "region_name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Summary_RoutePerformance"
+                    }
+                  },
+                  "Property": "difficulty"
+                }
+              },
+              "queryRef": "Summary_RoutePerformance.difficulty",
+              "nativeQueryRef": "difficulty"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Summary_RoutePerformance"
+                        }
+                      },
+                      "Property": "bookings"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Summary_RoutePerformance.bookings)",
+              "nativeQueryRef": "Sum of bookings"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Summary_RoutePerformance"
+                        }
+                      },
+                      "Property": "revenue"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Summary_RoutePerformance.revenue)",
+              "nativeQueryRef": "Sum of revenue"
+            },
+            {
+              "field": {
+                "Arithmetic": {
+                  "Left": {
+                    "Aggregation": {
+                      "Expression": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "Summary_RoutePerformance"
+                            }
+                          },
+                          "Property": "revenue"
+                        }
+                      },
+                      "Function": 0
+                    }
+                  },
+                  "Right": {
+                    "ScopedEval": {
+                      "Expression": {
+                        "Aggregation": {
+                          "Expression": {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Entity": "Summary_RoutePerformance"
+                                }
+                              },
+                              "Property": "revenue"
+                            }
+                          },
+                          "Function": 0
+                        }
+                      },
+                      "Scope": []
+                    }
+                  },
+                  "Operator": 3
+                }
+              },
+              "queryRef": "Divide(Sum(Summary_RoutePerformance.revenue), ScopedEval(Sum(Summary_RoutePerformance.revenue), []))",
+              "nativeQueryRef": "%GT Sum of revenue"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Summary_RoutePerformance"
+                        }
+                      },
+                      "Property": "avg_overall_rating"
+                    }
+                  },
+                  "Function": 1
+                }
+              },
+              "queryRef": "Sum(Summary_RoutePerformance.avg_overall_rating)",
+              "nativeQueryRef": "Average of avg_overall_rating"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Summary_RoutePerformance"
+                        }
+                      },
+                      "Property": "cancellation_rate"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Summary_RoutePerformance.cancellation_rate)",
+              "nativeQueryRef": "Sum of cancellation_rate"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "Summary_RoutePerformance"
+                      }
+                    },
+                    "Property": "revenue"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "89.74192845833105D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Summary_RoutePerformance.avg_overall_rating)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "79.74192799612443D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Summary_RoutePerformance.cancellation_rate)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "64.70967435159893D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Summary_RoutePerformance.bookings)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "81.25D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Divide(Sum(Summary_RoutePerformance.revenue), ScopedEval(Sum(Summary_RoutePerformance.revenue), []))"
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {}
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

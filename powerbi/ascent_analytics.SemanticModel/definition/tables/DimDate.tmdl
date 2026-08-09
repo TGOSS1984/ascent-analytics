@@ -1,0 +1,200 @@
+table DimDate
+	lineageTag: c97cc6c8-2958-4606-8d4c-a8bc887db75a
+	dataCategory: Time
+
+	column date_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 58fdb3a6-055c-462b-8939-66841d4c3b3c
+		summarizeBy: none
+		sourceColumn: date_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column full_date
+		dataType: dateTime
+		isKey
+		formatString: General Date
+		lineageTag: 5ebfdb46-c749-4840-b62c-6dcfb5d5425d
+		summarizeBy: none
+		sourceColumn: full_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column day
+		dataType: int64
+		formatString: 0
+		lineageTag: 11352b30-8bff-4d98-b354-a49e7e458d17
+		summarizeBy: sum
+		sourceColumn: day
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: 5cc66ae1-a7b7-42a4-9fa3-422d62b711db
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name
+		dataType: string
+		lineageTag: 641af2e9-4cd8-4177-8b0b-b433a1c5aa24
+		summarizeBy: none
+		sourceColumn: month_name
+		sortByColumn: month
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: e6bc3b05-c415-4bd2-b275-c93d57c18ba4
+		summarizeBy: sum
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 040ef285-9b7f-478c-9741-e015a0ffbc05
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_of_week
+		dataType: int64
+		formatString: 0
+		lineageTag: 4f7e1f90-e892-4729-a1c3-b9ac6a3f1319
+		summarizeBy: sum
+		sourceColumn: day_of_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_name
+		dataType: string
+		lineageTag: ab6c0a07-53a0-4f00-8b14-cc696f4f425b
+		summarizeBy: none
+		sourceColumn: day_name
+		sortByColumn: day_of_week
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_weekend
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: d6ec4f43-7cef-48b6-a7a0-7c16d2ec6aec
+		summarizeBy: none
+		sourceColumn: is_weekend
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column calendar_season
+		dataType: string
+		lineageTag: cab87121-ab8f-4507-a7b1-54e3e2f8c712
+		summarizeBy: none
+		sourceColumn: calendar_season
+
+		annotation SummarizationSetBy = Automatic
+
+	column week_start_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: caca73fa-8052-4304-a12d-cf0e7e85a674
+		summarizeBy: none
+		sourceColumn: week_start_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column week_end_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c65db33a-3ecd-4673-ab1a-f758d193de64
+		summarizeBy: none
+		sourceColumn: week_end_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column week_number
+		dataType: int64
+		formatString: 0
+		lineageTag: 0cbad146-e61b-4108-8cfe-a8a8d499597d
+		summarizeBy: sum
+		sourceColumn: week_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column retail_year
+		dataType: int64
+		formatString: 0
+		lineageTag: 52d0299f-4150-461c-822b-4d284cfa2fdb
+		summarizeBy: sum
+		sourceColumn: retail_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_bank_holiday
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 3097e8b6-4bb9-436d-b621-0dd4bbae88e6
+		summarizeBy: none
+		sourceColumn: is_bank_holiday
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_summer_holiday
+		dataType: int64
+		formatString: 0
+		lineageTag: 0cb37f4d-8221-4eb6-acac-212a656f28de
+		summarizeBy: sum
+		sourceColumn: is_summer_holiday
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'year Hierarchy'
+		lineageTag: f96a6ff0-e6cf-41c7-9f02-0da294e03a87
+
+		level year
+			lineageTag: 20a55cac-1cc5-400e-ad94-61fe7f379756
+			column: year
+
+		level quarter
+			lineageTag: 75396900-c09c-4f55-a857-88d55ea391ef
+			column: quarter
+
+		level month_name
+			lineageTag: 4ebb86f1-a1ca-484f-900e-a1430efd4598
+			column: month_name
+
+		level week_number
+			lineageTag: 0d27c765-5c2c-4461-9f28-6c21ad6bc5d0
+			column: week_number
+
+		level day
+			lineageTag: f366e500-b9d9-488e-93e6-e660b39c94db
+			column: day
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\DimDate.csv"),[Delimiter=",", Columns=17, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"date_id", Int64.Type}, {"full_date", type datetime}, {"day", Int64.Type}, {"month", Int64.Type}, {"month_name", type text}, {"quarter", Int64.Type}, {"year", Int64.Type}, {"day_of_week", Int64.Type}, {"day_name", type text}, {"is_weekend", Int64.Type}, {"calendar_season", type text}, {"week_start_date", type datetime}, {"week_end_date", type datetime}, {"week_number", Int64.Type}, {"retail_year", Int64.Type}, {"is_bank_holiday", Int64.Type}, {"is_summer_holiday", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

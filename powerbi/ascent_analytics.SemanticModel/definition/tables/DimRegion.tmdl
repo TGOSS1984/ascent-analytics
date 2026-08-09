@@ -1,0 +1,40 @@
+table DimRegion
+	lineageTag: e321f1f2-4290-43c5-a70e-5b844a6a1a7b
+
+	column region_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 9407025c-ece5-4d7b-83dc-844a290d840a
+		summarizeBy: none
+		sourceColumn: region_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		lineageTag: 2e0cc446-7a97-49d9-8d17-2397409a6061
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column slug
+		dataType: string
+		lineageTag: dc400d36-3096-475e-bcab-1d29caf96549
+		summarizeBy: none
+		sourceColumn: slug
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimRegion = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\DimRegion.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"region_id", Int64.Type}, {"name", type text}, {"slug", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

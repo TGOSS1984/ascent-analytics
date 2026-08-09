@@ -1,0 +1,26 @@
+expression core_pipeline_log =
+		let
+		    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\docs\data_quality\core_pipeline_log.csv"),[Delimiter=",", Columns=6, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"run_started_at", type datetime}, {"table", type text}, {"metric", type text}, {"stage", type text}, {"value", Int64.Type}, {"notes", type text}})
+		in
+		    #"Changed Type"
+	lineageTag: 6f739094-f13b-4be2-a552-054713324d75
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression extension_pipeline_log =
+		let
+		    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\docs\data_quality\extension_pipeline_log.csv"),[Delimiter=",", Columns=6, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"run_started_at", type datetime}, {"table", type text}, {"metric", type text}, {"stage", type text}, {"value", type number}, {"notes", type text}})
+		in
+		    #"Changed Type"
+	lineageTag: e8468330-2fac-4eb7-bd06-8329e7d5e278
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

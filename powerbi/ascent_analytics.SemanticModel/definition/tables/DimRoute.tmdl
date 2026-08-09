@@ -1,0 +1,142 @@
+table DimRoute
+	lineageTag: 8616b05d-4526-4fe7-aec3-903d89af766a
+
+	column route_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 8dbe93fb-f46b-44b6-ad8d-ce6a0055402d
+		summarizeBy: none
+		sourceColumn: route_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		lineageTag: 43390d58-adf5-464a-8e18-1261d68a4789
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column region_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 6639b7ca-5731-470e-b8e9-3b87e43eb5c7
+		summarizeBy: none
+		sourceColumn: region_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column difficulty
+		dataType: string
+		lineageTag: 923c3e79-3371-447a-b49d-907c9a0b4772
+		summarizeBy: none
+		sourceColumn: difficulty
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance_km
+		dataType: double
+		lineageTag: b0bd9adf-95c5-4dfc-a65a-abbf4d98085e
+		summarizeBy: sum
+		sourceColumn: distance_km
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column duration_hours
+		dataType: double
+		lineageTag: 1244e1b7-0330-45cd-97d2-e22434a171f0
+		summarizeBy: sum
+		sourceColumn: duration_hours
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column mountain_height_m
+		dataType: int64
+		formatString: 0
+		lineageTag: e2ad1f4e-6977-41ff-8aa7-ca91c47e94b3
+		summarizeBy: sum
+		sourceColumn: mountain_height_m
+
+		annotation SummarizationSetBy = Automatic
+
+	column elevation_gain_m
+		dataType: int64
+		formatString: 0
+		lineageTag: ab5dc27e-160d-442d-94f2-5edd235a1fba
+		summarizeBy: sum
+		sourceColumn: elevation_gain_m
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_featured
+		dataType: int64
+		formatString: 0
+		lineageTag: 80e80429-e8bd-4200-9586-a63299e89609
+		summarizeBy: sum
+		sourceColumn: is_featured
+
+		annotation SummarizationSetBy = Automatic
+
+	column active
+		dataType: int64
+		formatString: 0
+		lineageTag: 50b0eaf0-4001-4031-83b9-7ce9eb2bb057
+		summarizeBy: sum
+		sourceColumn: active
+
+		annotation SummarizationSetBy = Automatic
+
+	column trailhead_lat
+		dataType: double
+		lineageTag: cc26127e-9835-4de7-b17c-df417b645738
+		summarizeBy: sum
+		sourceColumn: trailhead_lat
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column trailhead_lon
+		dataType: double
+		lineageTag: d72c254f-47cb-42bb-863c-c4a84e07375c
+		summarizeBy: sum
+		sourceColumn: trailhead_lon
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Region Name' = RELATED(DimRegion[name])
+		lineageTag: fb525ab9-16f1-449b-8377-b59a3e21d1b1
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Region Name Hierarchy'
+		lineageTag: ea642bf1-5794-4405-9a85-decfab1c27f1
+
+		level 'Region Name'
+			lineageTag: e7b51d84-509c-409a-b8d8-5b17de0c019c
+			column: 'Region Name'
+
+		level name
+			lineageTag: c6c1f786-1b3e-4e31-8469-1f264cf49bdc
+			column: name
+
+	partition DimRoute = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\DimRoute.csv"),[Delimiter=",", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"route_id", Int64.Type}, {"name", type text}, {"region_id", Int64.Type}, {"difficulty", type text}, {"distance_km", type number}, {"duration_hours", type number}, {"mountain_height_m", Int64.Type}, {"elevation_gain_m", Int64.Type}, {"is_featured", Int64.Type}, {"active", Int64.Type}, {"trailhead_lat", type number}, {"trailhead_lon", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,162 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "c2590bd94406a34083c4",
+  "position": {
+    "x": 1431.594470046083,
+    "y": 392.84792626728114,
+    "z": 8000,
+    "height": 670.67281105990787,
+    "width": 449.4746543778802,
+    "tabOrder": 8000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactWebsiteAnalytics"
+                    }
+                  },
+                  "Property": "browser"
+                }
+              },
+              "queryRef": "FactWebsiteAnalytics.browser",
+              "nativeQueryRef": "browser"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "browser_icons"
+                    }
+                  },
+                  "Property": "icon_url"
+                }
+              },
+              "queryRef": "browser_icons.icon_url",
+              "nativeQueryRef": "icon_url"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactWebsiteAnalytics"
+                    }
+                  },
+                  "Property": "Total Sessions"
+                }
+              },
+              "queryRef": "FactWebsiteAnalytics.Total Sessions",
+              "nativeQueryRef": "Total Sessions"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactWebsiteAnalytics"
+                    }
+                  },
+                  "Property": "Total Sessions PY"
+                }
+              },
+              "queryRef": "FactWebsiteAnalytics.Total Sessions PY",
+              "nativeQueryRef": "Total Sessions PY"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactWebsiteAnalytics"
+                    }
+                  },
+                  "Property": "Total Sessions Growth %"
+                }
+              },
+              "queryRef": "FactWebsiteAnalytics.Total Sessions Growth %",
+              "nativeQueryRef": "Total Sessions Growth %"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FactWebsiteAnalytics"
+                  }
+                },
+                "Property": "Total Sessions"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "99.142908441083D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactWebsiteAnalytics.Total Sessions Growth %"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "79.14743444411901D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactWebsiteAnalytics.Total Sessions PY"
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {}
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

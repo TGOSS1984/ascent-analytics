@@ -1,0 +1,98 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "f3d394d7e7b487744158",
+  "position": {
+    "x": 252.85714285714286,
+    "y": 250.00000000000003,
+    "z": 3000,
+    "height": 810,
+    "width": 478.57142857142861,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Summary_CustomerLTV"
+                    }
+                  },
+                  "Property": "contact_name"
+                }
+              },
+              "queryRef": "Summary_CustomerLTV.contact_name",
+              "nativeQueryRef": "contact_name"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Summary_CustomerLTV"
+                        }
+                      },
+                      "Property": "total_bookings"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Summary_CustomerLTV.total_bookings)",
+              "nativeQueryRef": "Sum of total_bookings"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Summary_CustomerLTV"
+                        }
+                      },
+                      "Property": "lifetime_value"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Summary_CustomerLTV.lifetime_value)",
+              "nativeQueryRef": "Sum of lifetime_value"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "Summary_CustomerLTV"
+                      }
+                    },
+                    "Property": "total_bookings"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

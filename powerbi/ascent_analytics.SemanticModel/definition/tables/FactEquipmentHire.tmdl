@@ -1,0 +1,116 @@
+table FactEquipmentHire
+	lineageTag: 785a25c9-e691-4beb-be24-4c6d46811178
+
+	measure 'Equipment Hire Rate' = DIVIDE(COUNTROWS(FactEquipmentHire), [Confirmed Bookings])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 34ec626d-fe05-4aff-845a-118f4f92f24d
+
+	column booking_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 1c424c63-b46e-4be9-8915-c939694e33c2
+		summarizeBy: none
+		sourceColumn: booking_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 320de970-7bcb-46ee-84da-185cec507362
+		summarizeBy: sum
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column boots
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: f7b15472-b963-4feb-a780-15b085e74ede
+		summarizeBy: none
+		sourceColumn: boots
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column waterproofs
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 8788ad3d-7610-4337-9d9b-6e12e179f769
+		summarizeBy: none
+		sourceColumn: waterproofs
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column poles
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 10d136c2-b2b8-4de6-ac25-03b7a967c8a0
+		summarizeBy: none
+		sourceColumn: poles
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column helmet
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 59cea126-d2cc-4ada-8429-a8125b6638ec
+		summarizeBy: none
+		sourceColumn: helmet
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column ice_axe
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: e0383236-dfe5-4843-94d8-4302aff7052a
+		summarizeBy: none
+		sourceColumn: ice_axe
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column crampons
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 29a828b7-bb11-4d89-a172-a56028e3b0a7
+		summarizeBy: none
+		sourceColumn: crampons
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column hire_revenue
+		dataType: double
+		formatString: "£"#,0;-"£"#,0;"£"#,0
+		lineageTag: a5dff136-a1a1-4c27-bdc0-f4fd844cea5f
+		summarizeBy: sum
+		sourceColumn: hire_revenue
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	partition FactEquipmentHire = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\FactEquipmentHire.csv"),[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"booking_id", Int64.Type}, {"customer_id", Int64.Type}, {"boots", Int64.Type}, {"waterproofs", Int64.Type}, {"poles", Int64.Type}, {"helmet", Int64.Type}, {"ice_axe", Int64.Type}, {"crampons", Int64.Type}, {"hire_revenue", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

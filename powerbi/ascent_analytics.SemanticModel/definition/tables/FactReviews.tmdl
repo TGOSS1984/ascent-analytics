@@ -1,0 +1,153 @@
+table FactReviews
+	lineageTag: 773d5b67-e043-49d2-bbbe-b74f37da1576
+
+	measure 'Average Customer Satisfaction' = AVERAGE(FactReviews[overall_rating])
+		lineageTag: 8efc9ebe-98a6-46bd-9628-41ffbfe08b8a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Reviews per Confirmed Booking' = DIVIDE(COUNTROWS(FactReviews), [Confirmed Bookings])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 2248dec9-1ac2-46a5-b0be-a975d6401a25
+
+	measure 'Average Guide Rating' = AVERAGE(FactReviews[guide_rating])
+		lineageTag: fbe0f2ca-2c81-4ef8-8220-b5a6986ec2fe
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Safety Rating' = AVERAGE(FactReviews[safety_rating])
+		lineageTag: 25d3cc86-f4e8-4887-804b-939ad873ef0e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Overall Rating' = AVERAGE(FactReviews[overall_rating])
+		lineageTag: 56c41021-4e7c-4f50-9ed8-f756fa9d9e9b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Customer Satisfaction PY' = CALCULATE([Average Customer Satisfaction], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		lineageTag: 1e9c428f-c9e6-49d3-8ac2-5ae98326ae64
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Customer Satisfaction Change (pts)' = [Average Customer Satisfaction] - [Average Customer Satisfaction PY]
+		lineageTag: b1047bf2-93d9-41ff-951b-e584c0057813
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Customer Satisfaction Change Arrow' = VAR C = [Average Customer Satisfaction Change (pts)] VAR A = IF(C >= 0, "▲", "▼") RETURN A & " " & FORMAT(ABS(C), "0.00") & " pts"
+		lineageTag: 32463254-e039-4d4b-98aa-17d1a0ec090b
+
+	column booking_id
+		dataType: int64
+		formatString: 0
+		lineageTag: ae25c158-af20-447e-932a-3ed227afc7f8
+		summarizeBy: none
+		sourceColumn: booking_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		lineageTag: a8f183f6-786e-4bb8-938a-a5c374efae8b
+		summarizeBy: sum
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column route_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 42ca559e-d709-4d19-bc9d-d881b9b54bff
+		summarizeBy: sum
+		sourceColumn: route_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column guide_id
+		dataType: int64
+		formatString: 0
+		lineageTag: d9325c70-54fc-47e4-ba24-868a88a91f81
+		summarizeBy: sum
+		sourceColumn: guide_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column overall_rating
+		dataType: int64
+		formatString: 0
+		lineageTag: ac2b9993-0b63-4296-8cc7-ac7afb66b078
+		summarizeBy: sum
+		sourceColumn: overall_rating
+
+		annotation SummarizationSetBy = Automatic
+
+	column guide_rating
+		dataType: int64
+		formatString: 0
+		lineageTag: 6f4f6036-f2ef-433c-9189-f1d68e98fad1
+		summarizeBy: sum
+		sourceColumn: guide_rating
+
+		annotation SummarizationSetBy = Automatic
+
+	column route_rating
+		dataType: int64
+		formatString: 0
+		lineageTag: 2762841b-c467-4111-bfe2-2247a86c7dd4
+		summarizeBy: sum
+		sourceColumn: route_rating
+
+		annotation SummarizationSetBy = Automatic
+
+	column safety_rating
+		dataType: int64
+		formatString: 0
+		lineageTag: c62c02bb-d360-4dd0-9e3f-fe6286a1a6c7
+		summarizeBy: sum
+		sourceColumn: safety_rating
+
+		annotation SummarizationSetBy = Automatic
+
+	column value_rating
+		dataType: int64
+		formatString: 0
+		lineageTag: 35dc0e2f-207a-4a2d-83dd-3d6f2abeebca
+		summarizeBy: sum
+		sourceColumn: value_rating
+
+		annotation SummarizationSetBy = Automatic
+
+	column comment_length
+		dataType: int64
+		formatString: 0
+		lineageTag: c6611f8f-8e84-49a5-9a17-baf19ee6e45e
+		summarizeBy: sum
+		sourceColumn: comment_length
+
+		annotation SummarizationSetBy = Automatic
+
+	column would_recommend
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: ab5f11a0-0887-4fda-aac7-a6459985573f
+		summarizeBy: none
+		sourceColumn: would_recommend
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactReviews = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\FactReviews.csv"),[Delimiter=",", Columns=11, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"booking_id", Int64.Type}, {"customer_id", Int64.Type}, {"route_id", Int64.Type}, {"guide_id", Int64.Type}, {"overall_rating", Int64.Type}, {"guide_rating", Int64.Type}, {"route_rating", Int64.Type}, {"safety_rating", Int64.Type}, {"value_rating", Int64.Type}, {"comment_length", Int64.Type}, {"would_recommend", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

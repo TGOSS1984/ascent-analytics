@@ -1,0 +1,88 @@
+table Summary_RoutePerformance
+	lineageTag: 4512bb40-d0af-4937-a55f-34b6032281cb
+
+	column route_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 5525a5b6-57d9-4493-9878-26e562b5d22e
+		summarizeBy: sum
+		sourceColumn: route_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column route_name
+		dataType: string
+		lineageTag: d0f88b7c-f3fa-47c5-a58e-61b045786211
+		summarizeBy: none
+		sourceColumn: route_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column region_name
+		dataType: string
+		lineageTag: 11874605-2c6a-4af8-96ed-84f2b0c4b2f2
+		summarizeBy: none
+		sourceColumn: region_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column difficulty
+		dataType: string
+		lineageTag: 87b71133-f3af-4d7f-b0cc-ca3afe320cec
+		summarizeBy: none
+		sourceColumn: difficulty
+
+		annotation SummarizationSetBy = Automatic
+
+	column bookings
+		dataType: int64
+		formatString: #,0
+		lineageTag: 9e353b22-c642-4a4e-969b-2265cbc276be
+		summarizeBy: sum
+		sourceColumn: bookings
+
+		annotation SummarizationSetBy = Automatic
+
+	column revenue
+		dataType: double
+		formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+		lineageTag: bba32cb2-2af5-4c71-8e60-175b834c9cf5
+		summarizeBy: sum
+		sourceColumn: revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	column cancellation_rate
+		dataType: double
+		lineageTag: 87900e6a-d80d-4e95-823c-89cfd4270b03
+		summarizeBy: sum
+		sourceColumn: cancellation_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_overall_rating
+		dataType: double
+		lineageTag: 4915ac51-1ba6-4d99-9eb6-5e1141555463
+		summarizeBy: sum
+		sourceColumn: avg_overall_rating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Summary_RoutePerformance = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\Summary_RoutePerformance.csv"),[Delimiter=",", Columns=8, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"route_id", Int64.Type}, {"route_name", type text}, {"region_name", type text}, {"difficulty", type text}, {"bookings", Int64.Type}, {"revenue", type number}, {"cancellation_rate", type number}, {"avg_overall_rating", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

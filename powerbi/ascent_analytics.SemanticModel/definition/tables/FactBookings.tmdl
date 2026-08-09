@@ -1,0 +1,476 @@
+table FactBookings
+	lineageTag: a1068ad6-3547-45ba-9e1a-69a7df12634d
+
+	measure 'Total Bookings' = COUNTROWS(FactBookings)
+		formatString: #,0
+		lineageTag: 887abab2-b2ba-4524-850d-9c54e52620aa
+
+	measure 'Confirmed Bookings' = CALCULATE([Total Bookings], FactBookings[status] = "confirmed")
+		formatString: 0
+		lineageTag: 84bdc84b-ccc3-458f-9fbc-debcccf47aeb
+
+	measure 'Cancelled Bookings' = CALCULATE([Total Bookings], FactBookings[status] = "cancelled")
+		formatString: 0
+		lineageTag: d8492e3b-5899-4f2d-be5c-c812ce7d4a36
+
+	measure Revenue = CALCULATE(SUM(FactBookings[total_price]), FactBookings[status] = "confirmed")
+		formatString: #,0
+		lineageTag: f51f8f98-3fa0-4855-9456-4493845c25f6
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Cancellation Rate' = DIVIDE([Cancelled Bookings], [Total Bookings])
+		lineageTag: e5bdd564-a7cb-41eb-b5c4-c86c62a085a0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Booking Value' = DIVIDE([Revenue], [Confirmed Bookings])
+		lineageTag: 18de283b-2a91-4167-8f02-25c265e4fa08
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Guide-Days Worked' = CALCULATE(DISTINCTCOUNT(FactBookings[tour_date_id]), FactBookings[status] <> "cancelled")
+		formatString: 0
+		lineageTag: a5217707-62e6-4681-b595-95507a2d75c2
+
+	measure 'Guide Cost' = SUMX(SUMMARIZE(FILTER(FactBookings, FactBookings[status] <> "cancelled"), FactBookings[guide_id], FactBookings[tour_date_id]), LOOKUPVALUE(DimGuide[day_rate_gbp], DimGuide[guide_id], FactBookings[guide_id]))
+		lineageTag: dc4ec15e-42bc-42c8-bd6b-daec3e33dcc2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Equipment Hire Revenue' = SUM(FactEquipmentHire[hire_revenue])
+		lineageTag: 2ec4ffae-d03a-49aa-b269-f3855eaa548f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Revenue (incl. equipment)' = [Revenue] + [Equipment Hire Revenue]
+		lineageTag: ed9f5cd2-5565-418f-a26e-1fdfbc388c9e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Profit' = [Total Revenue (incl. equipment)] - [Guide Cost]
+		formatString: #,0
+		lineageTag: 83bf27d2-cd0a-474f-ae6f-3463750c7105
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Net Profit Margin' = DIVIDE([Net Profit], [Total Revenue (incl. equipment)])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: b424c462-7a65-4616-a8b0-3184e73c568b
+
+	measure 'Total Customers' = DISTINCTCOUNT(FactBookings[customer_id])
+		formatString: 0
+		lineageTag: efc2fcc6-228a-4b1b-9d16-da4680fa7321
+
+	measure 'Repeat Customers' = CALCULATE(DISTINCTCOUNT(FactBookings[customer_id]), FILTER(VALUES(FactBookings[customer_id]), CALCULATE(COUNTROWS(FactBookings), ALL(FactBookings[status]), FactBookings[status] IN {"confirmed", "amended"}) > 1))
+		formatString: 0
+		lineageTag: ffe980a2-8c7d-4da7-8d42-21952cb0ae87
+
+	measure 'Repeat Customer Rate' = DIVIDE([Repeat Customers], [Total Customers])
+		lineageTag: 10da730a-aabb-430b-bfc5-6412a6adb895
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue PY' = CALCULATE([Revenue], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		lineageTag: 408525a8-5abd-4a70-93fd-44477353540e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue Growth %' = DIVIDE([Revenue] - [Revenue PY], [Revenue PY])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: adf7b71d-2995-4d8d-98c1-35039fcd8242
+
+	measure 'Revenue per Guide-Day' = DIVIDE([Revenue], [Guide-Days Worked])
+		lineageTag: 8a8f1c9d-5a63-48f4-9539-16aec631153d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue YTD' = TOTALYTD([Revenue], DimDate[full_date])
+		lineageTag: d3442052-c3e8-4e60-ac81-b8a2fbccd71c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Guide Utilisation %' = VAR ActiveDates = CALCULATETABLE(VALUES(DimDate[full_date]), FactBookings) VAR EarliestActiveDate = MINX(ActiveDates, DimDate[full_date]) VAR LatestActiveDate = MAXX(ActiveDates, DimDate[full_date]) VAR AvailableDays = DATEDIFF(EarliestActiveDate, LatestActiveDate, DAY) + 1 RETURN DIVIDE([Guide-Days Worked], AvailableDays)
+		lineageTag: f1e5f1ce-8971-40a2-a0f4-6c7011b7f0b9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Guide Performance Index' = VAR RevenueNorm = DIVIDE([Revenue], CALCULATE([Revenue], ALL(DimGuide))) VAR RatingNorm = DIVIDE(AVERAGE(FactReviews[guide_rating]), 5) VAR CancellationScore = 1 - [Cancellation Rate] RETURN 0.4 * RevenueNorm + 0.4 * RatingNorm + 0.2 * CancellationScore
+		lineageTag: 4eca6a0b-9cfe-4218-8cde-9792d386afb4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Occupancy %' = AVERAGEX(FILTER(FactBookings, FactBookings[status] = "confirmed"), DIVIDE(FactBookings[party_size], 3))
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: d2ccb9f1-47a3-47e0-aee1-80bc6012f0a7
+
+	measure 'Highest Revenue Route' = VAR Ranked = TOPN(1, VALUES(DimRoute[name]), CALCULATE([Revenue]), DESC) RETURN CONCATENATEX(Ranked, DimRoute[name])
+		lineageTag: bc244b4a-0c08-4e3d-85b6-b028a9badfb8
+
+	measure 'Most Popular Route' = VAR Ranked = TOPN(1, VALUES(DimRoute[name]), CALCULATE([Confirmed Bookings]), DESC) RETURN CONCATENATEX(Ranked, DimRoute[name])
+		lineageTag: 4d2ae05c-1cc1-4eac-92e4-66b757fa2be2
+
+	measure 'Bookings with Discount %' = DIVIDE(CALCULATE(COUNTROWS(FactBookings), FactBookings[discount_applied] = TRUE()), [Total Bookings])
+		formatString: 0%;-0%;0%
+		lineageTag: b6f04da4-259e-409c-94ac-503ffbfa230c
+
+	measure 'Average Discount % (Discounted Bookings)' = CALCULATE(AVERAGE(FactBookings[discount_pct]), FactBookings[discount_applied] = TRUE())
+		formatString: 0%;-0%;0%
+		lineageTag: d789c729-ce90-450a-bee9-b6a01a408a14
+
+	measure 'Total Discount Given' = SUMX(FactBookings, FactBookings[list_price] - FactBookings[total_price])
+		lineageTag: 2000bbfc-d2bc-44fa-9838-de8832ebf036
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Price per Tour' = DIVIDE(SUM(FactBookings[total_price]), [Confirmed Bookings])
+		lineageTag: 6bc83326-17e2-497f-b131-de2f092c3b8f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Discount % of Revenue' = DIVIDE([Total Discount Given], SUM(FactBookings[list_price]))
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c197993d-fb63-4cfa-98cc-e3722645eb78
+
+	measure 'Revenue on Bank Holidays vs Regular Days' = VAR BankHolidayRevenue = CALCULATE([Revenue], DimDate[is_bank_holiday] = TRUE()) VAR RegularDayRevenue = CALCULATE([Revenue], DimDate[is_bank_holiday] = FALSE()) VAR BankHolidayDays = CALCULATE(DISTINCTCOUNT(DimDate[date_id]), DimDate[is_bank_holiday] = TRUE()) VAR RegularDays = CALCULATE(DISTINCTCOUNT(DimDate[date_id]), DimDate[is_bank_holiday] = FALSE()) RETURN DIVIDE(DIVIDE(BankHolidayRevenue, BankHolidayDays), DIVIDE(RegularDayRevenue, RegularDays)) - 1
+		formatString: 0%;-0%;0%
+		lineageTag: e64c0f52-f701-4e77-bc6b-6e7f32f71c60
+
+	measure 'Revenue Variance £' = [Revenue] - [Revenue PY]
+		lineageTag: 5453e303-29a7-4856-a039-657551625d1a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Confirmed Bookings PY' = CALCULATE([Confirmed Bookings], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		formatString: 0
+		lineageTag: aecb0da1-60bd-4093-a2ac-9c9dc9bd0e8e
+
+	measure 'Confirmed Bookings Variance' = [Confirmed Bookings] - [Confirmed Bookings PY]
+		formatString: 0
+		lineageTag: 6e306ce3-68fc-4c03-b09f-dffbfa1b9563
+
+	measure 'Confirmed Bookings Variance %' = DIVIDE([Confirmed Bookings] - [Confirmed Bookings PY], [Confirmed Bookings PY])
+		lineageTag: 08709845-935e-4081-852c-5f4bac86c982
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue Growth % Arrow' = VAR GrowthPct = [Revenue Growth %] VAR ArrowSymbol = IF(GrowthPct >= 0, "▲", "▼") RETURN ArrowSymbol & " " & FORMAT(GrowthPct, "0.0%")
+		lineageTag: a8be8fd1-bccd-4787-97c3-26beea94da54
+
+	measure 'Revenue Variance £ Arrow' = VAR VarianceValue = [Revenue Variance £] VAR ArrowSymbol = IF(VarianceValue >= 0, "▲", "▼") RETURN ArrowSymbol & " £" & FORMAT(ABS(VarianceValue), "#,##0")
+		lineageTag: 324ff060-5bed-4007-9ff7-8c38c94ab8f9
+
+	measure 'Net Profit PY' = CALCULATE([Net Profit], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		lineageTag: 79968782-fd74-48b7-afa1-c188a394c231
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Profit Variance £' = [Net Profit] - [Net Profit PY]
+		lineageTag: ba280ed0-fcb6-4506-a874-a43c3dae0eec
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Profit Growth %' = DIVIDE([Net Profit] - [Net Profit PY], [Net Profit PY])
+		lineageTag: f74ae933-e7d0-4550-a111-dad0fe54788a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Profit Growth % Arrow' = VAR G = [Net Profit Growth %] VAR A = IF(G >= 0, "▲", "▼") RETURN A & " " & FORMAT(G, "0.0%")
+		lineageTag: b15d4d30-9fd5-406a-badf-2a0dbd63b8cb
+
+	measure 'Net Profit Variance £ Arrow' = VAR V = [Net Profit Variance £] VAR A = IF(V >= 0, "▲", "▼") RETURN A & " £" & FORMAT(ABS(V), "#,##0")
+		lineageTag: 814b8987-8699-42f3-aa62-dd822312040a
+
+	measure 'Total Bookings PY' = CALCULATE([Total Bookings], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		formatString: 0
+		lineageTag: e96b2e02-7bfc-44f9-be8c-a6edeaa1a762
+
+	measure 'Total Bookings Variance' = [Total Bookings] - [Total Bookings PY]
+		formatString: 0
+		lineageTag: 1b93a559-bf75-4426-90f3-89cb49e867b1
+
+	measure 'Total Bookings Growth %' = DIVIDE([Total Bookings] - [Total Bookings PY], [Total Bookings PY])
+		lineageTag: 59875e2d-a155-4cad-a673-e0e207368098
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Bookings Growth % Arrow' = VAR G = [Total Bookings Growth %] VAR A = IF(G >= 0, "▲", "▼") RETURN A & " " & FORMAT(G, "0.0%")
+		lineageTag: 34c7c15c-150f-44fa-9e5d-c04abd66be75
+
+	measure 'Total Bookings Variance Arrow' = VAR V = [Total Bookings Variance] VAR A = IF(V >= 0, "▲", "▼") RETURN A & " " & FORMAT(ABS(V), "#,##0")
+		lineageTag: d5221532-28dd-4ee1-bf80-205802f39ca1
+
+	measure 'Total Customers PY' = CALCULATE([Total Customers], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		formatString: 0
+		lineageTag: f2d677a0-a237-4d7c-8168-30c93a29d9b1
+
+	measure 'Total Customers Variance' = [Total Customers] - [Total Customers PY]
+		formatString: 0
+		lineageTag: e932db32-46c0-40e5-8dec-6c8aaac0983f
+
+	measure 'Total Customers Growth %' = DIVIDE([Total Customers] - [Total Customers PY], [Total Customers PY])
+		lineageTag: 3157ecf9-bcfa-4982-94f0-b3b295b8e20f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Customers Growth % Arrow' = VAR G = [Total Customers Growth %] VAR A = IF(G >= 0, "▲", "▼") RETURN A & " " & FORMAT(G, "0.0%")
+		lineageTag: 5e020ad3-25bf-4f5a-814d-aae770c8ef3a
+
+	measure 'Total Customers Variance Arrow' = VAR V = [Total Customers Variance] VAR A = IF(V >= 0, "▲", "▼") RETURN A & " " & FORMAT(ABS(V), "#,##0")
+		lineageTag: 52dea14c-b81f-4674-ac27-58cdefebb504
+
+	measure 'Gross Margin PY' = CALCULATE([Gross Margin], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		lineageTag: 91916b69-40ab-42b8-843d-d62f2c03a0fe
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Gross Margin Variance £' = [Gross Margin] - [Gross Margin PY]
+		lineageTag: 67f29f18-86ab-4197-9198-bc3bafc31335
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Gross Margin Growth %' = DIVIDE([Gross Margin] - [Gross Margin PY], [Gross Margin PY])
+		lineageTag: c0c79d29-0372-48ce-9c1d-519373abbc0d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Gross Margin Growth % Arrow' = VAR G = [Gross Margin Growth %] VAR A = IF(G >= 0, "▲", "▼") RETURN A & " " & FORMAT(G, "0.0%")
+		lineageTag: a96f16b9-b1c3-45b5-96ce-31d1cb275190
+
+	measure 'Gross Margin Variance £ Arrow' = VAR V = [Gross Margin Variance £] VAR A = IF(V >= 0, "▲", "▼") RETURN A & " £" & FORMAT(ABS(V), "#,##0")
+		lineageTag: 84e0d151-d831-4efa-ad0c-df8bf2133d58
+
+	measure 'Total Discount Given PY' = CALCULATE([Total Discount Given], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		lineageTag: 652c1309-3582-43b0-afb7-99cb61827701
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Discount Given Variance' = [Total Discount Given] - [Total Discount Given PY]
+		lineageTag: 26d67794-3e79-4ff2-8e78-fbee39683197
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Discount Given Growth %' = DIVIDE([Total Discount Given] - [Total Discount Given PY], [Total Discount Given PY])
+		lineageTag: 6ec8d7bd-f3a6-4ade-83d9-5e10c3e8a26d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Discount Given Growth % Arrow' = VAR G = [Total Discount Given Growth %] VAR A = IF(G >= 0, "▲", "▼") RETURN A & " " & FORMAT(G, "0.0%")
+		lineageTag: 44fe6e4e-8bda-4b1b-9cf0-c2946e92704a
+
+	measure 'Total Discount Given Variance Arrow' = VAR V = [Total Discount Given Variance] VAR A = IF(V >= 0, "▲", "▼") RETURN A & " £" & FORMAT(ABS(V), "#,##0")
+		lineageTag: 28bfc663-3585-48c8-905e-e399a9f835c3
+
+	measure 'Net Profit Margin PY' = CALCULATE([Net Profit Margin], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		lineageTag: 531419f8-02cc-4b1b-b92e-5247bd1bf340
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Profit Margin Change (pp)' = [Net Profit Margin] - [Net Profit Margin PY]
+		lineageTag: 96f82aec-d2ed-4745-8494-e95d45c49eeb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Profit Margin Change Arrow' = VAR C = [Net Profit Margin Change (pp)] VAR A = IF(C >= 0, "▲", "▼") RETURN A & " " & FORMAT(C*100, "0.0") & "pp"
+		lineageTag: da6889fa-bcf3-4f29-95d5-654a0b2f423d
+
+	measure 'Highest Revenue Guide' = VAR Ranked = TOPN(1, VALUES(DimGuide[full_name]), CALCULATE([Revenue]), DESC) RETURN CONCATENATEX(Ranked, DimGuide[full_name])
+		lineageTag: 783bf5a7-b360-4b0f-a517-ab9e5b224217
+
+	column booking_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 5e7a676b-a740-43c7-823c-d0df7aa4151c
+		summarizeBy: none
+		sourceColumn: booking_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column booking_reference
+		dataType: string
+		lineageTag: 38324cc0-5c0d-416a-ba95-ce9d03b384de
+		summarizeBy: none
+		sourceColumn: booking_reference
+
+		annotation SummarizationSetBy = Automatic
+
+	column tour_id
+		dataType: int64
+		formatString: 0
+		lineageTag: d6be2a8e-88b7-468c-b91e-4a6fa25140b4
+		summarizeBy: sum
+		sourceColumn: tour_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 754c999b-179f-4f1b-bd8a-2e6b484729cb
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column route_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 1886b7db-4dc4-4913-bffc-49b1c3470cae
+		summarizeBy: none
+		sourceColumn: route_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column guide_id
+		dataType: int64
+		formatString: 0
+		lineageTag: db5bcac0-9656-458b-8861-a6ccd94706ca
+		summarizeBy: none
+		sourceColumn: guide_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column region_id
+		dataType: int64
+		formatString: 0
+		lineageTag: d81c673d-74b7-4e09-8289-48e90e73db01
+		summarizeBy: sum
+		sourceColumn: region_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel_id
+		dataType: int64
+		formatString: 0
+		lineageTag: e2545130-41e6-42c1-a76f-18cb07fae6a7
+		summarizeBy: none
+		sourceColumn: channel_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column tour_date_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 32ccd023-19fc-42d0-bd22-4ed6ca8dc350
+		summarizeBy: none
+		sourceColumn: tour_date_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_date_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 2317eaf6-c72a-4701-a2f7-de291b52b940
+		summarizeBy: sum
+		sourceColumn: created_date_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column season
+		dataType: string
+		lineageTag: c2ca299f-d67c-4ff8-be8f-f6b5e043a0a0
+		summarizeBy: none
+		sourceColumn: season
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: 110c7009-f761-4594-bb0d-ca385fc66b8f
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column party_size
+		dataType: int64
+		formatString: 0
+		lineageTag: b3e49e3e-57a6-4d36-aaec-1790d6486186
+		summarizeBy: sum
+		sourceColumn: party_size
+
+		annotation SummarizationSetBy = Automatic
+
+	column list_price
+		dataType: double
+		lineageTag: a63a41db-e06b-426a-9a73-b7d1955dfa30
+		summarizeBy: sum
+		sourceColumn: list_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column discount_pct
+		dataType: double
+		lineageTag: ed3ac444-f2ec-41d0-a98f-3d9ae08334c8
+		summarizeBy: sum
+		sourceColumn: discount_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column discount_applied
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 9c80957c-f3f3-4aa9-a6d4-6081779a3741
+		summarizeBy: none
+		sourceColumn: discount_applied
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_price
+		dataType: double
+		lineageTag: c962a0bb-718d-4498-9802-69850056af63
+		summarizeBy: sum
+		sourceColumn: total_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column lead_time_days
+		dataType: int64
+		formatString: 0
+		lineageTag: 4d8c2013-bef2-48e6-9a86-dbdc06406cc3
+		summarizeBy: sum
+		sourceColumn: lead_time_days
+
+		annotation SummarizationSetBy = Automatic
+
+	column contact_email_invalid
+		dataType: int64
+		formatString: 0
+		lineageTag: becad9f7-d44f-457e-845c-30c1bfe5e115
+		summarizeBy: sum
+		sourceColumn: contact_email_invalid
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Lead Time Bucket' = SWITCH(TRUE(), FactBookings[lead_time_days] <= 7, "0-7 days", FactBookings[lead_time_days] <= 30, "8-30 days", FactBookings[lead_time_days] <= 90, "31-90 days", "90+ days")
+		lineageTag: e42f9cf0-4ffa-4b3c-905d-78c5598abe04
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Is First Booking' = VAR CustomerId = FactBookings[customer_id] VAR CurrentTourDate = FactBookings[tour_date_id] VAR FirstTourDate = CALCULATE(MIN(FactBookings[tour_date_id]), ALLEXCEPT(FactBookings, FactBookings[customer_id])) RETURN IF(CurrentTourDate = FirstTourDate, "New", "Returning")
+		lineageTag: 7245d0e7-f24a-4438-8ff2-e93bcb38a878
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactBookings = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\FactBookings.csv"),[Delimiter=",", Columns=19, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"booking_id", Int64.Type}, {"booking_reference", type text}, {"tour_id", Int64.Type}, {"customer_id", Int64.Type}, {"route_id", Int64.Type}, {"guide_id", Int64.Type}, {"region_id", Int64.Type}, {"channel_id", Int64.Type}, {"tour_date_id", Int64.Type}, {"created_date_id", Int64.Type}, {"season", type text}, {"status", type text}, {"party_size", Int64.Type}, {"list_price", type number}, {"discount_pct", type number}, {"discount_applied", Int64.Type}, {"total_price", type number}, {"lead_time_days", Int64.Type}, {"contact_email_invalid", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

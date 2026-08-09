@@ -1,0 +1,43 @@
+table browser_icons
+	lineageTag: 0396cdab-9d36-4cc6-b411-6ec187109595
+
+	column browser
+		dataType: string
+		lineageTag: 00dfc68d-e6e8-47d6-9280-a40afcee5a49
+		summarizeBy: none
+		sourceColumn: browser
+
+		annotation SummarizationSetBy = Automatic
+
+	column icon_url
+		dataType: string
+		lineageTag: 8619f1ed-fe27-4f24-b31e-1f00f8464e2f
+		dataCategory: ImageUrl
+		summarizeBy: none
+		sourceColumn: icon_url
+
+		annotation SummarizationSetBy = Automatic
+
+	column description
+		dataType: string
+		lineageTag: 8638f4b4-ef7a-4d73-8cde-67896cda9407
+		summarizeBy: none
+		sourceColumn: description
+
+		annotation SummarizationSetBy = Automatic
+
+	partition browser_icons = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\assets\browser_icons.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}}),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"browser", type text}, {"icon_url", type text}, {"description", type text}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
