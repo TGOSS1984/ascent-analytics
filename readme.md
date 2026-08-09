@@ -25,6 +25,7 @@
 - [🔍 Data Quality](#-data-quality)
 - [⚙️ Local Setup](#️-local-setup)
 - [🗺️ Roadmap](#️-roadmap)
+- [Known Limitations & Next Steps](#known-limitations--next-steps)
 - [📌 Notes on Realism & Scope](#-notes-on-realism--scope)
 
 ---
@@ -247,6 +248,16 @@ python -m src.generation.generate_extensions
 - [x] Dashboards: Executive, Sales, Customer, Guide, Route, Marketing, Operations, Finance, Website Analytics, Data Quality — all 10 built and verified
 - [x] Written insight report & recommendations — see [`docs/insight_report.md`](docs/insight_report.md)
 - [x] Full documentation pass (architecture, data dictionary, KPI catalogue)
+
+## Known Limitations & Next Steps
+
+An honest account of what this project doesn't yet do, rather than presenting it as finished in every respect:
+
+- **No CI.** The 79-test suite runs locally but isn't wired into a GitHub Actions workflow yet — a green checks badge would be a small addition with real signal value for anyone evaluating this repo without cloning it.
+- **No one-command reproduction.** The full pipeline is currently 8 manual commands (see [Local Setup](#️-local-setup) below). A `Makefile` or a thin orchestration script would remove real friction for verifying it actually works end to end.
+- **The `.pbix` file is a black box on GitHub.** It's binary, doesn't render in a repo preview, and requires Power BI Desktop to open at all. Dashboard screenshots, or a published/embedded view, would let it be evaluated without installing anything.
+- **The Power BI semantic model isn't version-controlled the way the code is.** This turned out to be a real, recurring source of friction over the course of the project — see [`docs/powerbi_lessons_learned.md`](docs/powerbi_lessons_learned.md) for a full account of what a single schema change actually costs to rebuild, and why. The named next step is **Tabular Editor + TMDL**, which would let the semantic model live as reviewable text files alongside the Python and SQL, rather than trapped inside a binary file.
+- **No productionization narrative.** Everything here is correctly scoped as a demo (SQLite, a single local `.pbix`) — worth a short written note on what would change for a real deployment (Postgres instead of SQLite, scheduled refresh, row-level security, a real ingestion API instead of CSVs) to make clear where the demo's edges are.
 
 ## 📌 Notes on Realism & Scope
 
