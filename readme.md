@@ -190,11 +190,23 @@ A custom report theme, [`powerbi/ascent_analytics_theme.json`](powerbi/ascent_an
 python -m src.warehouse.export_for_powerbi
 ```
 
-exports the star schema plus three pre-aggregated summary tables to `powerbi/data_export/`, ready for Power BI Desktop's Text/CSV import.
+exports the star schema plus four pre-aggregated summary tables to `powerbi/data_export/`, ready for Power BI Desktop's Text/CSV import.
 
 **Why CSV export rather than a live SQLite connection?** Power BI Desktop has no built-in SQLite connector — the alternative is installing and configuring a third-party ODBC driver for a single-user, file-based database, which is unnecessary friction. This is explained in full in `powerbi/README.md`, including the ODBC option for anyone who wants it anyway.
 
-Dashboard build-out itself (the actual `.pbix` file, screenshots, and visuals) is tracked separately on the roadmap below.
+All 10 dashboards are built and verified inside Power BI Desktop — see below for a look without needing to open the file yourself.
+
+### Dashboard previews
+
+**[📄 View all 10 dashboards as a PDF](powerbi/screenshots/Ascent_Analytics_Dashboards.pdf)** — exported directly from Power BI Desktop (File → Export → Export to PDF), one page per dashboard, in tab order. Renders inline in GitHub's file viewer, no download or Power BI install needed.
+
+| Executive | Route |
+|---|---|
+| ![Executive dashboard](powerbi/screenshots/executive.png) | ![Route dashboard](powerbi/screenshots/route.png) |
+
+| Website Analytics |
+|---|
+| ![Website Analytics dashboard](powerbi/screenshots/web_analytics.png) |
 
 The dashboards answer *what's happening*; [`docs/insight_report.md`](docs/insight_report.md) answers *so what* — ten findings pulled directly from the warehouse (bank holiday demand spikes, difficulty-driven cancellation risk, channel ROAS, guide discount behaviour, and more), each with a specific recommendation, not just a chart.
 
@@ -269,7 +281,7 @@ An honest account of what this project doesn't yet do, rather than presenting it
 
 - **No CI.** ~~The 79-test suite runs locally but isn't wired into a GitHub Actions workflow yet~~ **Fixed** — see `.github/workflows/ci.yml`. Worth knowing: a CI file existed since the project's first commit but silently only exercised ~35 of 79 tests (it never ran the pipeline first, so most tests skipped rather than ran) — fixed to run the full pipeline before testing, with an explicit check that fails loudly if anything skips again.
 - **No one-command reproduction.** ~~The full pipeline is currently 8 manual commands~~ **Fixed** — `python run_pipeline.py` (or `make pipeline` on Unix/macOS) runs all 8 steps in order, stopping clearly on the first failure rather than continuing on bad data. The README's setup instructions had also only ever documented 3 of the 8 steps (generation only, never cleaning/warehouse/export) — fixed at the same time.
-- **The `.pbix` file is a black box on GitHub.** It's binary, doesn't render in a repo preview, and requires Power BI Desktop to open at all. Dashboard screenshots, or a published/embedded view, would let it be evaluated without installing anything.
+- **The `.pbix` file is a black box on GitHub.** ~~It's binary, doesn't render in a repo preview, and requires Power BI Desktop to open at all.~~ **Structure in place, pending the actual export files** — see the new "Dashboard previews" section above. A full PDF export (all 10 pages, renders inline in GitHub) plus 3 inline PNG previews (Executive, Route, Finance).
 - **The Power BI semantic model isn't version-controlled the way the code is.** This turned out to be a real, recurring source of friction over the course of the project — see [`docs/powerbi_lessons_learned.md`](docs/powerbi_lessons_learned.md) for a full account of what a single schema change actually costs to rebuild, and why. The named next step is **Tabular Editor + TMDL**, which would let the semantic model live as reviewable text files alongside the Python and SQL, rather than trapped inside a binary file.
 - **No productionization narrative.** Everything here is correctly scoped as a demo (SQLite, a single local `.pbix`) — worth a short written note on what would change for a real deployment (Postgres instead of SQLite, scheduled refresh, row-level security, a real ingestion API instead of CSVs) to make clear where the demo's edges are.
 
