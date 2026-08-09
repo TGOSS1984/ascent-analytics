@@ -221,12 +221,26 @@ pip install -r requirements-notebook.txt
 
 If that fails on Windows with an `OSError` about a missing nested file path, see the comment at the top of `requirements-notebook.txt` for how to enable Windows Long Path support, or just work from a shorter path (e.g. `C:\dev\ascent-analytics`) outside OneDrive.
 
-Then generate the data, in order:
+Then run the full pipeline. Easiest way — one command, works identically on Windows/macOS/Linux:
+
+```bash
+python run_pipeline.py          # full pipeline
+python run_pipeline.py --test   # full pipeline, then the full test suite
+```
+
+On macOS/Linux, `make pipeline` (or `make all` to include tests) does the same thing — see the `Makefile`. Windows users should stick to `run_pipeline.py`, since `make` isn't available out of the box.
+
+**Or run each of the 8 steps individually**, if you want to inspect output between stages:
 
 ```bash
 python -m src.generation.generate_reference_data
 python -m src.generation.generate_transactions
 python -m src.generation.generate_extensions
+python -m src.cleaning.run_pipeline
+python -m src.cleaning.run_pipeline_extensions
+python -m src.warehouse.build_warehouse
+python -m src.warehouse.apply_views
+python -m src.warehouse.export_for_powerbi
 ```
 
 ## 🗺️ Roadmap
@@ -253,8 +267,8 @@ python -m src.generation.generate_extensions
 
 An honest account of what this project doesn't yet do, rather than presenting it as finished in every respect:
 
-- **No CI.** The 79-test suite runs locally but isn't wired into a GitHub Actions workflow yet — a green checks badge would be a small addition with real signal value for anyone evaluating this repo without cloning it.
-- **No one-command reproduction.** The full pipeline is currently 8 manual commands (see [Local Setup](#️-local-setup) below). A `Makefile` or a thin orchestration script would remove real friction for verifying it actually works end to end.
+- **No CI.** ~~The 79-test suite runs locally but isn't wired into a GitHub Actions workflow yet~~ **Fixed** — see `.github/workflows/ci.yml`. Worth knowing: a CI file existed since the project's first commit but silently only exercised ~35 of 79 tests (it never ran the pipeline first, so most tests skipped rather than ran) — fixed to run the full pipeline before testing, with an explicit check that fails loudly if anything skips again.
+- **No one-command reproduction.** ~~The full pipeline is currently 8 manual commands~~ **Fixed** — `python run_pipeline.py` (or `make pipeline` on Unix/macOS) runs all 8 steps in order, stopping clearly on the first failure rather than continuing on bad data. The README's setup instructions had also only ever documented 3 of the 8 steps (generation only, never cleaning/warehouse/export) — fixed at the same time.
 - **The `.pbix` file is a black box on GitHub.** It's binary, doesn't render in a repo preview, and requires Power BI Desktop to open at all. Dashboard screenshots, or a published/embedded view, would let it be evaluated without installing anything.
 - **The Power BI semantic model isn't version-controlled the way the code is.** This turned out to be a real, recurring source of friction over the course of the project — see [`docs/powerbi_lessons_learned.md`](docs/powerbi_lessons_learned.md) for a full account of what a single schema change actually costs to rebuild, and why. The named next step is **Tabular Editor + TMDL**, which would let the semantic model live as reviewable text files alongside the Python and SQL, rather than trapped inside a binary file.
 - **No productionization narrative.** Everything here is correctly scoped as a demo (SQLite, a single local `.pbix`) — worth a short written note on what would change for a real deployment (Postgres instead of SQLite, scheduled refresh, row-level security, a real ingestion API instead of CSVs) to make clear where the demo's edges are.

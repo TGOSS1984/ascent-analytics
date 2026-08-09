@@ -1,31 +1,31 @@
 run_started_at,table,metric,stage,value,notes
-2026-08-03T11:37:28.519842+00:00,Review,row_count,raw,11178.0,
-2026-08-03T11:37:28.519842+00:00,Review,missing_overall_rating,cleaning,222.0,left null — not imputed on a 1-5 scale
-2026-08-03T11:37:28.519842+00:00,Review,missing_guide_rating,cleaning,309.0,left null — not imputed on a 1-5 scale
-2026-08-03T11:37:28.519842+00:00,Review,missing_route_rating,cleaning,344.0,left null — not imputed on a 1-5 scale
-2026-08-03T11:37:28.519842+00:00,Review,missing_safety_rating,cleaning,352.0,left null — not imputed on a 1-5 scale
-2026-08-03T11:37:28.519842+00:00,Review,missing_value_rating,cleaning,318.0,left null — not imputed on a 1-5 scale
-2026-08-03T11:37:28.519842+00:00,Review,row_count,cleaned,11178.0,
-2026-08-03T11:37:28.519842+00:00,Review,completeness,cleaning,0.9724,
-2026-08-03T11:37:28.519842+00:00,Weather,row_count,raw,17899.0,
-2026-08-03T11:37:28.519842+00:00,Weather,row_count,cleaned,17899.0,
-2026-08-03T11:37:28.519842+00:00,Weather,completeness,cleaning,1.0,
-2026-08-03T11:37:28.519842+00:00,BookingAttribution,row_count,raw,28982.0,
-2026-08-03T11:37:28.519842+00:00,BookingAttribution,row_count,cleaned,28982.0,
-2026-08-03T11:37:28.519842+00:00,BookingAttribution,completeness,cleaning,1.0,
-2026-08-03T11:37:28.519842+00:00,Marketing,row_count,raw,504.0,
-2026-08-03T11:37:28.519842+00:00,Marketing,row_count,cleaned,504.0,
-2026-08-03T11:37:28.519842+00:00,Marketing,completeness,cleaning,1.0,
-2026-08-03T11:37:28.519842+00:00,WebsiteAnalytics,row_count,raw,6570.0,
-2026-08-03T11:37:28.519842+00:00,WebsiteAnalytics,country_names_standardised,cleaning,2008.0,e.g. 'UK'/'U.K.' -> 'United Kingdom'
-2026-08-03T11:37:28.519842+00:00,WebsiteAnalytics,row_count,cleaned,6570.0,
-2026-08-03T11:37:28.519842+00:00,WebsiteAnalytics,completeness,cleaning,1.0,
-2026-08-03T11:37:28.519842+00:00,EquipmentHire,row_count,raw,9936.0,
-2026-08-03T11:37:28.519842+00:00,EquipmentHire,row_count,cleaned,9936.0,
-2026-08-03T11:37:28.519842+00:00,EquipmentHire,completeness,cleaning,1.0,
-2026-08-03T11:37:28.519842+00:00,Review,validation_failures,cleaning,0.0,
-2026-08-03T11:37:28.519842+00:00,Weather,validation_failures,cleaning,0.0,
-2026-08-03T11:37:28.519842+00:00,BookingAttribution,validation_failures,cleaning,0.0,
-2026-08-03T11:37:28.519842+00:00,Marketing,validation_failures,cleaning,0.0,
-2026-08-03T11:37:28.519842+00:00,WebsiteAnalytics,validation_failures,cleaning,0.0,
-2026-08-03T11:37:28.519842+00:00,EquipmentHire,validation_failures,cleaning,0.0,
+2026-08-09T13:55:37.502997+00:00,Review,row_count,raw,11178.0,
+2026-08-09T13:55:37.502997+00:00,Review,missing_overall_rating,cleaning,222.0,left null — not imputed on a 1-5 scale
+2026-08-09T13:55:37.502997+00:00,Review,missing_guide_rating,cleaning,309.0,left null — not imputed on a 1-5 scale
+2026-08-09T13:55:37.502997+00:00,Review,missing_route_rating,cleaning,344.0,left null — not imputed on a 1-5 scale
+2026-08-09T13:55:37.502997+00:00,Review,missing_safety_rating,cleaning,352.0,left null — not imputed on a 1-5 scale
+2026-08-09T13:55:37.502997+00:00,Review,missing_value_rating,cleaning,318.0,left null — not imputed on a 1-5 scale
+2026-08-09T13:55:37.502997+00:00,Review,row_count,cleaned,11178.0,
+2026-08-09T13:55:37.502997+00:00,Review,completeness,cleaning,0.9724,
+2026-08-09T13:55:37.502997+00:00,Weather,row_count,raw,17899.0,
+2026-08-09T13:55:37.502997+00:00,Weather,row_count,cleaned,17899.0,
+2026-08-09T13:55:37.502997+00:00,Weather,completeness,cleaning,1.0,
+2026-08-09T13:55:37.502997+00:00,BookingAttribution,row_count,raw,28982.0,
+2026-08-09T13:55:37.502997+00:00,BookingAttribution,row_count,cleaned,28982.0,
+2026-08-09T13:55:37.502997+00:00,BookingAttribution,completeness,cleaning,1.0,
+2026-08-09T13:55:37.502997+00:00,Marketing,row_count,raw,504.0,
+2026-08-09T13:55:37.502997+00:00,Marketing,row_count,cleaned,504.0,
+2026-08-09T13:55:37.502997+00:00,Marketing,completeness,cleaning,1.0,
+2026-08-09T13:55:37.502997+00:00,WebsiteAnalytics,row_count,raw,6570.0,
+2026-08-09T13:55:37.502997+00:00,WebsiteAnalytics,country_names_standardised,cleaning,2008.0,e.g. 'UK'/'U.K.' -> 'United Kingdom'
+2026-08-09T13:55:37.502997+00:00,WebsiteAnalytics,row_count,cleaned,6570.0,
+2026-08-09T13:55:37.502997+00:00,WebsiteAnalytics,completeness,cleaning,1.0,
+2026-08-09T13:55:37.502997+00:00,EquipmentHire,row_count,raw,9936.0,
+2026-08-09T13:55:37.502997+00:00,EquipmentHire,row_count,cleaned,9936.0,
+2026-08-09T13:55:37.502997+00:00,EquipmentHire,completeness,cleaning,1.0,
+2026-08-09T13:55:37.502997+00:00,Review,validation_failures,cleaning,0.0,
+2026-08-09T13:55:37.502997+00:00,Weather,validation_failures,cleaning,0.0,
+2026-08-09T13:55:37.502997+00:00,BookingAttribution,validation_failures,cleaning,0.0,
+2026-08-09T13:55:37.502997+00:00,Marketing,validation_failures,cleaning,0.0,
+2026-08-09T13:55:37.502997+00:00,WebsiteAnalytics,validation_failures,cleaning,0.0,
+2026-08-09T13:55:37.502997+00:00,EquipmentHire,validation_failures,cleaning,0.0,
