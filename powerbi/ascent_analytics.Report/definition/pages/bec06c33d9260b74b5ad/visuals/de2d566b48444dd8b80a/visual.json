@@ -1,0 +1,146 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "de2d566b48444dd8b80a",
+  "position": {
+    "x": 265.82151793160966,
+    "y": 196.96413678065053,
+    "z": 17000,
+    "height": 427.09036742800396,
+    "width": 789.3545183714001,
+    "tabOrder": 17000
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "EquipmentHireLong"
+                    }
+                  },
+                  "Property": "equipment_type"
+                }
+              },
+              "queryRef": "EquipmentHireLong.equipment_type",
+              "nativeQueryRef": "equipment_type",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "season"
+                }
+              },
+              "queryRef": "FactBookings.season",
+              "nativeQueryRef": "season"
+            }
+          ]
+        },
+        "Tooltips": {
+          "projections": [
+            {
+              "field": {
+                "Arithmetic": {
+                  "Left": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "EquipmentHireLong"
+                        }
+                      },
+                      "Property": "Equipment Hire Count"
+                    }
+                  },
+                  "Right": {
+                    "ScopedEval": {
+                      "Expression": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "EquipmentHireLong"
+                            }
+                          },
+                          "Property": "Equipment Hire Count"
+                        }
+                      },
+                      "Scope": []
+                    }
+                  },
+                  "Operator": 3
+                }
+              },
+              "queryRef": "Divide(EquipmentHireLong.Equipment Hire Count, ScopedEval(EquipmentHireLong.Equipment Hire Count, []))",
+              "nativeQueryRef": "%GT Equipment Hire Count"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "EquipmentHireLong"
+                    }
+                  },
+                  "Property": "Equipment Hire Count"
+                }
+              },
+              "queryRef": "EquipmentHireLong.Equipment Hire Count",
+              "nativeQueryRef": "Equipment Hire Count"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "EquipmentHireLong"
+                  }
+                },
+                "Property": "Equipment Hire Count"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

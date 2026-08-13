@@ -23,7 +23,7 @@
                       "Entity": "DimRegion"
                     }
                   },
-                  "Property": "name"
+                  "Property": "Region Name"
                 }
               },
               "queryRef": "DimRegion.name",

@@ -4,7 +4,7 @@
     {
       "ordinal": 0,
       "scrollPosition": {
-        "x": 928.297964,
+        "x": 1039.906307,
         "y": 0
       },
       "nodes": [
@@ -19,7 +19,7 @@
             "height": 176,
             "width": 234
           },
-          "zIndex": 6
+          "zIndex": 7
         },
         {
           "location": {
@@ -32,7 +32,7 @@
             "height": 145,
             "width": 234
           },
-          "zIndex": 7
+          "zIndex": 8
         },
         {
           "location": {
@@ -45,7 +45,7 @@
             "height": 152,
             "width": 234
           },
-          "zIndex": 8
+          "zIndex": 21
         },
         {
           "location": {
@@ -175,12 +175,12 @@
             "height": 248,
             "width": 234
           },
-          "zIndex": 2
+          "zIndex": 3
         },
         {
           "location": {
-            "x": 2942.7162725263597,
-            "y": 1104.7138672732817
+            "x": 2861.2244665263597,
+            "y": 1124.2010382732817
           },
           "nodeIndex": "PipeLineQualityLog",
           "nodeLineageTag": "d806f39e-d02b-4f77-b58e-a6243b5a2a5f",
@@ -188,7 +188,7 @@
             "height": 224,
             "width": 234
           },
-          "zIndex": 3
+          "zIndex": 4
         },
         {
           "location": {
@@ -214,7 +214,7 @@
             "height": 300,
             "width": 234
           },
-          "zIndex": 4
+          "zIndex": 5
         },
         {
           "location": {
@@ -240,12 +240,12 @@
             "height": 300,
             "width": 234
           },
-          "zIndex": 5
+          "zIndex": 6
         },
         {
           "location": {
-            "x": 3177.1201729149143,
-            "y": 801.94478927328169
+            "x": 3269.241344914914,
+            "y": 479.52068727328168
           },
           "nodeIndex": "WaterfallSteps",
           "nodeLineageTag": "a311a4df-fe4c-4b31-a283-736a0aecf89d",
@@ -253,7 +253,7 @@
             "height": 128,
             "width": 234
           },
-          "zIndex": 1
+          "zIndex": 2
         },
         {
           "location": {
@@ -267,6 +267,19 @@
             "width": 234
           },
           "zIndex": 20
+        },
+        {
+          "location": {
+            "x": 3386.630252792625,
+            "y": 1147.8001112732816
+          },
+          "nodeIndex": "EquipmentHireLong",
+          "nodeLineageTag": "8c157b0a-d064-4796-8cfc-06685b3bff10",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 1
         }
       ],
       "name": "All tables",

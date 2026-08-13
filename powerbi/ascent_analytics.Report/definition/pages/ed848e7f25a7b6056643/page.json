@@ -59,5 +59,12 @@
         }
       }
     ]
-  }
+  },
+  "visualInteractions": [
+    {
+      "source": "16b4366cd19d890ced90",
+      "target": "c04637ad50059d00cfbd",
+      "type": "DataFilter"
+    }
+  ]
 }

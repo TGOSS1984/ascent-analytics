@@ -67,9 +67,8 @@ table FactBookings
 		lineageTag: ffe980a2-8c7d-4da7-8d42-21952cb0ae87
 
 	measure 'Repeat Customer Rate' = DIVIDE([Repeat Customers], [Total Customers])
+		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: 10da730a-aabb-430b-bfc5-6412a6adb895
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Revenue PY' = CALCULATE([Revenue], SAMEPERIODLASTYEAR(DimDate[full_date]))
 		lineageTag: 408525a8-5abd-4a70-93fd-44477353540e
@@ -124,9 +123,10 @@ table FactBookings
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Average Price per Tour' = DIVIDE(SUM(FactBookings[total_price]), [Confirmed Bookings])
+		formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
 		lineageTag: 6bc83326-17e2-497f-b131-de2f092c3b8f
 
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
 
 	measure 'Discount % of Revenue' = DIVIDE([Total Discount Given], SUM(FactBookings[list_price]))
 		formatString: 0.0%;-0.0%;0.0%

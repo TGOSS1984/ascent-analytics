@@ -197,5 +197,143 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "2bcc3c7801bc128c97a5",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimRoute"
+                  }
+                },
+                "Hierarchy": "Region Name Hierarchy"
+              }
+            },
+            "Level": "Region Name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "bb62c719e750000e2172",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimRoute"
+                  }
+                },
+                "Hierarchy": "Region Name Hierarchy"
+              }
+            },
+            "Level": "name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "f07450784e42744c2128",
+        "field": {
+          "Arithmetic": {
+            "Left": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FactBookings"
+                  }
+                },
+                "Property": "Revenue"
+              }
+            },
+            "Right": {
+              "ScopedEval": {
+                "Expression": {
+                  "Measure": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "FactBookings"
+                      }
+                    },
+                    "Property": "Revenue"
+                  }
+                },
+                "Scope": []
+              }
+            },
+            "Operator": 3
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "1691e1ac452398ecb825",
+        "field": {
+          "Arithmetic": {
+            "Left": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FactBookings"
+                  }
+                },
+                "Property": "Revenue PY"
+              }
+            },
+            "Right": {
+              "ScopedEval": {
+                "Expression": {
+                  "Measure": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "FactBookings"
+                      }
+                    },
+                    "Property": "Revenue PY"
+                  }
+                },
+                "Scope": []
+              }
+            },
+            "Operator": 3
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "03f978004b0bd40e03cc",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactBookings"
+              }
+            },
+            "Property": "Revenue"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "911e04f5b65bd5b65a44",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactBookings"
+              }
+            },
+            "Property": "Revenue PY"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

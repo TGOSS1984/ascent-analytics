@@ -111,7 +111,7 @@ table DimRoute
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	column 'Region Name' = RELATED(DimRegion[name])
+	column 'Region Name' = RELATED(DimRegion[Region Name])
 		lineageTag: fb525ab9-16f1-449b-8377-b59a3e21d1b1
 		summarizeBy: none
 

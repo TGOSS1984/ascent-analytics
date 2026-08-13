@@ -73,7 +73,7 @@
               },
               "queryRef": "DimDate.year Hierarchy.month_name",
               "nativeQueryRef": "year Hierarchy month_name",
-              "active": true
+              "active": false
             },
             {
               "field": {
@@ -93,7 +93,7 @@
               },
               "queryRef": "DimDate.year Hierarchy.day",
               "nativeQueryRef": "year Hierarchy day",
-              "active": false
+              "active": true
             }
           ]
         },

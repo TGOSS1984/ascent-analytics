@@ -10,7 +10,7 @@
     "tabOrder": 5000
   },
   "visual": {
-    "visualType": "lineChart",
+    "visualType": "areaChart",
     "query": {
       "queryState": {
         "Category": {
@@ -112,6 +112,44 @@
               },
               "queryRef": "FactBookings.Is First Booking",
               "nativeQueryRef": "Is First Booking"
+            }
+          ]
+        },
+        "Tooltips": {
+          "projections": [
+            {
+              "field": {
+                "Arithmetic": {
+                  "Left": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "FactBookings"
+                        }
+                      },
+                      "Property": "Revenue"
+                    }
+                  },
+                  "Right": {
+                    "ScopedEval": {
+                      "Expression": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "FactBookings"
+                            }
+                          },
+                          "Property": "Revenue"
+                        }
+                      },
+                      "Scope": []
+                    }
+                  },
+                  "Operator": 3
+                }
+              },
+              "queryRef": "Divide(FactBookings.Revenue, ScopedEval(FactBookings.Revenue, []))",
+              "nativeQueryRef": "%GT Revenue"
             }
           ]
         },

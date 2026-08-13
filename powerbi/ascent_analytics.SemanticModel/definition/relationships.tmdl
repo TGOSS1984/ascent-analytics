@@ -93,3 +93,7 @@ relationship e012a6e8-b9cb-fd3d-1b8f-c8f9a517ebcb
 	fromColumn: FactWebsiteAnalytics.browser
 	toColumn: browser_icons.browser
 
+relationship AutoDetected_4e0effbd-a81f-4c09-ba2f-06504f5b7b61
+	fromColumn: EquipmentHireLong.booking_id
+	toColumn: FactBookings.booking_id
+

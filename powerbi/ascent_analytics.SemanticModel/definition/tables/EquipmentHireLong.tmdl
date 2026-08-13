@@ -1,0 +1,49 @@
+table EquipmentHireLong
+	lineageTag: 8c157b0a-d064-4796-8cfc-06685b3bff10
+
+	measure 'Equipment Hire Count' = COUNTROWS(EquipmentHireLong)
+		formatString: 0
+		lineageTag: 50675f6b-4435-4bcd-a316-dcf65a9c9e26
+
+	column booking_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 8fcb4bcf-7da6-46e9-b370-59733a9b44c1
+		summarizeBy: none
+		sourceColumn: booking_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column equipment_type
+		dataType: string
+		lineageTag: 64e4aca2-c444-4cba-b8e9-11c60a343ac3
+		summarizeBy: none
+		sourceColumn: equipment_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_hired
+		dataType: int64
+		formatString: 0
+		lineageTag: c679e4ba-bde2-4787-808f-e24caeafa1a4
+		summarizeBy: sum
+		sourceColumn: is_hired
+
+		annotation SummarizationSetBy = Automatic
+
+	partition EquipmentHireLong = m
+		mode: import
+		source =
+				let
+				    Source = FactEquipmentHire,
+				    #"Unpivoted Columns" = Table.UnpivotOtherColumns(Source, {"booking_id", "customer_id", "hire_revenue"}, "Attribute", "Value"),
+				    #"Filtered Rows" = Table.SelectRows(#"Unpivoted Columns", each ([Value] = 1)),
+				    #"Renamed Columns" = Table.RenameColumns(#"Filtered Rows",{{"Attribute", "equipment_type"}, {"Value", "is_hired"}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Renamed Columns",{"customer_id", "hire_revenue"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,6 +1,29 @@
 table Summary_RoutePerformance
 	lineageTag: 4512bb40-d0af-4937-a55f-34b6032281cb
 
+	measure 'Route Cumulative Revenue' =
+			
+			VAR CurrentRank =
+			    RANKX ( ALL ( Summary_RoutePerformance ), CALCULATE ( SUM ( Summary_RoutePerformance[revenue] ) ), , DESC )
+			RETURN
+			    SUMX (
+			        FILTER (
+			            ALL ( Summary_RoutePerformance ),
+			            RANKX ( ALL ( Summary_RoutePerformance ), CALCULATE ( SUM ( Summary_RoutePerformance[revenue] ) ), , DESC ) <= CurrentRank
+			        ),
+			        Summary_RoutePerformance[revenue]
+			    )
+		lineageTag: efe540e4-590a-4240-b4cb-3fd197ce58f7
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Route Cumulative %' =
+			
+			DIVIDE ( [Route Cumulative Revenue], CALCULATE ( SUM ( Summary_RoutePerformance[revenue] ), ALL ( Summary_RoutePerformance ) ) )
+		lineageTag: 21701e15-3800-4223-9479-e8871da3ebed
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column route_id
 		dataType: int64
 		formatString: 0

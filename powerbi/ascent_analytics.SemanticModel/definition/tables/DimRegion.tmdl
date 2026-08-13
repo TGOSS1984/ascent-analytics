@@ -10,11 +10,11 @@ table DimRegion
 
 		annotation SummarizationSetBy = Automatic
 
-	column name
+	column 'Region Name'
 		dataType: string
 		lineageTag: 2e0cc446-7a97-49d9-8d17-2397409a6061
 		summarizeBy: none
-		sourceColumn: name
+		sourceColumn: Region Name
 
 		annotation SummarizationSetBy = Automatic
 
@@ -32,9 +32,10 @@ table DimRegion
 				let
 				    Source = Csv.Document(File.Contents("C:\Users\tomgo\OneDrive\Documents\vscode-projects\ascent-analytics\powerbi\data_export\DimRegion.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
 				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
-				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"region_id", Int64.Type}, {"name", type text}, {"slug", type text}})
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"region_id", Int64.Type}, {"name", type text}, {"slug", type text}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"name", "Region Name"}})
 				in
-				    #"Changed Type"
+				    #"Renamed Columns"
 
 	annotation PBI_ResultType = Table
 

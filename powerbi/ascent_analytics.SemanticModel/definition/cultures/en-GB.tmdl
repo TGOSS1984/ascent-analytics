@@ -1459,7 +1459,7 @@ cultureInfo en-GB
 			      "Definition": {
 			        "Binding": {
 			          "ConceptualEntity": "DimRegion",
-			          "ConceptualProperty": "name"
+			          "ConceptualProperty": "Region Name"
 			        }
 			      },
 			      "State": "Generated",

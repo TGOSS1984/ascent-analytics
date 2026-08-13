@@ -1,6 +1,28 @@
 table DimGuide
 	lineageTag: e6b67a6b-36a8-409d-97d9-84bda5afbd7a
 
+	measure 'Guide Cumulative Revenue' =
+			
+			VAR CurrentRank =
+			    RANKX ( ALL ( DimGuide ), CALCULATE ( [Revenue] ), , DESC )
+			RETURN
+			    SUMX (
+			        FILTER (
+			            ALL ( DimGuide ),
+			            RANKX ( ALL ( DimGuide ), CALCULATE ( [Revenue] ), , DESC ) <= CurrentRank
+			        ),
+			        CALCULATE ( [Revenue] )
+			    )
+		lineageTag: e989f375-8291-4081-bdc8-afbf940750d0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Guide Cumulative %' =
+			
+			DIVIDE ( [Guide Cumulative Revenue], CALCULATE ( [Revenue], ALL ( DimGuide ) ) )
+		formatString: 0%;-0%;0%
+		lineageTag: 001120e6-30a5-405f-b893-869ca54a5514
+
 	column guide_id
 		dataType: int64
 		formatString: 0

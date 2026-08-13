@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "2cbf5b936628b3741400",
   "position": {
-    "x": 251.42857142857144,
-    "y": 220,
+    "x": 251.13924050632912,
+    "y": 220.75949367088606,
     "z": 4000,
-    "height": 838.57142857142867,
-    "width": 840,
+    "height": 840.506329113924,
+    "width": 840.506329113924,
     "tabOrder": 4000
   },
   "visual": {
@@ -269,5 +269,171 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "4dd184dc30dc58ee5543",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Summary_RoutePerformance"
+              }
+            },
+            "Property": "route_name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "4d0bf007e349e11b4782",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Summary_RoutePerformance"
+              }
+            },
+            "Property": "region_name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "5b1e9641b94305e9cb52",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Summary_RoutePerformance"
+              }
+            },
+            "Property": "difficulty"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "b53e93e0220338bc2b12",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Summary_RoutePerformance"
+                  }
+                },
+                "Property": "bookings"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "f2fc2beac6090ed57326",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Summary_RoutePerformance"
+                  }
+                },
+                "Property": "revenue"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "79f29404b6744dc5ad5c",
+        "field": {
+          "Arithmetic": {
+            "Left": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "Summary_RoutePerformance"
+                      }
+                    },
+                    "Property": "revenue"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "Right": {
+              "ScopedEval": {
+                "Expression": {
+                  "Aggregation": {
+                    "Expression": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Summary_RoutePerformance"
+                          }
+                        },
+                        "Property": "revenue"
+                      }
+                    },
+                    "Function": 0
+                  }
+                },
+                "Scope": []
+              }
+            },
+            "Operator": 3
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "53f8f280e61e6dd098a1",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Summary_RoutePerformance"
+                  }
+                },
+                "Property": "avg_overall_rating"
+              }
+            },
+            "Function": 1
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "8592dcd431d9015d45a0",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Summary_RoutePerformance"
+                  }
+                },
+                "Property": "cancellation_rate"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

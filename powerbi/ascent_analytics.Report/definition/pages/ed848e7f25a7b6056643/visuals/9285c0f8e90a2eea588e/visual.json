@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "9285c0f8e90a2eea588e",
   "position": {
-    "x": 253.79310344827587,
-    "y": 277.24137931034483,
+    "x": 252.85714285714286,
+    "y": 241.42857142857144,
     "z": 0,
-    "height": 769.65517241379314,
-    "width": 881.37931034482756,
+    "height": 818.57142857142867,
+    "width": 881.42857142857144,
     "tabOrder": 0
   },
   "visual": {
@@ -287,5 +287,121 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "221e273332c70f0e50f2",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimGuide"
+              }
+            },
+            "Property": "full_name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "c13d38b397c8bc217375",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimGuide"
+              }
+            },
+            "Property": "Experience Band"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6c93518fa96f4a89fac2",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactBookings"
+              }
+            },
+            "Property": "Revenue"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "efebea9356e92abe34b8",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactBookings"
+              }
+            },
+            "Property": "Guide Utilisation %"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "b773f600a5e3cf9f30d2",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactReviews"
+              }
+            },
+            "Property": "Average Guide Rating"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "13489ee7d38a415f2f5c",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactReviews"
+              }
+            },
+            "Property": "Average Safety Rating"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "fabea93d7516dd408c8a",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactBookings"
+              }
+            },
+            "Property": "Cancellation Rate"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "b136a418897aebbeb756",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactBookings"
+              }
+            },
+            "Property": "Guide Performance Index"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "e6759fd3296b106b910b",
   "position": {
-    "x": 264.82758620689657,
-    "y": 208.27586206896552,
+    "x": 265.82151793160966,
+    "y": 643.73644703919933,
     "z": 5000,
-    "height": 852.41379310344826,
-    "width": 788.9655172413793,
+    "height": 416.34695579649707,
+    "width": 787.85654712260214,
     "tabOrder": 5000
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "DimRegion"
                     }
                   },
-                  "Property": "name"
+                  "Property": "Region Name"
                 }
               },
               "queryRef": "DimRegion.name",
-              "nativeQueryRef": "name",
+              "nativeQueryRef": "Region Name",
               "active": true
             }
           ]

@@ -2,6 +2,13 @@ table DimDate
 	lineageTag: c97cc6c8-2958-4606-8d4c-a8bc887db75a
 	dataCategory: Time
 
+	measure 'Filter Context' =
+			
+			VAR YearTxt = IF(ISFILTERED(DimDate[year]), "Year: " & SELECTEDVALUE(DimDate[year], "Multiple"), "All Years")
+			VAR RegionTxt = IF(ISFILTERED(DimRegion[Region Name]), "Region: " & SELECTEDVALUE(DimRegion[Region Name], "Multiple"), "All Regions")
+			RETURN YearTxt & "   |   " & RegionTxt
+		lineageTag: 03b81089-9916-4582-87b7-5c5fbc009fc5
+
 	column date_id
 		dataType: int64
 		formatString: 0

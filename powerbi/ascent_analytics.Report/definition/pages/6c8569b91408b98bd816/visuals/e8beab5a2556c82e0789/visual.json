@@ -17,17 +17,22 @@
           "projections": [
             {
               "field": {
-                "Column": {
+                "HierarchyLevel": {
                   "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimRegion"
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "DimRoute"
+                        }
+                      },
+                      "Hierarchy": "Region Name Hierarchy"
                     }
                   },
-                  "Property": "name"
+                  "Level": "Region Name"
                 }
               },
-              "queryRef": "DimRegion.name",
-              "nativeQueryRef": "name"
+              "queryRef": "DimRoute.Region Name Hierarchy.Region Name",
+              "nativeQueryRef": "Region Name Hierarchy Region Name"
             }
           ]
         },

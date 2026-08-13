@@ -20,6 +20,40 @@
       "type": "RegisteredResources"
     }
   },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "e23cf697a141d0858e0c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimRegion"
+              }
+            },
+            "Property": "Region Name"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
   "objects": {
     "section": [
       {
@@ -75,6 +109,11 @@
           "type": "Image"
         },
         {
+          "name": "average-conversion-rate47003277727652715.png",
+          "path": "average-conversion-rate47003277727652715.png",
+          "type": "Image"
+        },
+        {
           "name": "average-conversion-rate7736790313241719.png",
           "path": "average-conversion-rate7736790313241719.png",
           "type": "Image"
@@ -97,6 +136,11 @@
         {
           "name": "average-reviews-per-booking4544695925064195.png",
           "path": "average-reviews-per-booking4544695925064195.png",
+          "type": "Image"
+        },
+        {
+          "name": "cac8743220194982292.png",
+          "path": "cac8743220194982292.png",
           "type": "Image"
         },
         {
@@ -137,6 +181,16 @@
         {
           "name": "logo6130075535967097.png",
           "path": "logo6130075535967097.png",
+          "type": "Image"
+        },
+        {
+          "name": "marketing-revenue917609126476383.png",
+          "path": "marketing-revenue917609126476383.png",
+          "type": "Image"
+        },
+        {
+          "name": "marketing-spend08578537609863746.png",
+          "path": "marketing-spend08578537609863746.png",
           "type": "Image"
         },
         {
@@ -182,6 +236,11 @@
         {
           "name": "revenue35457061246038335.png",
           "path": "revenue35457061246038335.png",
+          "type": "Image"
+        },
+        {
+          "name": "roas3281362933674091.png",
+          "path": "roas3281362933674091.png",
           "type": "Image"
         },
         {

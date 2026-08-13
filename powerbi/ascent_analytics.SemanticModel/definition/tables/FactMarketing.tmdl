@@ -37,9 +37,8 @@ table FactMarketing
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Marketing Revenue Growth %' = DIVIDE([Marketing Revenue] - [Marketing Revenue PY], [Marketing Revenue PY])
+		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: bf666539-640d-4f84-813c-c96b7bacc913
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Marketing Revenue Growth % Arrow' = VAR G = [Marketing Revenue Growth %] VAR A = IF(G >= 0, "▲", "▼") RETURN A & " " & FORMAT(G, "0.0%")
 		lineageTag: 78015a3d-2444-4935-8753-73aa1697d6d9
@@ -67,6 +66,14 @@ table FactMarketing
 
 	measure 'Marketing Spend Variance £ Arrow' = VAR V = [Marketing Spend Variance £] VAR A = IF(V >= 0, "▲", "▼") RETURN A & " £" & FORMAT(ABS(V), "#,##0")
 		lineageTag: a15f9791-aec2-456c-8611-95394beb3559
+
+	measure 'Marketing Impressions' = SUM(FactMarketing[impressions])
+		formatString: 0
+		lineageTag: 05df6af5-911f-4bde-a5a1-091c0740e033
+
+	measure 'Marketing Clicks' = SUM(FactMarketing[clicks])
+		formatString: 0
+		lineageTag: 7d48ae46-2949-4460-96e9-d3b65c01160a
 
 	column marketing_id
 		dataType: int64
