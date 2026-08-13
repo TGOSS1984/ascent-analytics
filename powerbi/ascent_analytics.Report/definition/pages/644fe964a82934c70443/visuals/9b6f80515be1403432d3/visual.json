@@ -20,7 +20,7 @@
                 "name": {
                   "expr": {
                     "Literal": {
-                      "Value": "'logo.png'"
+                      "Value": "'ascent-analytics-logo-wrapped.png'"
                     }
                   }
                 },
@@ -29,7 +29,7 @@
                     "ResourcePackageItem": {
                       "PackageName": "RegisteredResources",
                       "PackageType": 1,
-                      "ItemName": "logo2909721488018113.png"
+                      "ItemName": "ascent-analytics-logo-wrapped36140662353090924.png"
                     }
                   }
                 },
