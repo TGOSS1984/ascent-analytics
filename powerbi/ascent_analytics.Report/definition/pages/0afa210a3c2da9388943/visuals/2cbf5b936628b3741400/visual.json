@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "2cbf5b936628b3741400",
   "position": {
-    "x": 251.13924050632912,
-    "y": 220.75949367088606,
+    "x": 251.42857142857144,
+    "y": 200,
     "z": 4000,
-    "height": 840.506329113924,
-    "width": 840.506329113924,
+    "height": 861.42857142857144,
+    "width": 840,
     "tabOrder": 4000
   },
   "visual": {
@@ -17,117 +17,121 @@
           "projections": [
             {
               "field": {
-                "Column": {
+                "HierarchyLevel": {
                   "Expression": {
-                    "SourceRef": {
-                      "Entity": "Summary_RoutePerformance"
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "DimRoute"
+                        }
+                      },
+                      "Hierarchy": "Region Name Hierarchy"
                     }
                   },
-                  "Property": "route_name"
+                  "Level": "Region Name"
                 }
               },
-              "queryRef": "Summary_RoutePerformance.route_name",
-              "nativeQueryRef": "route_name"
+              "queryRef": "DimRoute.Region Name Hierarchy.Region Name",
+              "nativeQueryRef": "Region Name Hierarchy Region Name"
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "DimRoute"
+                        }
+                      },
+                      "Hierarchy": "Region Name Hierarchy"
+                    }
+                  },
+                  "Level": "name"
+                }
+              },
+              "queryRef": "DimRoute.Region Name Hierarchy.name",
+              "nativeQueryRef": "Region Name Hierarchy name"
             },
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Summary_RoutePerformance"
-                    }
-                  },
-                  "Property": "region_name"
-                }
-              },
-              "queryRef": "Summary_RoutePerformance.region_name",
-              "nativeQueryRef": "region_name"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Summary_RoutePerformance"
+                      "Entity": "DimRoute"
                     }
                   },
                   "Property": "difficulty"
                 }
               },
-              "queryRef": "Summary_RoutePerformance.difficulty",
+              "queryRef": "DimRoute.difficulty",
               "nativeQueryRef": "difficulty"
             },
             {
               "field": {
-                "Aggregation": {
+                "Measure": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Summary_RoutePerformance"
-                        }
-                      },
-                      "Property": "bookings"
+                    "SourceRef": {
+                      "Entity": "FactBookings"
                     }
                   },
-                  "Function": 0
+                  "Property": "Total Bookings"
                 }
               },
-              "queryRef": "Sum(Summary_RoutePerformance.bookings)",
-              "nativeQueryRef": "Sum of bookings"
+              "queryRef": "FactBookings.Total Bookings",
+              "nativeQueryRef": "Total Bookings"
             },
             {
               "field": {
-                "Aggregation": {
+                "Measure": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Summary_RoutePerformance"
-                        }
-                      },
-                      "Property": "revenue"
+                    "SourceRef": {
+                      "Entity": "FactBookings"
                     }
                   },
-                  "Function": 0
+                  "Property": "Cancelled Bookings"
                 }
               },
-              "queryRef": "Sum(Summary_RoutePerformance.revenue)",
-              "nativeQueryRef": "Sum of revenue"
+              "queryRef": "FactBookings.Cancelled Bookings",
+              "nativeQueryRef": "Cancelled Bookings"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Revenue"
+                }
+              },
+              "queryRef": "FactBookings.Revenue",
+              "nativeQueryRef": "Revenue"
             },
             {
               "field": {
                 "Arithmetic": {
                   "Left": {
-                    "Aggregation": {
+                    "Measure": {
                       "Expression": {
-                        "Column": {
-                          "Expression": {
-                            "SourceRef": {
-                              "Entity": "Summary_RoutePerformance"
-                            }
-                          },
-                          "Property": "revenue"
+                        "SourceRef": {
+                          "Entity": "FactBookings"
                         }
                       },
-                      "Function": 0
+                      "Property": "Revenue"
                     }
                   },
                   "Right": {
                     "ScopedEval": {
                       "Expression": {
-                        "Aggregation": {
+                        "Measure": {
                           "Expression": {
-                            "Column": {
-                              "Expression": {
-                                "SourceRef": {
-                                  "Entity": "Summary_RoutePerformance"
-                                }
-                              },
-                              "Property": "revenue"
+                            "SourceRef": {
+                              "Entity": "FactBookings"
                             }
                           },
-                          "Function": 0
+                          "Property": "Revenue"
                         }
                       },
                       "Scope": []
@@ -136,46 +140,78 @@
                   "Operator": 3
                 }
               },
-              "queryRef": "Divide(Sum(Summary_RoutePerformance.revenue), ScopedEval(Sum(Summary_RoutePerformance.revenue), []))",
-              "nativeQueryRef": "%GT Sum of revenue"
+              "queryRef": "Divide(FactBookings.Revenue, ScopedEval(FactBookings.Revenue, []))",
+              "nativeQueryRef": "%GT Revenue"
             },
             {
               "field": {
-                "Aggregation": {
+                "Measure": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Summary_RoutePerformance"
-                        }
-                      },
-                      "Property": "avg_overall_rating"
+                    "SourceRef": {
+                      "Entity": "FactBookings"
                     }
                   },
-                  "Function": 1
+                  "Property": "Cancellation Rate"
                 }
               },
-              "queryRef": "Sum(Summary_RoutePerformance.avg_overall_rating)",
-              "nativeQueryRef": "Average of avg_overall_rating"
+              "queryRef": "FactBookings.Cancellation Rate",
+              "nativeQueryRef": "Cancellation Rate"
             },
             {
               "field": {
-                "Aggregation": {
+                "Measure": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Summary_RoutePerformance"
-                        }
-                      },
-                      "Property": "cancellation_rate"
+                    "SourceRef": {
+                      "Entity": "FactReviews"
                     }
                   },
-                  "Function": 0
+                  "Property": "Average Overall Rating"
                 }
               },
-              "queryRef": "Sum(Summary_RoutePerformance.cancellation_rate)",
-              "nativeQueryRef": "Sum of cancellation_rate"
+              "queryRef": "FactReviews.Average Overall Rating",
+              "nativeQueryRef": "Average Overall Rating"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Revenue PY"
+                }
+              },
+              "queryRef": "FactBookings.Revenue PY",
+              "nativeQueryRef": "Revenue PY"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Revenue Variance £"
+                }
+              },
+              "queryRef": "FactBookings.Revenue Variance £",
+              "nativeQueryRef": "Revenue Variance £"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Revenue Growth %"
+                }
+              },
+              "queryRef": "FactBookings.Revenue Growth %",
+              "nativeQueryRef": "Revenue Growth %"
             }
           ]
         }
@@ -184,18 +220,13 @@
         "sort": [
           {
             "field": {
-              "Aggregation": {
+              "Measure": {
                 "Expression": {
-                  "Column": {
-                    "Expression": {
-                      "SourceRef": {
-                        "Entity": "Summary_RoutePerformance"
-                      }
-                    },
-                    "Property": "revenue"
+                  "SourceRef": {
+                    "Entity": "FactBookings"
                   }
                 },
-                "Function": 0
+                "Property": "Revenue"
               }
             },
             "direction": "Descending"
@@ -204,19 +235,24 @@
       }
     },
     "objects": {
+      "columnHeaders": [
+        {
+          "properties": {}
+        }
+      ],
       "columnWidth": [
         {
           "properties": {
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "89.74192845833105D"
+                  "Value": "67.26806605475787D"
                 }
               }
             }
           },
           "selector": {
-            "metadata": "Sum(Summary_RoutePerformance.avg_overall_rating)"
+            "metadata": "FactBookings.Cancelled Bookings"
           }
         },
         {
@@ -224,13 +260,13 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "79.74192799612443D"
+                  "Value": "75.85716005324176D"
                 }
               }
             }
           },
           "selector": {
-            "metadata": "Sum(Summary_RoutePerformance.cancellation_rate)"
+            "metadata": "FactBookings.Cancellation Rate"
           }
         },
         {
@@ -238,13 +274,13 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "64.70967435159893D"
+                  "Value": "68.80971985457673D"
                 }
               }
             }
           },
           "selector": {
-            "metadata": "Sum(Summary_RoutePerformance.bookings)"
+            "metadata": "FactReviews.Average Overall Rating"
           }
         },
         {
@@ -252,188 +288,59 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "81.25D"
+                  "Value": "64.57146282581566D"
                 }
               }
             }
           },
           "selector": {
-            "metadata": "Divide(Sum(Summary_RoutePerformance.revenue), ScopedEval(Sum(Summary_RoutePerformance.revenue), []))"
+            "metadata": "Divide(FactBookings.Revenue, ScopedEval(FactBookings.Revenue, []))"
           }
-        }
-      ],
-      "columnHeaders": [
+        },
         {
-          "properties": {}
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "76.00001271564946D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactBookings.Total Bookings"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "76.85716937668234D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactBookings.Revenue Variance £"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "78.28574000163135D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactBookings.Revenue Growth %"
+          }
         }
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "4dd184dc30dc58ee5543",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Summary_RoutePerformance"
-              }
-            },
-            "Property": "route_name"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "4d0bf007e349e11b4782",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Summary_RoutePerformance"
-              }
-            },
-            "Property": "region_name"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "5b1e9641b94305e9cb52",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Summary_RoutePerformance"
-              }
-            },
-            "Property": "difficulty"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "b53e93e0220338bc2b12",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "Summary_RoutePerformance"
-                  }
-                },
-                "Property": "bookings"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "f2fc2beac6090ed57326",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "Summary_RoutePerformance"
-                  }
-                },
-                "Property": "revenue"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "79f29404b6744dc5ad5c",
-        "field": {
-          "Arithmetic": {
-            "Left": {
-              "Aggregation": {
-                "Expression": {
-                  "Column": {
-                    "Expression": {
-                      "SourceRef": {
-                        "Entity": "Summary_RoutePerformance"
-                      }
-                    },
-                    "Property": "revenue"
-                  }
-                },
-                "Function": 0
-              }
-            },
-            "Right": {
-              "ScopedEval": {
-                "Expression": {
-                  "Aggregation": {
-                    "Expression": {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Entity": "Summary_RoutePerformance"
-                          }
-                        },
-                        "Property": "revenue"
-                      }
-                    },
-                    "Function": 0
-                  }
-                },
-                "Scope": []
-              }
-            },
-            "Operator": 3
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "53f8f280e61e6dd098a1",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "Summary_RoutePerformance"
-                  }
-                },
-                "Property": "avg_overall_rating"
-              }
-            },
-            "Function": 1
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "8592dcd431d9015d45a0",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "Summary_RoutePerformance"
-                  }
-                },
-                "Property": "cancellation_rate"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

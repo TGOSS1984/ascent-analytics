@@ -67,6 +67,40 @@
               },
               "queryRef": "Divide(FactBookings.Revenue, ScopedEval(FactBookings.Revenue, []))",
               "nativeQueryRef": "%GT Revenue"
+            },
+            {
+              "field": {
+                "Arithmetic": {
+                  "Left": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "FactBookings"
+                        }
+                      },
+                      "Property": "Revenue PY"
+                    }
+                  },
+                  "Right": {
+                    "ScopedEval": {
+                      "Expression": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "FactBookings"
+                            }
+                          },
+                          "Property": "Revenue PY"
+                        }
+                      },
+                      "Scope": []
+                    }
+                  },
+                  "Operator": 3
+                }
+              },
+              "queryRef": "Divide(FactBookings.Revenue PY, ScopedEval(FactBookings.Revenue PY, []))",
+              "nativeQueryRef": "%GT Revenue PY"
             }
           ]
         },
@@ -85,6 +119,20 @@
               },
               "queryRef": "FactBookings.Revenue",
               "nativeQueryRef": "Revenue"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Revenue PY"
+                }
+              },
+              "queryRef": "FactBookings.Revenue PY",
+              "nativeQueryRef": "Revenue PY"
             }
           ]
         }

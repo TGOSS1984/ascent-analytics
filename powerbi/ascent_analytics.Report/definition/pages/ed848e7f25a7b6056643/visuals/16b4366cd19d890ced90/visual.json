@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "16b4366cd19d890ced90",
   "position": {
-    "x": 601.51898734177212,
-    "y": 20.253164556962023,
+    "x": 601.42857142857144,
+    "y": 20,
     "z": 3000,
-    "height": 194.43037974683543,
-    "width": 532.65822784810121,
+    "height": 205.71428571428572,
+    "width": 532.85714285714289,
     "tabOrder": 3000
   },
   "visual": {
@@ -84,6 +84,20 @@
               },
               "queryRef": "FactBookings.Average Discount % (Discounted Bookings)",
               "nativeQueryRef": "Average Discount % (Discounted Bookings)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Active Guides"
+                }
+              },
+              "queryRef": "FactBookings.Active Guides",
+              "nativeQueryRef": "Active Guides"
             }
           ]
         }
@@ -128,7 +142,7 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "94.85715731242996D"
+                  "Value": "71.96235853624734D"
                 }
               }
             }
@@ -142,13 +156,27 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "126.20689655172413D"
+                  "Value": "81.9924788272404D"
                 }
               }
             }
           },
           "selector": {
             "metadata": "FactBookings.Average Discount % (Discounted Bookings)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "73.85714614228183D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactBookings.Active Guides"
           }
         }
       ],

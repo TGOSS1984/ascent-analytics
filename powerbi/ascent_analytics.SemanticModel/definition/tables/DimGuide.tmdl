@@ -23,6 +23,16 @@ table DimGuide
 		formatString: 0%;-0%;0%
 		lineageTag: 001120e6-30a5-405f-b893-869ca54a5514
 
+	measure 'Total Guides' = DISTINCTCOUNT(DimGuide[guide_id])
+		formatString: 0
+		lineageTag: 0e430a78-a465-4ab7-83f2-f3a7b4c6d03e
+
+	measure 'Guide Revenue Rank' =
+			
+			RANKX ( ALL ( DimGuide ), CALCULATE ( [Revenue] ), , DESC )
+		formatString: 0
+		lineageTag: f3dc3793-56e3-4bf9-81fc-0060b85c775b
+
 	column guide_id
 		dataType: int64
 		formatString: 0

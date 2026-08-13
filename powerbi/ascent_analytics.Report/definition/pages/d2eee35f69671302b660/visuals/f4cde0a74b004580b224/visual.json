@@ -67,6 +67,40 @@
               },
               "queryRef": "Divide(FactBookings.Total Bookings, ScopedEval(FactBookings.Total Bookings, []))",
               "nativeQueryRef": "%GT Total Bookings"
+            },
+            {
+              "field": {
+                "Arithmetic": {
+                  "Left": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "FactBookings"
+                        }
+                      },
+                      "Property": "Total Bookings PY"
+                    }
+                  },
+                  "Right": {
+                    "ScopedEval": {
+                      "Expression": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "FactBookings"
+                            }
+                          },
+                          "Property": "Total Bookings PY"
+                        }
+                      },
+                      "Scope": []
+                    }
+                  },
+                  "Operator": 3
+                }
+              },
+              "queryRef": "Divide(FactBookings.Total Bookings PY, ScopedEval(FactBookings.Total Bookings PY, []))",
+              "nativeQueryRef": "%GT Total Bookings PY"
             }
           ]
         },
@@ -85,6 +119,20 @@
               },
               "queryRef": "FactBookings.Total Bookings",
               "nativeQueryRef": "Total Bookings"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Total Bookings PY"
+                }
+              },
+              "queryRef": "FactBookings.Total Bookings PY",
+              "nativeQueryRef": "Total Bookings PY"
             }
           ]
         }

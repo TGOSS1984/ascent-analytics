@@ -302,7 +302,22 @@
             "Property": "full_name"
           }
         },
-        "type": "Categorical"
+        "type": "Categorical",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
       },
       {
         "name": "c13d38b397c8bc217375",

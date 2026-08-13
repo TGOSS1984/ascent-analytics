@@ -20,9 +20,8 @@ table FactBookings
 		annotation PBI_FormatHint = {"isDecimal":true}
 
 	measure 'Cancellation Rate' = DIVIDE([Cancelled Bookings], [Total Bookings])
+		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: e5bdd564-a7cb-41eb-b5c4-c86c62a085a0
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Average Booking Value' = DIVIDE([Revenue], [Confirmed Bookings])
 		lineageTag: 18de283b-2a91-4167-8f02-25c265e4fa08
@@ -276,6 +275,24 @@ table FactBookings
 
 	measure 'Highest Revenue Guide' = VAR Ranked = TOPN(1, VALUES(DimGuide[full_name]), CALCULATE([Revenue]), DESC) RETURN CONCATENATEX(Ranked, DimGuide[full_name])
 		lineageTag: 783bf5a7-b360-4b0f-a517-ab9e5b224217
+
+	measure 'Active Routes' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT(FactBookings[route_id]),
+			    FactBookings[status] = "confirmed"
+			)
+		formatString: 0
+		lineageTag: 269671e2-f19d-4e56-ac95-d8fe29fd61b4
+
+	measure 'Active Guides' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT(FactBookings[guide_id]),
+			    FactBookings[status] = "confirmed"
+			)
+		formatString: 0
+		lineageTag: 7f2dc9f6-3527-4578-b0e9-10d32733c7c0
 
 	column booking_id
 		dataType: int64

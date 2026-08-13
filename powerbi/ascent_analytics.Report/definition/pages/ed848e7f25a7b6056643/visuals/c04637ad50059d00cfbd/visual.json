@@ -32,6 +32,24 @@
             }
           ]
         },
+        "Tooltips": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimGuide"
+                    }
+                  },
+                  "Property": "Guide Revenue Rank"
+                }
+              },
+              "queryRef": "DimGuide.Guide Revenue Rank",
+              "nativeQueryRef": "Guide Revenue Rank"
+            }
+          ]
+        },
         "Y": {
           "projections": [
             {
@@ -104,5 +122,52 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "8d14e5c8b7e796d0f149",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimGuide"
+              }
+            },
+            "Property": "full_name"
+          }
+        },
+        "type": "Categorical",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "fd3438a4fcfbd1a9c546",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactBookings"
+              }
+            },
+            "Property": "Revenue"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }
