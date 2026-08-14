@@ -70,9 +70,10 @@ table FactBookings
 		lineageTag: 10da730a-aabb-430b-bfc5-6412a6adb895
 
 	measure 'Revenue PY' = CALCULATE([Revenue], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		formatString: #,0
 		lineageTag: 408525a8-5abd-4a70-93fd-44477353540e
 
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
+		annotation PBI_FormatHint = {"isDecimal":true}
 
 	measure 'Revenue Growth %' = DIVIDE([Revenue] - [Revenue PY], [Revenue PY])
 		formatString: 0.0%;-0.0%;0.0%
@@ -89,9 +90,8 @@ table FactBookings
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Guide Utilisation %' = VAR ActiveDates = CALCULATETABLE(VALUES(DimDate[full_date]), FactBookings) VAR EarliestActiveDate = MINX(ActiveDates, DimDate[full_date]) VAR LatestActiveDate = MAXX(ActiveDates, DimDate[full_date]) VAR AvailableDays = DATEDIFF(EarliestActiveDate, LatestActiveDate, DAY) + 1 RETURN DIVIDE([Guide-Days Worked], AvailableDays)
+		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: f1e5f1ce-8971-40a2-a0f4-6c7011b7f0b9
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Guide Performance Index' = VAR RevenueNorm = DIVIDE([Revenue], CALCULATE([Revenue], ALL(DimGuide))) VAR RatingNorm = DIVIDE(AVERAGE(FactReviews[guide_rating]), 5) VAR CancellationScore = 1 - [Cancellation Rate] RETURN 0.4 * RevenueNorm + 0.4 * RatingNorm + 0.2 * CancellationScore
 		lineageTag: 4eca6a0b-9cfe-4218-8cde-9792d386afb4
@@ -121,7 +121,9 @@ table FactBookings
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure 'Average Price per Tour' = DIVIDE(SUM(FactBookings[total_price]), [Confirmed Bookings])
+	measure 'Average Price per Tour' =
+			
+			DIVIDE([Revenue], [Confirmed Bookings])
 		formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
 		lineageTag: 6bc83326-17e2-497f-b131-de2f092c3b8f
 
@@ -261,9 +263,8 @@ table FactBookings
 		lineageTag: 28bfc663-3585-48c8-905e-e399a9f835c3
 
 	measure 'Net Profit Margin PY' = CALCULATE([Net Profit Margin], SAMEPERIODLASTYEAR(DimDate[full_date]))
+		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: 531419f8-02cc-4b1b-b92e-5247bd1bf340
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Net Profit Margin Change (pp)' = [Net Profit Margin] - [Net Profit Margin PY]
 		lineageTag: 96f82aec-d2ed-4745-8494-e95d45c49eeb

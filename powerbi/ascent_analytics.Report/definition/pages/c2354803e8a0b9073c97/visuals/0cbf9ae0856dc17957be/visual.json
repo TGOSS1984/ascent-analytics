@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "0cbf9ae0856dc17957be",
   "position": {
-    "x": 866.83544303797464,
-    "y": 20.253164556962023,
+    "x": 873.03730017762,
+    "y": 20.461811722912966,
     "z": 0,
-    "height": 330.126582278481,
-    "width": 1018.7341772151898,
+    "height": 361.49200710479573,
+    "width": 1028.2060390763766,
     "tabOrder": 0
   },
   "visual": {
@@ -127,25 +127,11 @@
                       "Entity": "FactBookings"
                     }
                   },
-                  "Property": "Revenue"
+                  "Property": "Revenue Variance £"
                 }
               },
-              "queryRef": "FactBookings.Revenue",
-              "nativeQueryRef": "Revenue"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "FactBookings"
-                    }
-                  },
-                  "Property": "Revenue PY"
-                }
-              },
-              "queryRef": "FactBookings.Revenue PY",
-              "nativeQueryRef": "Revenue PY"
+              "queryRef": "FactBookings.Revenue Variance £",
+              "nativeQueryRef": "Revenue Variance £"
             }
           ]
         }
@@ -161,7 +147,63 @@
                   "Value": "'smooth'"
                 }
               }
+            },
+            "areaShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
+          }
+        }
+      ],
+      "seriesLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "y1AxisReferenceLine": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "displayName": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Y-Axis Constant Line 1'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "1"
           }
         }
       ]

@@ -132,6 +132,20 @@
               },
               "queryRef": "FactBookings.Net Profit Margin",
               "nativeQueryRef": "Net Profit Margin"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Net Profit Margin PY"
+                }
+              },
+              "queryRef": "FactBookings.Net Profit Margin PY",
+              "nativeQueryRef": "Net Profit Margin PY"
             }
           ]
         },
@@ -150,6 +164,20 @@
               },
               "queryRef": "FactBookings.Revenue",
               "nativeQueryRef": "Revenue1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBookings"
+                    }
+                  },
+                  "Property": "Revenue PY"
+                }
+              },
+              "queryRef": "FactBookings.Revenue PY",
+              "nativeQueryRef": "Revenue PY"
             }
           ]
         }
@@ -182,7 +210,7 @@
             "areaShow": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "false"
                 }
               }
             },

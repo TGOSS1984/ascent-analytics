@@ -2,8 +2,8 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "1be61c80700ebbce90d6",
   "position": {
-    "x": 514.28571428571433,
-    "y": 20,
+    "x": 789.47845804988663,
+    "y": 20.317460317460316,
     "z": 2000,
     "height": 205.71428571428572,
     "width": 248.57142857142858,
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "FactReviews.Average Reviews per Confirmed Booking",
-              "nativeQueryRef": "Average Reviews per Confirmed Booking"
+              "nativeQueryRef": "Avg Reviews per Confirmed Booking",
+              "displayName": "Avg Reviews per Confirmed Booking"
             }
           ]
         }

@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "FactReviews.Average Customer Satisfaction",
-              "nativeQueryRef": "Average Customer Satisfaction"
+              "nativeQueryRef": "Avg Cust Satisfaction",
+              "displayName": "Avg Cust Satisfaction"
             }
           ]
         }

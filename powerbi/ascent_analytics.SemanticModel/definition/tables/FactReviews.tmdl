@@ -31,12 +31,20 @@ table FactReviews
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Average Customer Satisfaction Change (pts)' = [Average Customer Satisfaction] - [Average Customer Satisfaction PY]
+		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1047bf2-93d9-41ff-951b-e584c0057813
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Average Customer Satisfaction Change Arrow' = VAR C = [Average Customer Satisfaction Change (pts)] VAR A = IF(C >= 0, "▲", "▼") RETURN A & " " & FORMAT(ABS(C), "0.00") & " pts"
 		lineageTag: 32463254-e039-4d4b-98aa-17d1a0ec090b
+
+	measure '% Would Recommend' =
+			
+			DIVIDE(
+			    CALCULATE ( COUNTROWS ( FactReviews ), FactReviews[would_recommend] = TRUE () ),
+			    COUNTROWS ( FactReviews )
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 101c12ea-bb67-4331-b944-8f3b1817bb32
 
 	column booking_id
 		dataType: int64

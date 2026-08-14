@@ -4,10 +4,10 @@
   "position": {
     "x": 1071.2927439532943,
     "y": 198.56547122602169,
-    "z": 11000,
+    "z": 7000,
     "height": 426.20689655172413,
     "width": 834.48275862068965,
-    "tabOrder": 11000
+    "tabOrder": 7000
   },
   "visual": {
     "visualType": "clusteredBarChart",
@@ -15,6 +15,21 @@
       "queryState": {
         "Category": {
           "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "month_name"
+                }
+              },
+              "queryRef": "DimDate.month_name",
+              "nativeQueryRef": "month_name",
+              "active": false
+            },
             {
               "field": {
                 "Column": {

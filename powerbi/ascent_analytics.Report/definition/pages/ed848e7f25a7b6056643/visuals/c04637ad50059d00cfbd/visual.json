@@ -4,10 +4,10 @@
   "position": {
     "x": 1150,
     "y": 558.57142857142856,
-    "z": 8006,
+    "z": 9000,
     "height": 501.42857142857144,
     "width": 737.14285714285722,
-    "tabOrder": 8006
+    "tabOrder": 9000
   },
   "visual": {
     "visualType": "lineClusteredColumnComboChart",
@@ -153,20 +153,6 @@
             }
           ]
         }
-      },
-      {
-        "name": "fd3438a4fcfbd1a9c546",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "FactBookings"
-              }
-            },
-            "Property": "Revenue"
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }

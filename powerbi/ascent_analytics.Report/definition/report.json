@@ -104,6 +104,11 @@
           "type": "CustomTheme"
         },
         {
+          "name": "ascent-analytics-logo-datamoun15302590913416036.png",
+          "path": "ascent-analytics-logo-datamoun15302590913416036.png",
+          "type": "Image"
+        },
+        {
           "name": "ascent-analytics-logo-padded7628568010704492.png",
           "path": "ascent-analytics-logo-padded7628568010704492.png",
           "type": "Image"
@@ -184,6 +189,11 @@
           "type": "Image"
         },
         {
+          "name": "average-customer-satisfaction6738352059686743.png",
+          "path": "average-customer-satisfaction6738352059686743.png",
+          "type": "Image"
+        },
+        {
           "name": "average-overall-rating7437509565406595.png",
           "path": "average-overall-rating7437509565406595.png",
           "type": "Image"
@@ -201,6 +211,16 @@
         {
           "name": "cac8743220194982292.png",
           "path": "cac8743220194982292.png",
+          "type": "Image"
+        },
+        {
+          "name": "cancelled-bookings8415400280743531.png",
+          "path": "cancelled-bookings8415400280743531.png",
+          "type": "Image"
+        },
+        {
+          "name": "cover_hero_winter8491940463054628.jpg",
+          "path": "cover_hero_winter8491940463054628.jpg",
           "type": "Image"
         },
         {
@@ -234,6 +254,16 @@
           "type": "Image"
         },
         {
+          "name": "highest-revenue-route6197470032712367.png",
+          "path": "highest-revenue-route6197470032712367.png",
+          "type": "Image"
+        },
+        {
+          "name": "highest-revenue-route9324599601771083.png",
+          "path": "highest-revenue-route9324599601771083.png",
+          "type": "Image"
+        },
+        {
           "name": "marketing-revenue917609126476383.png",
           "path": "marketing-revenue917609126476383.png",
           "type": "Image"
@@ -241,6 +271,11 @@
         {
           "name": "marketing-spend08578537609863746.png",
           "path": "marketing-spend08578537609863746.png",
+          "type": "Image"
+        },
+        {
+          "name": "most-popular-route5214343571565617.png",
+          "path": "most-popular-route5214343571565617.png",
           "type": "Image"
         },
         {
@@ -319,6 +354,11 @@
           "type": "Image"
         },
         {
+          "name": "total-bookings6621231111760991.png",
+          "path": "total-bookings6621231111760991.png",
+          "type": "Image"
+        },
+        {
           "name": "total-bookings671082608435694.png",
           "path": "total-bookings671082608435694.png",
           "type": "Image"
@@ -351,6 +391,11 @@
         {
           "name": "weather-flagged-cancellation-r27630083524409177.png",
           "path": "weather-flagged-cancellation-r27630083524409177.png",
+          "type": "Image"
+        },
+        {
+          "name": "would-recommend5770482905836971.png",
+          "path": "would-recommend5770482905836971.png",
           "type": "Image"
         }
       ]
