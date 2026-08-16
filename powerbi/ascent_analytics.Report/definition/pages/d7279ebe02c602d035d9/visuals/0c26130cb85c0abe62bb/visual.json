@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
-  "name": "366fa6f1da950733731b",
+  "name": "0c26130cb85c0abe62bb",
   "position": {
-    "x": 663.33333333333337,
-    "y": 28.333333333333336,
-    "z": 1000,
-    "height": 150,
-    "width": 398.33333333333337,
-    "tabOrder": 1000
+    "x": 1335.7142857142858,
+    "y": 20,
+    "z": 19001,
+    "height": 207.14285714285717,
+    "width": 260,
+    "tabOrder": 19001
   },
   "visual": {
     "visualType": "cardVisual",
@@ -20,17 +20,35 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "FactBookings"
+                      "Entity": "FactWebsiteAnalytics"
                     }
                   },
-                  "Property": "Most Popular Route"
+                  "Property": "Sessions per User"
                 }
               },
-              "queryRef": "FactBookings.Most Popular Route",
-              "nativeQueryRef": "Most Popular Route"
+              "queryRef": "FactWebsiteAnalytics.Sessions per User",
+              "nativeQueryRef": "Sessions per User"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FactWebsiteAnalytics"
+                  }
+                },
+                "Property": "Sessions per User"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
       }
     },
     "objects": {
@@ -60,14 +78,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20D"
-                }
-              }
-            },
-            "textWrap": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
+                  "Value": "32D"
                 }
               }
             }

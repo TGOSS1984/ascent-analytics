@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
-  "name": "3117bc7899930d045a05",
+  "name": "8df1ca14d43aaad53dff",
   "position": {
-    "x": 1250,
-    "y": 66.666666666666671,
-    "z": 7000,
-    "height": 54.857142857142861,
-    "width": 54.857142857142861,
-    "tabOrder": 7000
+    "x": 1810,
+    "y": 58.333333333333336,
+    "z": 18002,
+    "height": 54,
+    "width": 54,
+    "tabOrder": 18002
   },
   "visual": {
     "visualType": "image",
@@ -20,7 +20,7 @@
                 "name": {
                   "expr": {
                     "Literal": {
-                      "Value": "'occupancy.png'"
+                      "Value": "'marketing-clicks.png'"
                     }
                   }
                 },
@@ -29,7 +29,7 @@
                     "ResourcePackageItem": {
                       "PackageName": "RegisteredResources",
                       "PackageType": 1,
-                      "ItemName": "occupancy48710223670111163.png"
+                      "ItemName": "marketing-clicks9247408502624697.png"
                     }
                   }
                 },

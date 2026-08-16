@@ -44,15 +44,29 @@ table FactWebsiteAnalytics
 		lineageTag: 4f6334eb-16ff-45b7-9391-904411adaf7e
 
 	measure 'Total Users Growth %' = DIVIDE([Total Users] - [Total Users PY], [Total Users PY])
+		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: 674e6f73-f3cb-4e80-ad8b-d5dbcc3b5a61
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Total Users Growth % Arrow' = VAR G = [Total Users Growth %] VAR A = IF(G >= 0, "▲", "▼") RETURN A & " " & FORMAT(G, "0.0%")
 		lineageTag: ff29c5ae-d755-4d53-ac2a-6a2697ab0250
 
 	measure 'Total Users Variance Arrow' = VAR V = [Total Users Variance] VAR A = IF(V >= 0, "▲", "▼") RETURN A & " " & FORMAT(ABS(V), "#,##0")
 		lineageTag: 945b51b2-00e5-431c-895f-5f283e151455
+
+	measure 'Sessions per User' = DIVIDE([Total Sessions], [Total Users])
+		lineageTag: 8a33be8b-5e22-4639-abd2-6d83b5291c62
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Top Country by Sessions' =
+			
+			CALCULATE(
+			    SELECTCOLUMNS(
+			        TOPN(1, VALUES(FactWebsiteAnalytics[country]), [Total Sessions], DESC),
+			        FactWebsiteAnalytics[country]
+			    )
+			)
+		lineageTag: e04f3acf-b8dc-4e6d-bcbd-24d2556a38b9
 
 	column website_analytics_id
 		dataType: int64

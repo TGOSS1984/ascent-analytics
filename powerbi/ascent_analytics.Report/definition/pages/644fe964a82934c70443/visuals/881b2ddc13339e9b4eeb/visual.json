@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
-  "name": "70333ba717314a761e8a",
+  "name": "881b2ddc13339e9b4eeb",
   "position": {
-    "x": 1088.3333333333335,
+    "x": 1643.3333333333335,
     "y": 23.333333333333336,
-    "z": 7000,
-    "height": 206.66666666666669,
+    "z": 18001,
+    "height": 206.25,
     "width": 260,
-    "tabOrder": 7000
+    "tabOrder": 18001
   },
   "visual": {
     "visualType": "cardVisual",
@@ -23,11 +23,11 @@
                       "Entity": "FactMarketing"
                     }
                   },
-                  "Property": "ROAS"
+                  "Property": "Marketing Clicks"
                 }
               },
-              "queryRef": "FactMarketing.ROAS",
-              "nativeQueryRef": "ROAS"
+              "queryRef": "FactMarketing.Marketing Clicks",
+              "nativeQueryRef": "Marketing Clicks"
             }
           ]
         }
@@ -42,7 +42,7 @@
                     "Entity": "FactMarketing"
                   }
                 },
-                "Property": "ROAS"
+                "Property": "Marketing Clicks"
               }
             },
             "direction": "Descending"

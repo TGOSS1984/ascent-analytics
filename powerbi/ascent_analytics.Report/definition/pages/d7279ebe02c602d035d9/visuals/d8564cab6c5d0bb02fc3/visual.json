@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
-  "name": "366fa6f1da950733731b",
+  "name": "d8564cab6c5d0bb02fc3",
   "position": {
-    "x": 663.33333333333337,
-    "y": 28.333333333333336,
-    "z": 1000,
-    "height": 150,
-    "width": 398.33333333333337,
-    "tabOrder": 1000
+    "x": 1621.4285714285716,
+    "y": 20,
+    "z": 19002,
+    "height": 207.14285714285717,
+    "width": 260,
+    "tabOrder": 19002
   },
   "visual": {
     "visualType": "cardVisual",
@@ -20,17 +20,35 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "FactBookings"
+                      "Entity": "FactWebsiteAnalytics"
                     }
                   },
-                  "Property": "Most Popular Route"
+                  "Property": "Top Country by Sessions"
                 }
               },
-              "queryRef": "FactBookings.Most Popular Route",
-              "nativeQueryRef": "Most Popular Route"
+              "queryRef": "FactWebsiteAnalytics.Top Country by Sessions",
+              "nativeQueryRef": "Top Country by Sessions"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FactWebsiteAnalytics"
+                  }
+                },
+                "Property": "Top Country by Sessions"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
       }
     },
     "objects": {
