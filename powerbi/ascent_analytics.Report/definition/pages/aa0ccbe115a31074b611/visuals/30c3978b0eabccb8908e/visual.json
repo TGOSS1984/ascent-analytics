@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "30c3978b0eabccb8908e",
   "position": {
-    "x": 256.55172413793105,
-    "y": 522.75862068965523,
+    "x": 257.14285714285717,
+    "y": 597.14285714285722,
     "z": 3000,
     "height": 400,
-    "width": 703.448275862069,
+    "width": 872.85714285714289,
     "tabOrder": 3000
   },
   "visual": {
@@ -75,6 +75,34 @@
               },
               "queryRef": "PipeLineQualityLog.notes",
               "nativeQueryRef": "notes"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "PipeLineQualityLog"
+                    }
+                  },
+                  "Property": "run_started_at"
+                }
+              },
+              "queryRef": "PipeLineQualityLog.run_started_at",
+              "nativeQueryRef": "run_started_at"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "PipeLineQualityLog"
+                    }
+                  },
+                  "Property": "stage"
+                }
+              },
+              "queryRef": "PipeLineQualityLog.stage",
+              "nativeQueryRef": "stage"
             }
           ]
         }

@@ -4,7 +4,7 @@
 [![SQL](https://img.shields.io/badge/SQL-SQLite%20%7C%20Postgres-4479A1?style=for-the-badge&logo=postgresql&logoColor=white)]()
 [![Power BI](https://img.shields.io/badge/BI-Power%20BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)]()
 [![Pandas](https://img.shields.io/badge/Data-Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)]()
-[![Status](https://img.shields.io/badge/Status-In%20Development-orange?style=for-the-badge)]()
+[![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=for-the-badge)]()
 
 > The analytics companion to **[UK Summit Guides](https://github.com/TGOSS1984/uk-summit-guides)** — a full end-to-end BI platform that takes raw, messy operational data and turns it into a governed warehouse, a documented KPI catalogue, and an executive-ready Power BI reporting suite.
 
@@ -47,21 +47,21 @@ Rather than starting from a dashboard, this project starts from the same place a
 
 ## 🧱 Data Model
 
-_Full data dictionary lives in [`docs/data_dictionary/`](docs/data_dictionary/) — filled in as each entity is built._
+Full, field-level documentation lives in [`docs/data_dictionary/`](docs/data_dictionary/) — every column, its type, its source, and (where relevant) the cleaning rule applied to it.
 
 | Entity | Source of truth | Status |
 |---|---|---|
-| Region | Aligned to `routes_app.Region` | 🔲 Not yet built |
-| Guide | Aligned to `routes_app.Guide` | 🔲 Not yet built |
-| Route | Aligned to `routes_app.Route` | 🔲 Not yet built |
-| ScheduledTour | Aligned to `bookings.ScheduledTour` | 🔲 Not yet built |
-| Booking | Aligned to `bookings.Booking` | 🔲 Not yet built |
-| Payment | Aligned to `payments.Payment` | 🔲 Not yet built |
-| Review | Synthetic extension | 🔲 Not yet built |
-| Weather | Synthetic extension | 🔲 Not yet built |
-| Marketing | Synthetic extension | 🔲 Not yet built |
-| WebsiteAnalytics | Synthetic extension | 🔲 Not yet built |
-| EquipmentHire | Synthetic extension | 🔲 Not yet built |
+| Region | Aligned to `routes_app.Region` | ✅ Built |
+| Guide | Aligned to `routes_app.Guide` | ✅ Built |
+| Route | Aligned to `routes_app.Route` | ✅ Built |
+| ScheduledTour | Aligned to `bookings.ScheduledTour` | ✅ Built |
+| Booking | Aligned to `bookings.Booking` | ✅ Built |
+| Payment | Aligned to `payments.Payment` | ✅ Built |
+| Review | Synthetic extension | ✅ Built |
+| Weather | Synthetic extension | ✅ Built |
+| Marketing | Synthetic extension | ✅ Built |
+| WebsiteAnalytics | Synthetic extension | ✅ Built |
+| EquipmentHire | Synthetic extension | ✅ Built |
 
 ## 🏗️ Architecture
 
@@ -86,7 +86,7 @@ Insight Report & Recommendations  (docs/)
 
 ## 🛠️ Tech Stack
 
-- **Python** — pandas, NumPy, Faker (synthetic data), pandera (validation)
+- **Python** — pandas, NumPy, Faker (synthetic data), pandera (schema validation)
 - **SQL** — SQLite for development, with Postgres-compatible DDL for production
 - **Power BI** — DAX measures, star-schema semantic model
 - **Git/GitHub** — incremental, documented commit history
@@ -110,7 +110,7 @@ ascent-analytics/
 │   ├── procedures/       # Stored procedures
 │   └── queries/           # Analytical query library
 ├── notebooks/            # Exploratory analysis
-├── powerbi/               # .pbix file + screenshots
+├── powerbi/               # .pbip project (semantic model + report) + screenshots
 ├── docs/
 │   ├── architecture/      # Architecture diagrams
 │   ├── data_dictionary/   # Field-level documentation
@@ -137,7 +137,7 @@ What it does, per table:
 - **Currency parsing** — values stored as `"£99.95"`, `"GBP 99.95"`, or `"£1,133.78"` all parse to a clean float
 - **Email repair** — the one known corruption pattern (`@` replaced with `" at "`) is repaired automatically; anything else that still doesn't look like a valid email is flagged via `contact_email_invalid` rather than guessed at
 - **Country-name standardisation** — `"UK"` / `"U.K."` / `"Great Britain"` / `"England"` all map to one canonical `"United Kingdom"`, with only genuine corrections counted in the quality log (not rows that were already canonical)
-- **Missing-value handling** — some gaps are left as genuine gaps (a guide's missing qualifications, a review's missing sub-rating — inventing a value would be worse than admitting it's unknown); others are imputed with a documented, auditable rule (e.g. missing route elevation filled with the median for that difficulty tier) — see `docs/data_dictionary/README.md` for which rule applies to which field
+- **Missing-value handling** — some gaps are left as genuine gaps (a guide's missing qualifications, a review's missing sub-rating — inventing a value would be worse than admitting it's unknown); others are imputed with a documented, auditable rule (e.g. missing route elevation filled with the median for that difficulty tier) — see `docs/data_dictionary/readme.md` for which rule applies to which field
 - **Referential integrity checks** — every foreign key is checked against its parent table, with any orphans logged rather than silently dropped
 - **Schema validation** — every cleaned table is validated against a [pandera](https://pandera.readthedocs.io/) schema (`src/cleaning/schemas.py`) enforcing types, ranges, and closed-enum values before it's written out
 
@@ -145,7 +145,7 @@ Every rule fires into a `QualityLog`, written to [`docs/data_quality/core_pipeli
 
 ## 🗃️ SQL Warehouse
 
-A Kimball-style star schema, built in SQLite (with Postgres-portable DDL — see the notes at the bottom of `sql/schema/01_dimensions.sql`). Full design rationale, the schema diagram, and the deliberate modelling decisions (denormalised `region_id`, derived `DimCustomer`, no `DimTour`) are documented in [`docs/architecture/README.md`](docs/architecture/README.md).
+A Kimball-style star schema, built in SQLite (with Postgres-portable DDL — see the notes at the bottom of `sql/schema/01_dimensions.sql`). Full design rationale, the schema diagram, and the deliberate modelling decisions (denormalised `region_id`, derived `DimCustomer`, no `DimTour`) are documented in [`docs/architecture/readme.md`](docs/architecture/readme.md).
 
 Build it (after both cleaning pipeline stages):
 
@@ -176,13 +176,13 @@ python -m src.warehouse.apply_views
 
 This creates 7 reporting views (`sql/views/01_reporting_views.sql`) — `vw_bookings_enriched` (the wide, denormalised base most other views and ad hoc queries build on), plus `vw_monthly_revenue`, `vw_route_performance`, `vw_guide_performance`, `vw_customer_summary`, `vw_weather_flagged_cancellations`, and `vw_marketing_performance`.
 
-**Stored procedures — an honest limitation.** SQLite doesn't support `CREATE PROCEDURE`. Rather than pretend otherwise, `sql/procedures/README.md` explains the gap, `sql/procedures/postgres_examples.sql` shows what the same logic looks like as real PL/pgSQL procedures (for the Postgres/SQL Server tech stack this project also targets), and `src/warehouse/procedures.py` provides the practical SQLite-compatible equivalent: parameterised Python functions (`guide_performance_report()`, `route_performance_report()`, `refresh_customer_ltv_snapshot()`) that wrap the same SQL and return a DataFrame.
+**Stored procedures — an honest limitation.** SQLite doesn't support `CREATE PROCEDURE`. Rather than pretend otherwise, `sql/procedures/readme.md` explains the gap, `sql/procedures/postgres_examples.sql` shows what the same logic looks like as real PL/pgSQL procedures (for the Postgres/SQL Server tech stack this project also targets), and `src/warehouse/procedures.py` provides the practical SQLite-compatible equivalent: parameterised Python functions (`guide_performance_report()`, `route_performance_report()`, `refresh_customer_ltv_snapshot()`) that wrap the same SQL and return a DataFrame.
 
-The **analytical query library** (`sql/queries/`, 8 files) answers the core business questions from `docs/business_problem.md` directly in runnable SQL, demonstrating `INNER`/`LEFT`/`RIGHT JOIN`, `GROUP BY`/`HAVING`, `CASE`, and window functions (`RANK`, `ROW_NUMBER`, `LAG`, `LEAD`) across CTEs — see [`sql/queries/README.md`](sql/queries/README.md) for the full index of which file answers which question with which technique.
+The **analytical query library** (`sql/queries/`, 8 files) answers the core business questions from `docs/business_problem.md` directly in runnable SQL, demonstrating `INNER`/`LEFT`/`RIGHT JOIN`, `GROUP BY`/`HAVING`, `CASE`, and window functions (`RANK`, `ROW_NUMBER`, `LAG`, `LEAD`) across CTEs — see [`sql/queries/readme.md`](sql/queries/readme.md) for the full index of which file answers which question with which technique.
 
 ## 📊 KPIs & Dashboards
 
-The Power BI semantic model is built from the exported star schema — see [`powerbi/README.md`](powerbi/README.md) for the full setup guide (import, relationships, role-playing dates, hierarchies, and applying the custom report theme) and [`powerbi/dax_measures.md`](powerbi/dax_measures.md) for the complete DAX measure library, organised by dashboard and cross-referenced to the KPI catalogue. The finished model itself lives at `powerbi/ascent_analytics.pbix` — open it directly in Power BI Desktop, or rebuild it from scratch using the guide.
+The Power BI semantic model is built from the exported star schema — see [`powerbi/readme.md`](powerbi/readme.md) for the full setup guide (import, relationships, role-playing dates, hierarchies, and applying the custom report theme) and [`powerbi/dax_measures.md`](powerbi/dax_measures.md) for the complete DAX measure library, organised by dashboard and cross-referenced to the KPI catalogue. The finished model itself lives at `powerbi/ascent_analytics.pbip` — open it directly in Power BI Desktop, or rebuild it from scratch using the guide. The semantic model (measures, relationships, tables) is stored as reviewable TMDL text files rather than a single binary — see [`docs/tmdl_exploration.md`](docs/tmdl_exploration.md) for why.
 
 A custom report theme, [`powerbi/ascent_analytics_theme.json`](powerbi/ascent_analytics_theme.json), is derived directly from **UK Summit Guides' own design tokens** — the same dark, moody mountain palette (winter ice-blue/slate alternating with summer gold/sage) as the live booking site, so the two projects share one visual identity.
 
@@ -192,7 +192,7 @@ python -m src.warehouse.export_for_powerbi
 
 exports the star schema plus four pre-aggregated summary tables to `powerbi/data_export/`, ready for Power BI Desktop's Text/CSV import.
 
-**Why CSV export rather than a live SQLite connection?** Power BI Desktop has no built-in SQLite connector — the alternative is installing and configuring a third-party ODBC driver for a single-user, file-based database, which is unnecessary friction. This is explained in full in `powerbi/README.md`, including the ODBC option for anyone who wants it anyway.
+**Why CSV export rather than a live SQLite connection?** Power BI Desktop has no built-in SQLite connector — the alternative is installing and configuring a third-party ODBC driver for a single-user, file-based database, which is unnecessary friction. This is explained in full in `powerbi/readme.md`, including the ODBC option for anyone who wants it anyway.
 
 All 10 dashboards are built and verified inside Power BI Desktop — see below for a look without needing to open the file yourself.
 
@@ -279,11 +279,11 @@ python -m src.warehouse.export_for_powerbi
 - [x] Data cleaning & validation pipeline (Python)
   - [x] Core entities: Region, Guide, Route, ScheduledTour, Booking, Payment
   - [x] Extension entities: Review, Weather, Marketing, WebsiteAnalytics, EquipmentHire
-- [x] Dimensional model design (star schema) — see `docs/architecture/README.md`
+- [x] Dimensional model design (star schema) — see `docs/architecture/readme.md`
 - [x] SQL warehouse build (schema, views, procedures, indexes)
 - [x] Power BI semantic model & DAX measures
   - [x] Star schema export + setup guide + full DAX measure library (`powerbi/`)
-  - [x] Built and verified inside Power BI Desktop (.pbix file)
+  - [x] Built and verified inside Power BI Desktop (.pbip project)
 - [x] Dashboards: Executive, Sales, Customer, Guide, Route, Marketing, Operations, Finance, Website Analytics, Data Quality — all 10 built and verified
 - [x] Written insight report & recommendations — see [`docs/insight_report.md`](docs/insight_report.md)
 - [x] Full documentation pass (architecture, data dictionary, KPI catalogue)
@@ -294,7 +294,7 @@ An honest account of what this project doesn't yet do, rather than presenting it
 
 - **No CI.** ~~The 79-test suite runs locally but isn't wired into a GitHub Actions workflow yet~~ **Fixed** — see `.github/workflows/ci.yml`. Worth knowing: a CI file existed since the project's first commit but silently only exercised ~35 of 79 tests (it never ran the pipeline first, so most tests skipped rather than ran) — fixed to run the full pipeline before testing, with an explicit check that fails loudly if anything skips again.
 - **No one-command reproduction.** ~~The full pipeline is currently 8 manual commands~~ **Fixed** — `python run_pipeline.py` (or `make pipeline` on Unix/macOS) runs all 8 steps in order, stopping clearly on the first failure rather than continuing on bad data. The README's setup instructions had also only ever documented 3 of the 8 steps (generation only, never cleaning/warehouse/export) — fixed at the same time.
-- **The `.pbix` file is a black box on GitHub.** ~~It's binary, doesn't render in a repo preview, and requires Power BI Desktop to open at all.~~ **Structure in place, pending the actual export files** — see the new "Dashboard previews" section above. A full PDF export (all 10 pages, renders inline in GitHub) plus 3 inline PNG previews (Executive, Route, Finance).
+- **The `.pbix` file is a black box on GitHub.** ~~It's binary, doesn't render in a repo preview, and requires Power BI Desktop to open at all.~~ **Fixed twice over** — see the "Dashboard previews" section above (a full PDF export, all 10 pages, renders inline in GitHub, plus 3 inline PNG previews: Executive, Route, Website Analytics) and, separately, the semantic model itself has since been migrated from `.pbix` to `.pbip` (see below), so the model itself is no longer a binary black box either.
 - **The Power BI semantic model isn't version-controlled the way the code is.** This turned out to be a real, recurring source of friction over the course of the project — see [`docs/powerbi_lessons_learned.md`](docs/powerbi_lessons_learned.md) for a full account of what a single schema change actually costs to rebuild, and why. **Done** — `powerbi/ascent_analytics.pbix` has been migrated to `powerbi/ascent_analytics.pbip`, using native PBIP + TMDL support in Power BI Desktop (GA Feb 2026, no external tool required). Measures, relationships, and tables now live as reviewable `.tmdl` text files alongside the Python and SQL — see [`docs/tmdl_exploration.md`](docs/tmdl_exploration.md) for the full rationale and what this does and doesn't fix.
 - **No productionization narrative.** Everything here is correctly scoped as a demo (SQLite, a single local `.pbip`) — **done**, see [`docs/productionization.md`](docs/productionization.md): what would actually change for a real deployment — Postgres instead of SQLite, scheduled refresh, row-level security built on the model's existing `DimRegion` structure, and a real ingestion path from the live UK Summit Guides app instead of synthetic CSVs.
 
