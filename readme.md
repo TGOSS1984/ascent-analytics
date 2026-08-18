@@ -84,6 +84,12 @@ Executive & Departmental Dashboards
 Insight Report & Recommendations  (docs/)
 ```
 
+### Star schema
+
+![Ascent Analytics star schema in Power BI Model view](docs/architecture/star_schema_powerbi.png)
+
+`FactBookings` at the centre, surrounded by its 6 dimensions — a real screenshot of the live semantic model, not a redrawn stand-in, so it reflects the actual configured relationships (including which ones are deliberately inactive). Full field-level detail, a text-based Mermaid version of the same diagram, and the reasoning behind each deliberate modelling decision live in [`docs/architecture/readme.md`](docs/architecture/readme.md).
+
 ## 🛠️ Tech Stack
 
 - **Python** — pandas, NumPy, Faker (synthetic data), pandera (schema validation)
