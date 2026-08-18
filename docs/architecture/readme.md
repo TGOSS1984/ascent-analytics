@@ -28,6 +28,34 @@ Executive & Departmental Dashboards
 
 The warehouse is a Kimball-style star schema: one row per business event in each fact table, surrounded by dimension tables that describe the who/what/where/when of that event.
 
+```mermaid
+erDiagram
+    DimRoute ||--o{ FactBookings : "route_id"
+    DimCustomer ||--o{ FactBookings : "customer_id"
+    DimGuide ||--o{ FactBookings : "guide_id"
+    DimRegion ||--o{ FactBookings : "region_id (denormalised)"
+    DimMarketingChannel ||--o{ FactBookings : "channel_id"
+    DimDate ||--o{ FactBookings : "tour_date_id"
+    DimDate ||--o{ FactBookings : "created_date_id"
+
+    FactBookings ||--o| FactPayments : "booking_id"
+    FactBookings ||--o| FactReviews : "booking_id"
+    FactBookings ||--o| FactEquipmentHire : "booking_id"
+
+    DimRegion ||--o{ FactWeather : "region_id"
+    DimDate ||--o{ FactWeather : "date_id"
+
+    DimMarketingChannel ||--o{ FactMarketing : "channel_id"
+    DimDate ||--o{ FactMarketing : "month_date_id"
+
+    DimMarketingChannel ||--o{ FactWebsiteAnalytics : "channel_id"
+    DimDate ||--o{ FactWebsiteAnalytics : "week_date_id"
+```
+
+*(Source at `diagrams/star_schema.mermaid` if you want to edit it directly. This shows the schema's actual foreign keys, not the Power BI model's active/inactive relationship choices — see "Deliberate modelling decisions" below for where those two things diverge and why.)*
+
+A plain-text version of the same relationships, for anywhere Mermaid doesn't render:
+
 ```
                          DimDate
                             │

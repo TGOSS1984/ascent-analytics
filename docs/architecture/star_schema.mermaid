@@ -1,0 +1,23 @@
+```mermaid
+erDiagram
+    DimRoute ||--o{ FactBookings : "route_id"
+    DimCustomer ||--o{ FactBookings : "customer_id"
+    DimGuide ||--o{ FactBookings : "guide_id"
+    DimRegion ||--o{ FactBookings : "region_id (denormalised)"
+    DimMarketingChannel ||--o{ FactBookings : "channel_id"
+    DimDate ||--o{ FactBookings : "tour_date_id"
+    DimDate ||--o{ FactBookings : "created_date_id"
+
+    FactBookings ||--o| FactPayments : "booking_id"
+    FactBookings ||--o| FactReviews : "booking_id"
+    FactBookings ||--o| FactEquipmentHire : "booking_id"
+
+    DimRegion ||--o{ FactWeather : "region_id"
+    DimDate ||--o{ FactWeather : "date_id"
+
+    DimMarketingChannel ||--o{ FactMarketing : "channel_id"
+    DimDate ||--o{ FactMarketing : "month_date_id"
+
+    DimMarketingChannel ||--o{ FactWebsiteAnalytics : "channel_id"
+    DimDate ||--o{ FactWebsiteAnalytics : "week_date_id"
+```
