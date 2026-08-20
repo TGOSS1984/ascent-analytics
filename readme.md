@@ -6,7 +6,7 @@
 [![Pandas](https://img.shields.io/badge/Data-Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)]()
 [![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=for-the-badge)]()
 
-> The analytics companion to **[UK Summit Guides](https://github.com/TGOSS1984/uk-summit-guides)** — a full end-to-end BI platform that takes raw, messy operational data and turns it into a governed warehouse, a documented KPI catalogue, and an executive-ready Power BI reporting suite.
+> The analytics companion to **[UK Summit Guides](https://github.com/TGOSS1984/uk-summit-guides)**: a full BI build that takes messy operational data and turns it into a proper warehouse, a documented KPI catalogue, and a Power BI reporting suite you could actually hand to a manager.
 
 ---
 
@@ -32,22 +32,23 @@
 
 ## 📖 Overview
 
-**Ascent Analytics** is a self-contained Business Intelligence project built around a synthetic but realistic dataset for a small UK-based guided mountain tour operator. It exists to demonstrate the full analytics lifecycle a data analyst is expected to own:
+Ascent Analytics is a BI project built around a synthetic but realistic dataset for a small UK guided-mountain-tour operator. It's meant to show the whole analytics lifecycle, not just a dashboard at the end:
 
-`Raw data → Python cleaning → SQL warehouse (star schema) → Power BI semantic model → Executive dashboards → Written insight & recommendations`
+`Raw data → Python cleaning → SQL warehouse (star schema) → Power BI semantic model → dashboards → written insight`
 
-Rather than starting from a dashboard, this project starts from the same place a real analyst would: messy, imperfect operational data that needs to be understood, validated, cleaned, modelled, and only then visualised.
+Most portfolio BI projects start from the dashboard. This one starts where a real analyst actually starts: with messy data nobody's cleaned yet.
 
 ## 🔗 Relationship to UK Summit Guides
 
-[UK Summit Guides](https://github.com/TGOSS1984/uk-summit-guides) is a live full-stack booking platform (React + Django REST Framework + PostgreSQL) for a small guided mountain tour company. Ascent Analytics is designed as its data/BI counterpart:
+[UK Summit Guides](https://github.com/TGOSS1984/uk-summit-guides) is a live full-stack booking platform (React + Django REST Framework + PostgreSQL) I built for a small guided mountain tour company. Ascent Analytics is the data/BI side of that same project.
 
-- **Core entities are aligned 1:1** with the real Django models (`Region`, `Guide`, `Route`, `ScheduledTour`, `Booking`, `Payment`) — same field names, same business rules (e.g. max party size of 3, difficulty levels of `moderate`/`hard`/`advanced`, seasons of `winter`/`summer` only).
-- **Extended entities** (`Weather`, `Marketing`, `WebsiteAnalytics`, `EquipmentHire`, `Review`) do **not** exist in the live application. They're generated synthetically to demonstrate warehouse modelling and KPI work across a fuller commercial data estate. This is documented explicitly — see [Notes on Realism & Scope](#-notes-on-realism--scope) — rather than implied as real production data.
+The core entities line up 1:1 with the real Django models: `Region`, `Guide`, `Route`, `ScheduledTour`, `Booking`, `Payment`. Same field names, same business rules: max party size of 3, difficulty levels of `moderate`/`hard`/`advanced`, seasons limited to `winter`/`summer`.
+
+A handful of entities go beyond what the live app actually has: `Weather`, `Marketing`, `WebsiteAnalytics`, `EquipmentHire`, `Review`. None of these exist in production. They're synthetic, added to give the warehouse and the KPI work more to chew on than a small booking app naturally produces. See [Notes on Realism & Scope](#-notes-on-realism--scope) for the full breakdown of what's real and what isn't.
 
 ## 🧱 Data Model
 
-Full, field-level documentation lives in [`docs/data_dictionary/`](docs/data_dictionary/) — every column, its type, its source, and (where relevant) the cleaning rule applied to it.
+Full field-level documentation is in [`docs/data_dictionary/`](docs/data_dictionary/): every column, its type, where it came from, and any cleaning rule that touched it.
 
 | Entity | Source of truth | Status |
 |---|---|---|
@@ -88,14 +89,14 @@ Insight Report & Recommendations  (docs/)
 
 ![Ascent Analytics star schema in Power BI Model view](docs/architecture/star_schema_powerbi.png)
 
-`FactBookings` at the centre, surrounded by its 6 dimensions — a real screenshot of the live semantic model, not a redrawn stand-in, so it reflects the actual configured relationships (including which ones are deliberately inactive). Full field-level detail, a text-based Mermaid version of the same diagram, and the reasoning behind each deliberate modelling decision live in [`docs/architecture/readme.md`](docs/architecture/readme.md).
+`FactBookings` sits in the middle, with the 6 dimensions around it. This is a real screenshot from the actual model, not a redrawn version, so it shows the real relationships, including the ones I deliberately left inactive. `docs/architecture/readme.md` has the full breakdown of every table and why each modelling call was made.
 
 ## 🛠️ Tech Stack
 
-- **Python** — pandas, NumPy, Faker (synthetic data), pandera (schema validation)
-- **SQL** — SQLite for development, with Postgres-compatible DDL for production
+- **Python** — pandas, NumPy, Faker for synthetic data, pandera for schema validation
+- **SQL** — SQLite for dev, Postgres-compatible DDL for production
 - **Power BI** — DAX measures, star-schema semantic model
-- **Git/GitHub** — incremental, documented commit history
+- **Git/GitHub** — commit history you can actually follow
 - **Markdown** — architecture docs, data dictionary, KPI catalogue
 
 ## 📂 Project Structure
@@ -127,43 +128,43 @@ ascent-analytics/
 
 ## 🧹 Data Cleaning
 
-The Python cleaning pipeline (`src/cleaning/`) turns the deliberately messy raw CSVs into validated, warehouse-ready tables, in two stages:
+`src/cleaning/` takes the deliberately messy raw CSVs and turns them into validated, warehouse-ready tables. It runs in two stages:
 
 ```bash
 python -m src.cleaning.run_pipeline              # core: Region, Guide, Route, ScheduledTour, Booking, Payment
 python -m src.cleaning.run_pipeline_extensions    # extensions: Review, Weather, Marketing, BookingAttribution, WebsiteAnalytics, EquipmentHire
 ```
 
-The extensions stage depends on the core stage's cleaned output (it validates `Review`/`EquipmentHire` bookings and `Weather` regions against the already-cleaned `Booking`/`Region` tables), so run core first.
+Run core first. The extensions stage checks `Review`/`EquipmentHire` bookings and `Weather` regions against the already-cleaned core tables, so it needs them to exist.
 
-What it does, per table:
+Per table, the pipeline handles:
 
-- **Deduplication** — exact-duplicate rows (simulating double form submissions) are dropped and counted
-- **Text normalisation** — inconsistent casing/whitespace in names, regions, and route names standardised to title case; closed-enum fields (status, difficulty, season, currency, channel, device) standardised to lowercase/uppercase as appropriate
-- **Currency parsing** — values stored as `"£99.95"`, `"GBP 99.95"`, or `"£1,133.78"` all parse to a clean float
-- **Email repair** — the one known corruption pattern (`@` replaced with `" at "`) is repaired automatically; anything else that still doesn't look like a valid email is flagged via `contact_email_invalid` rather than guessed at
-- **Country-name standardisation** — `"UK"` / `"U.K."` / `"Great Britain"` / `"England"` all map to one canonical `"United Kingdom"`, with only genuine corrections counted in the quality log (not rows that were already canonical)
-- **Missing-value handling** — some gaps are left as genuine gaps (a guide's missing qualifications, a review's missing sub-rating — inventing a value would be worse than admitting it's unknown); others are imputed with a documented, auditable rule (e.g. missing route elevation filled with the median for that difficulty tier) — see `docs/data_dictionary/readme.md` for which rule applies to which field
-- **Referential integrity checks** — every foreign key is checked against its parent table, with any orphans logged rather than silently dropped
-- **Schema validation** — every cleaned table is validated against a [pandera](https://pandera.readthedocs.io/) schema (`src/cleaning/schemas.py`) enforcing types, ranges, and closed-enum values before it's written out
+- **Deduplication.** Exact-duplicate rows (double form submissions) get dropped and counted.
+- **Text normalisation.** Inconsistent casing and whitespace in names/regions/routes gets standardised to title case. Closed-enum fields (status, difficulty, season, currency, channel, device) get forced to lowercase or uppercase depending on the field.
+- **Currency parsing.** `"£99.95"`, `"GBP 99.95"`, `"£1,133.78"` — all of it parses to a clean float.
+- **Email repair.** There's one known corruption pattern (`@` swapped for `" at "`), and it gets fixed automatically. Anything else that still doesn't look like an email gets flagged as `contact_email_invalid` instead of guessed at.
+- **Country-name standardisation.** `"UK"`, `"U.K."`, `"Great Britain"`, `"England"` all collapse to `"United Kingdom"`. Only genuine corrections get logged; rows that were already canonical don't count.
+- **Missing values, handled two different ways.** Some gaps stay gaps: a guide's missing qualifications, a review's missing sub-rating. Inventing a number there would be worse than admitting it's unknown. Others get filled with a documented rule (missing route elevation → median for that difficulty tier, for example). `docs/data_dictionary/readme.md` says which rule applies where.
+- **Referential integrity checks.** Every foreign key gets checked against its parent table. Orphans get logged, not silently dropped.
+- **Schema validation.** Every cleaned table runs through a [pandera](https://pandera.readthedocs.io/) schema (`src/cleaning/schemas.py`) before it's written out: types, ranges, closed enums, all enforced.
 
-Every rule fires into a `QualityLog`, written to [`docs/data_quality/core_pipeline_log.csv`](docs/data_quality/core_pipeline_log.csv) and [`docs/data_quality/extension_pipeline_log.csv`](docs/data_quality/extension_pipeline_log.csv) — row counts by stage, duplicates removed, values imputed/repaired, and validation failure counts. This is the same log data the Data Quality Dashboard will visualise.
+Every rule logs to a `QualityLog`, written to [`docs/data_quality/core_pipeline_log.csv`](docs/data_quality/core_pipeline_log.csv) and [`docs/data_quality/extension_pipeline_log.csv`](docs/data_quality/extension_pipeline_log.csv). Row counts, duplicates removed, values fixed, validation failures. It's all there, and it's the same data the Data Quality dashboard visualises.
 
 ## 🗃️ SQL Warehouse
 
-A Kimball-style star schema, built in SQLite (with Postgres-portable DDL — see the notes at the bottom of `sql/schema/01_dimensions.sql`). Full design rationale, the schema diagram, and the deliberate modelling decisions (denormalised `region_id`, derived `DimCustomer`, no `DimTour`) are documented in [`docs/architecture/readme.md`](docs/architecture/readme.md).
+A Kimball-style star schema in SQLite, with Postgres-portable DDL (see the notes at the bottom of `sql/schema/01_dimensions.sql`). The design rationale and the deliberate modelling calls (denormalised `region_id`, a derived `DimCustomer`, no `DimTour`) are all in [`docs/architecture/readme.md`](docs/architecture/readme.md).
 
-Build it (after both cleaning pipeline stages):
+Build it, once both cleaning stages have run:
 
 ```bash
 python -m src.warehouse.build_warehouse
 ```
 
-This creates `data/warehouse/ascent_analytics.db` from scratch: runs the DDL in `sql/schema/` (`01_dimensions.sql` → `02_facts.sql` → `03_indexes.sql`), then loads it from `data/cleaned/`. 6 dimension tables, 7 fact tables.
+That creates `data/warehouse/ascent_analytics.db` from scratch. It runs the DDL in `sql/schema/` in order (`01_dimensions.sql` → `02_facts.sql` → `03_indexes.sql`), then loads it from `data/cleaned/`. 6 dimension tables, 7 fact tables.
 
-**DimCustomer is derived, not sourced** — the real UK Summit Guides schema has no `Customer` entity, so the warehouse builds one by grouping `Booking` rows on `contact_email`. This is a genuinely common real-world warehouse situation (the source system wasn't designed with analytics in mind) and is called out explicitly rather than presented as if a customer table existed all along.
+`DimCustomer` is derived, not sourced. The real UK Summit Guides schema has no `Customer` entity, `Booking` just stores contact details inline. So the warehouse groups bookings on `contact_email` to build a customer dimension itself. This is a pretty normal warehouse situation to run into (the source system wasn't built with analytics in mind), and I'd rather document it plainly than pretend a customer table existed all along.
 
-Example query, once built:
+Example query, once it's built:
 
 ```sql
 SELECT r.name AS region, ROUND(SUM(fb.total_price), 2) AS revenue, COUNT(*) AS bookings
@@ -180,31 +181,33 @@ ORDER BY revenue DESC;
 python -m src.warehouse.apply_views
 ```
 
-This creates 7 reporting views (`sql/views/01_reporting_views.sql`) — `vw_bookings_enriched` (the wide, denormalised base most other views and ad hoc queries build on), plus `vw_monthly_revenue`, `vw_route_performance`, `vw_guide_performance`, `vw_customer_summary`, `vw_weather_flagged_cancellations`, and `vw_marketing_performance`.
+Creates 7 reporting views (`sql/views/01_reporting_views.sql`). `vw_bookings_enriched` is the wide, denormalised base most other views build on; the rest are `vw_monthly_revenue`, `vw_route_performance`, `vw_guide_performance`, `vw_customer_summary`, `vw_weather_flagged_cancellations`, and `vw_marketing_performance`.
 
-**Stored procedures — an honest limitation.** SQLite doesn't support `CREATE PROCEDURE`. Rather than pretend otherwise, `sql/procedures/readme.md` explains the gap, `sql/procedures/postgres_examples.sql` shows what the same logic looks like as real PL/pgSQL procedures (for the Postgres/SQL Server tech stack this project also targets), and `src/warehouse/procedures.py` provides the practical SQLite-compatible equivalent: parameterised Python functions (`guide_performance_report()`, `route_performance_report()`, `refresh_customer_ltv_snapshot()`) that wrap the same SQL and return a DataFrame.
+Stored procedures are an honest gap. SQLite doesn't support `CREATE PROCEDURE`, full stop. `sql/procedures/readme.md` explains that, `sql/procedures/postgres_examples.sql` shows what the same logic would look like as real PL/pgSQL, and `src/warehouse/procedures.py` is the practical stand-in: parameterised Python functions (`guide_performance_report()`, `route_performance_report()`, `refresh_customer_ltv_snapshot()`) that wrap the SQL and hand back a DataFrame.
 
-The **analytical query library** (`sql/queries/`, 8 files) answers the core business questions from `docs/business_problem.md` directly in runnable SQL, demonstrating `INNER`/`LEFT`/`RIGHT JOIN`, `GROUP BY`/`HAVING`, `CASE`, and window functions (`RANK`, `ROW_NUMBER`, `LAG`, `LEAD`) across CTEs — see [`sql/queries/readme.md`](sql/queries/readme.md) for the full index of which file answers which question with which technique.
+The query library (`sql/queries/`, 8 files) answers the core business questions from `docs/business_problem.md` in runnable SQL: `INNER`/`LEFT`/`RIGHT JOIN`, `GROUP BY`/`HAVING`, `CASE`, window functions (`RANK`, `ROW_NUMBER`, `LAG`, `LEAD`) over CTEs. [`sql/queries/readme.md`](sql/queries/readme.md) indexes which file answers which question with which technique.
 
 ## 📊 KPIs & Dashboards
 
-The Power BI semantic model is built from the exported star schema — see [`powerbi/readme.md`](powerbi/readme.md) for the full setup guide (import, relationships, role-playing dates, hierarchies, and applying the custom report theme) and [`powerbi/dax_measures.md`](powerbi/dax_measures.md) for the complete DAX measure library, organised by dashboard and cross-referenced to the KPI catalogue. The finished model itself lives at `powerbi/ascent_analytics.pbip` — open it directly in Power BI Desktop, or rebuild it from scratch using the guide. The semantic model (measures, relationships, tables) is stored as reviewable TMDL text files rather than a single binary — see [`docs/tmdl_exploration.md`](docs/tmdl_exploration.md) for why.
+The Power BI semantic model is built from the exported star schema. [`powerbi/readme.md`](powerbi/readme.md) has the full setup guide: import, relationships, role-playing dates, hierarchies, the custom theme. [`powerbi/dax_measures.md`](powerbi/dax_measures.md) has every DAX measure, organised by dashboard and cross-referenced to the KPI catalogue.
 
-A custom report theme, [`powerbi/ascent_analytics_theme.json`](powerbi/ascent_analytics_theme.json), is derived directly from **UK Summit Guides' own design tokens** — the same dark, moody mountain palette (winter ice-blue/slate alternating with summer gold/sage) as the live booking site, so the two projects share one visual identity.
+The model itself lives at `powerbi/ascent_analytics.pbip`. Open it directly in Power BI Desktop, or rebuild from scratch using the guide. Measures, relationships, and tables are stored as `.tmdl` text files rather than one binary blob. [`docs/tmdl_exploration.md`](docs/tmdl_exploration.md) covers why that matters.
+
+The report theme, [`powerbi/ascent_analytics_theme.json`](powerbi/ascent_analytics_theme.json), pulls straight from UK Summit Guides' own design tokens, the same dark mountain palette (winter ice-blue/slate, summer gold/sage) as the live site, so both projects look like they belong together.
 
 ```bash
 python -m src.warehouse.export_for_powerbi
 ```
 
-exports the star schema plus four pre-aggregated summary tables to `powerbi/data_export/`, ready for Power BI Desktop's Text/CSV import.
+Exports the star schema plus four pre-aggregated summary tables to `powerbi/data_export/`, ready for Power BI's Text/CSV import.
 
-**Why CSV export rather than a live SQLite connection?** Power BI Desktop has no built-in SQLite connector — the alternative is installing and configuring a third-party ODBC driver for a single-user, file-based database, which is unnecessary friction. This is explained in full in `powerbi/readme.md`, including the ODBC option for anyone who wants it anyway.
+Why CSV rather than a live SQLite connection? Power BI Desktop has no built-in SQLite connector. The alternative is a third-party ODBC driver for a single-user file database, which felt like unnecessary friction for what this is. Full explanation, including the ODBC route if you want it anyway, is in `powerbi/readme.md`.
 
-All 10 dashboards are built and verified inside Power BI Desktop — see below for a look without needing to open the file yourself.
+All 10 dashboards are built and working in Power BI Desktop. Previews below if you don't want to open the file.
 
 ### Dashboard previews
 
-**[📄 View all 10 dashboards as a PDF](powerbi/screenshots/Ascent_Analytics_Dashboards.pdf)** — exported directly from Power BI Desktop (File → Export → Export to PDF), one page per dashboard, in tab order. Renders inline in GitHub's file viewer, no download or Power BI install needed.
+**[📄 View all 10 dashboards as a PDF](powerbi/screenshots/Ascent_Analytics_Dashboards.pdf)**, exported straight from Power BI Desktop, one page per dashboard, in tab order. Renders inline in GitHub, no download needed.
 
 | Executive | Route |
 |---|---|
@@ -214,24 +217,24 @@ All 10 dashboards are built and verified inside Power BI Desktop — see below f
 |---|
 | ![Website Analytics dashboard](powerbi/screenshots/web_analytics.png) |
 
-The dashboards answer *what's happening*; [`docs/insight_report.md`](docs/insight_report.md) answers *so what* — ten findings pulled directly from the warehouse (bank holiday demand spikes, difficulty-driven cancellation risk, channel ROAS, guide discount behaviour, and more), each with a specific recommendation, not just a chart.
+The dashboards show what's happening. [`docs/insight_report.md`](docs/insight_report.md) is the *so what*: ten findings pulled straight from the warehouse (bank holiday demand spikes, difficulty-driven cancellation risk, channel ROAS, guide discount behaviour), each with an actual recommendation attached, not just a chart and a shrug.
 
 ## 🔍 Data Quality
 
-Cleaning is a separate, auditable pipeline step — every raw table is checked against a [pandera](https://pandera.readthedocs.io/) schema before and after cleaning, and every fix the cleaning step makes is logged with a row count and a plain-English reason rather than applied silently. The **Data Quality** dashboard surfaces both sides of that log directly from the warehouse:
+Cleaning is its own auditable step. Every raw table gets checked against a [pandera](https://pandera.readthedocs.io/) schema before and after cleaning, and every fix gets logged with a row count and a plain reason, not applied silently. The Data Quality dashboard shows both sides of that log:
 
-- **0 validation failures** across all 12 tables post-cleaning, and **99.8% average completeness** — the small remainder is intentional, not a gap (see below).
-- **151,477 cleaned rows** across all tables (302,954 raw+cleaned combined), spanning everything from `Booking` and `Payment` (28,919 rows each) down to reference tables like `Region` (6 rows).
-- **11,519 individual field-level fixes** logged, the largest being:
-  - `currency_casing_fixed` — 7,053 payment records with inconsistent currency-code casing normalised
-  - `country_names_standardised` — 2,019 website-analytics rows (e.g. `'UK'`/`'U.K.'` → `'United Kingdom'`)
-  - `malformed_emails_repaired` — 881 booking emails fixed against an `' at '` → `'@'` pattern
-  - review-rating nulls left as **null**, not imputed, across `missing_guide_rating` (305), `missing_value_rating` (317), `missing_route_rating` (342) and `missing_safety_rating` (350) — a 1–5 rating has no honest default, so these are surfaced as missing rather than guessed
-  - `missing_qualifications` — 1 guide record flagged rather than imputed, a real data gap worth surfacing rather than papering over
+- 0 validation failures across all 12 tables post-cleaning, 99.8% average completeness. The small remainder is intentional, more on that below.
+- 151,477 cleaned rows across all tables (302,954 counting raw + cleaned), from `Booking` and `Payment` at 28,919 rows each down to small reference tables like `Region` at 6.
+- 11,519 individual field-level fixes. The biggest ones:
+  - `currency_casing_fixed` — 7,053 payment records with inconsistent currency-code casing
+  - `country_names_standardised` — 2,019 website-analytics rows (`'UK'`/`'U.K.'` → `'United Kingdom'`)
+  - `malformed_emails_repaired` — 881 booking emails fixed against the `' at '` → `'@'` pattern
+  - review-rating gaps left as null, not guessed at, across `missing_guide_rating` (305), `missing_value_rating` (317), `missing_route_rating` (342), `missing_safety_rating` (350) — a 1–5 rating has no honest default
+  - `missing_qualifications` — 1 guide record flagged rather than filled in
 
-That last principle — flag and leave null instead of inventing a plausible-looking value — is the throughline of the cleaning design: the dashboard's job is to make what was *actually* fixed (and what was deliberately left alone) visible, not to claim a cleaner dataset than what's really there.
+That last one's the general principle, really: flag and leave it null instead of inventing something plausible. The dashboard's job is to show what actually got fixed, and what got deliberately left alone, not to make the dataset look cleaner than it is.
 
-Full fix-by-fix detail lives in `docs/data_quality/`; the pandera schemas enforcing this at pipeline runtime are in `src/cleaning/`.
+Full detail lives in `docs/data_quality/`. The pandera schemas enforcing all this at runtime are in `src/cleaning/`.
 
 ## ⚙️ Local Setup
 
@@ -244,24 +247,24 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Notebooks (`notebooks/`) need an extra, optional install — kept separate because `jupyter` pulls in `jupyterlab`'s large, deeply-nested asset tree, which can hit Windows' path-length limit (especially inside a OneDrive-synced folder):
+Notebooks (`notebooks/`) need a separate install. `jupyter` pulls in `jupyterlab`'s large nested asset tree, which can hit Windows' path-length limit — especially inside a OneDrive-synced folder — so it's kept out of the main requirements file:
 
 ```bash
 pip install -r requirements-notebook.txt
 ```
 
-If that fails on Windows with an `OSError` about a missing nested file path, see the comment at the top of `requirements-notebook.txt` for how to enable Windows Long Path support, or just work from a shorter path (e.g. `C:\dev\ascent-analytics`) outside OneDrive.
+If that fails on Windows with an `OSError` about a missing nested path, check the comment at the top of `requirements-notebook.txt` for enabling Long Path support, or just work from somewhere shorter like `C:\dev\ascent-analytics`.
 
-Then run the full pipeline. Easiest way — one command, works identically on Windows/macOS/Linux:
+Then the pipeline. Easiest way, one command, same on Windows/macOS/Linux:
 
 ```bash
 python run_pipeline.py          # full pipeline
-python run_pipeline.py --test   # full pipeline, then the full test suite
+python run_pipeline.py --test   # full pipeline, then the test suite
 ```
 
-On macOS/Linux, `make pipeline` (or `make all` to include tests) does the same thing — see the `Makefile`. Windows users should stick to `run_pipeline.py`, since `make` isn't available out of the box.
+On macOS/Linux, `make pipeline` (or `make all` for tests too) does the same thing. Windows users, stick with `run_pipeline.py` — no `make` out of the box.
 
-**Or run each of the 8 steps individually**, if you want to inspect output between stages:
+Or run the 8 steps by hand if you want to poke at the output between stages:
 
 ```bash
 python -m src.generation.generate_reference_data
@@ -290,20 +293,24 @@ python -m src.warehouse.export_for_powerbi
 - [x] Power BI semantic model & DAX measures
   - [x] Star schema export + setup guide + full DAX measure library (`powerbi/`)
   - [x] Built and verified inside Power BI Desktop (.pbip project)
-- [x] Dashboards: Executive, Sales, Customer, Guide, Route, Marketing, Operations, Finance, Website Analytics, Data Quality — all 10 built and verified
+- [x] Dashboards: Executive, Sales, Customer, Guide, Route, Marketing, Operations, Finance, Website Analytics, Data Quality — all 10 built
 - [x] Written insight report & recommendations — see [`docs/insight_report.md`](docs/insight_report.md)
 - [x] Full documentation pass (architecture, data dictionary, KPI catalogue)
 
 ## Known Limitations & Next Steps
 
-An honest account of what this project doesn't yet do, rather than presenting it as finished in every respect:
+Here's what this project doesn't do, or didn't used to do, rather than pretending everything was smooth.
 
-- **No CI.** ~~The 79-test suite runs locally but isn't wired into a GitHub Actions workflow yet~~ **Fixed** — see `.github/workflows/ci.yml`. Worth knowing: a CI file existed since the project's first commit but silently only exercised ~35 of 79 tests (it never ran the pipeline first, so most tests skipped rather than ran) — fixed to run the full pipeline before testing, with an explicit check that fails loudly if anything skips again.
-- **No one-command reproduction.** ~~The full pipeline is currently 8 manual commands~~ **Fixed** — `python run_pipeline.py` (or `make pipeline` on Unix/macOS) runs all 8 steps in order, stopping clearly on the first failure rather than continuing on bad data. The README's setup instructions had also only ever documented 3 of the 8 steps (generation only, never cleaning/warehouse/export) — fixed at the same time.
-- **The `.pbix` file is a black box on GitHub.** ~~It's binary, doesn't render in a repo preview, and requires Power BI Desktop to open at all.~~ **Fixed twice over** — see the "Dashboard previews" section above (a full PDF export, all 10 pages, renders inline in GitHub, plus 3 inline PNG previews: Executive, Route, Website Analytics) and, separately, the semantic model itself has since been migrated from `.pbix` to `.pbip` (see below), so the model itself is no longer a binary black box either.
-- **The Power BI semantic model isn't version-controlled the way the code is.** This turned out to be a real, recurring source of friction over the course of the project — see [`docs/powerbi_lessons_learned.md`](docs/powerbi_lessons_learned.md) for a full account of what a single schema change actually costs to rebuild, and why. **Done** — `powerbi/ascent_analytics.pbix` has been migrated to `powerbi/ascent_analytics.pbip`, using native PBIP + TMDL support in Power BI Desktop (GA Feb 2026, no external tool required). Measures, relationships, and tables now live as reviewable `.tmdl` text files alongside the Python and SQL — see [`docs/tmdl_exploration.md`](docs/tmdl_exploration.md) for the full rationale and what this does and doesn't fix.
-- **No productionization narrative.** Everything here is correctly scoped as a demo (SQLite, a single local `.pbip`) — **done**, see [`docs/productionization.md`](docs/productionization.md): what would actually change for a real deployment — Postgres instead of SQLite, scheduled refresh, row-level security built on the model's existing `DimRegion` structure, and a real ingestion path from the live UK Summit Guides app instead of synthetic CSVs.
+**CI was broken and I didn't notice for a while.** A workflow file existed from the first commit, but it never ran the pipeline first, so most of the 79 tests just skipped instead of running. Only ~35 were actually being exercised. Fixed now (`.github/workflows/ci.yml`), with a check that fails loudly if anything skips again rather than passing green on a lie.
+
+**Reproduction used to be 8 manual commands, undocumented as such.** The README only ever walked through 3 of them. `python run_pipeline.py` (or `make pipeline` on Unix) now runs all 8 in order and stops clearly on the first failure.
+
+**The `.pbix` file used to be a black box on GitHub.** Binary, no repo preview, needed Power BI Desktop just to look at it. Fixed two ways: the dashboard previews above (a full PDF export plus 3 inline PNGs), and separately, the semantic model itself moved from `.pbix` to `.pbip`, so it's not a binary blob at all anymore.
+
+**The semantic model wasn't version-controlled the way the code was**, and that caused real pain. See [`docs/powerbi_lessons_learned.md`](docs/powerbi_lessons_learned.md) for what a single schema change used to cost to rebuild. Fixed via the same `.pbip` migration: native PBIP + TMDL support in Power BI Desktop (GA Feb 2026, no external tool needed) means measures, relationships, and tables are now reviewable `.tmdl` text files sitting next to the Python and SQL. [`docs/tmdl_exploration.md`](docs/tmdl_exploration.md) has the full rationale, plus what this does and doesn't fix.
+
+**There was no productionization story.** Everything here is scoped as a demo on purpose: SQLite, one local `.pbip` file. [`docs/productionization.md`](docs/productionization.md) covers what would actually need to change for a real deployment: Postgres instead of SQLite, scheduled refresh, row-level security built on `DimRegion`, and a real ingestion path from the live UK Summit Guides app instead of synthetic CSVs.
 
 ## 📌 Notes on Realism & Scope
 
-This project favours **credibility over scale**. UK Summit Guides is a small guiding operation with groups capped at 3 people — so the dataset targets ~7 years of history and ~30,000 bookings rather than an inflated multi-million-row figure. Every entity that extends beyond the real UK Summit Guides schema (weather, marketing, website analytics, equipment hire, reviews) is clearly labelled as a synthetic extension, both here and in the data dictionary, so the provenance of every field is honest and traceable.
+I aimed for credibility over scale. UK Summit Guides is a small operation, groups capped at 3 people, so the dataset targets ~7 years of history and ~30,000 bookings rather than an inflated multi-million-row number that wouldn't make sense for the business it's supposed to represent. Anything beyond the real UK Summit Guides schema (weather, marketing, website analytics, equipment hire, reviews) is labelled as a synthetic extension, here and in the data dictionary, so it's always clear which fields are real and which aren't.
